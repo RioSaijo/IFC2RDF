@@ -1,0 +1,6 @@
+rdflib>=6.0
+ifcopenshell
+jupyter
+pydantic
+
+↑最後に編集

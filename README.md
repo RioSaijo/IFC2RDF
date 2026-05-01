@@ -25,6 +25,48 @@ The current implementation takes IFC STEP files with instance data as input, spe
 At present, the converter has been applied and tested with IFC 2x3 models.  
 Although only IFC 2x3 is explicitly tested at this stage, the overall approach is intended to be extensible to IFC4 and later versions in future development.
 
+```text
+ここでifcデータにおけるBDNSタグの格納形式・BDNSタグのSyntaxについて述べます．
+```
+
+IFCデータにおけるBDNSタグの格納形式と、そのSyntax（構文）上の制限に関するREADME用の英文セクション案を作成しました。
+
+以前の対話で確認した「DSSO-00001」のような形式がなぜ不適切（不健全）とされるのかという背景を含め、文献に基づいた正確な仕様を反映させています。
+
+***
+
+### BDNS Tag Syntax and Storage in IFC
+
+#### 1. Identification Strategy in IFC Models
+In accordance with the BDNS specification, each device or asset within an `.ifc` file must be assigned two distinct identifiers:
+
+*   **Device/Asset Instance GUID (`asset.guid`)**: A machine-readable, 128-bit auto-generated number. For IFC workflows, this is represented by the 22-character IFC base-64 encoding (the `GlobalId` attribute).
+*   **Device/Asset Role Name (`asset.name`)**: A human-generated, human-readable identifier that remains fixed for a specific function even if the hardware instance is replaced.
+
+#### 2. BDNS Tag Syntax (asset.name)
+The "BDNS Tag" refers to the **Device/Asset Role Name**. To ensure consistency and avoid ambiguity in digital building systems, the following syntax rules must be strictly followed:
+
+**Format:** `X-Y` or `XZ-Y`
+
+*   **`X` (Type Abbreviation)**: A 2 to 6 character uppercase alphabetical sequence. This abbreviation must be taken from the official *Building Device and Asset Abbreviation Registry*.
+*   **`Y` (Building Unique Incremental Number)**: A variable-length integer that is unique to the building.
+*   **`-` (Separator)**: A hyphen must be used to separate the type abbreviation and the incremental number.
+*   **`Z` (Optional Asset Type Number)**: Used only if an `asset.type` definition is required.
+
+#### 3. Strict Restrictions and Validation
+When implementing or converting to BDNS tags, the following restrictions are mandatory:
+
+*   **No Leading Zeros**: In the incremental numbers (`Y` and `Z`), **leading zeros are strictly prohibited** to avoid ambiguity (e.g., `DSSO-1` is valid, while `DSSO-00001` is invalid).
+*   **Case Sensitivity**: Only **uppercase** alphabetic characters and numeric characters are allowed.
+*   **Instance vs. Role Separation**: Data that includes machine-specific sequences or zero-padded serial numbers (like `DSSO-00001`) should be interpreted as **Instance Identifiers** rather than **BDNS Tags (Role Names)**. Proper BDNS tags must be explicitly defined using the semantic vocabulary of the Abbreviation Registry.
+
+#### 4. Physical Labeling and Suffixes (Optional)
+While the `asset.name` stored in the IFC data must strictly follow the syntax above, physical labels may optionally include a **suffix** (e.g., `asset.name_text`) to capture existing legacy tagging information or specific properties like floor levels. However, this suffix is not part of the core `asset.name` syntax used for digital identification.
+
+
+
+
+
 ### Output
 
 The output is generated as RDF data serialized in Turtle format `.ttl`.
