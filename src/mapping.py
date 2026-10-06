@@ -61,6 +61,7 @@ def map_assets(assets: Iterable[IfcAsset], crosswalk_path: str | Path) -> list[B
                 mapping_status=status,
                 mapping_source=source,
                 classification_name=asset.classification_name,
+                source_path=asset.source_path,
             )
         )
     return result

@@ -18,7 +18,8 @@ def main() -> None:
     generated = Path(__file__).resolve().parent / "generated"
     inputs = create_synthetic_inputs(generated / "input")
     result = run_pipeline(
-        ifc_path=inputs["ifc"],
+        mep_ifc_paths=inputs["mep_ifc"],
+        arc_ifc_paths=inputs["arc_ifc"],
         points_csv=inputs["points_csv"],
         mapping_csv_path=PROJECT_ROOT / "data" / "resources" / "BDNS mapping partial.csv",
         output_dir=generated / "output",

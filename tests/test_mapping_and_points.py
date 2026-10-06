@@ -51,3 +51,32 @@ def test_bms_link_prefers_bdns_classification(tmp_path):
     assert links[0].method == "explicit_bdns_identifier"
     assert not links[0].review_required
     assert unresolved == []
+
+
+def test_duplicate_bdns_identifier_does_not_guess(tmp_path):
+    crosswalk = tmp_path / "mapping.csv"
+    crosswalk.write_text(
+        "bdns_abbriviation,bdns_tag,raw_ifc_class,brick_class_candidate\n"
+        "AHU,air handling unit,IfcUnitaryEquipment,brick:Air_Handling_Unit\n",
+        encoding="utf-8",
+    )
+    equipment = map_assets(
+        [
+            IfcAsset("guid-1", "First", "IfcUnitaryEquipment", "AHU-1", "BDNS", 1),
+            IfcAsset("guid-2", "Second", "IfcUnitaryEquipment", "AHU-1", "BDNS", 2),
+        ],
+        crosswalk,
+    )
+    points_csv = tmp_path / "points.csv"
+    points_csv.write_text(
+        "point_id,name,unit,bdns_abbreviation\n"
+        "1,ahu_supply_temp,degC,AHU-1\n",
+        encoding="utf-8",
+    )
+    _points, links, unresolved = load_and_link_points(
+        points_csv,
+        equipment,
+        "https://example.org/#",
+    )
+    assert links == []
+    assert unresolved == ["1"]

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from collections import Counter
 from pathlib import Path
-from typing import Dict, Iterable, List, Optional, Set, Tuple
+from typing import Any, Dict, Iterable, List, Optional, Sequence, Set, Tuple
 
 import ifcopenshell
 
@@ -78,7 +78,7 @@ def _is_bdns(classification) -> bool:
     return _classification_name(classification).upper() == "BDNS"
 
 
-def _spatial_elements(model) -> List[SpatialElement]:
+def _spatial_elements(model, source_path: Optional[str] = None) -> List[SpatialElement]:
     parent_by_guid: Dict[str, str] = {}
     for rel in _by_type(model, "IfcRelAggregates"):
         parent_guid = _guid(getattr(rel, "RelatingObject", None))
@@ -94,12 +94,25 @@ def _spatial_elements(model) -> List[SpatialElement]:
         for obj in _by_type(model, ifc_class):
             guid = _guid(obj)
             if guid:
+                properties: Dict[str, Any] = {}
+                for attr in ("LongName", "Description", "ObjectType", "CompositionType"):
+                    value = getattr(obj, attr, None)
+                    if value is not None and str(value).strip():
+                        properties[attr] = str(value).strip()
+                elevation = getattr(obj, "Elevation", None)
+                if elevation is not None:
+                    try:
+                        properties["Elevation"] = float(elevation)
+                    except (TypeError, ValueError):
+                        properties["Elevation"] = str(elevation)
                 result.append(
                     SpatialElement(
                         ifc_guid=guid,
                         name=_name(obj),
                         raw_ifc_class=ifc_class,
                         parent_guid=parent_by_guid.get(guid),
+                        source_path=source_path,
+                        properties=properties,
                     )
                 )
     return result
@@ -115,6 +128,7 @@ def _bdns_assignments(model) -> Tuple[Dict[str, Tuple[str, str, Optional[int]]],
             references[ref] = (code, _classification_name(root), _entity_id(ref))
 
     assignments: Dict[str, Tuple[str, str, Optional[int]]] = {}
+    ambiguous_guids: Set[str] = set()
     association_count = 0
     for rel in _by_type(model, "IfcRelAssociatesClassification"):
         value = references.get(getattr(rel, "RelatingClassification", None))
@@ -124,16 +138,22 @@ def _bdns_assignments(model) -> Tuple[Dict[str, Tuple[str, str, Optional[int]]],
         for obj in getattr(rel, "RelatedObjects", None) or []:
             guid = _guid(obj)
             if guid:
-                assignments[guid] = value
+                previous = assignments.get(guid)
+                if previous is not None and previous[0] != value[0]:
+                    ambiguous_guids.add(guid)
+                    assignments.pop(guid, None)
+                elif guid not in ambiguous_guids:
+                    assignments[guid] = value
 
     return assignments, {
         "classification_count": len(bdns_classifications),
         "reference_count": len(references),
         "association_count": association_count,
+        "ambiguous_asset_count": len(ambiguous_guids),
     }
 
 
-def _distribution_assets(model, assignments) -> List[IfcAsset]:
+def _distribution_assets(model, assignments, source_path: Optional[str] = None) -> List[IfcAsset]:
     assets: List[IfcAsset] = []
     seen: Set[str] = set()
     for obj in _by_type(model, "IfcDistributionElement"):
@@ -152,12 +172,18 @@ def _distribution_assets(model, assignments) -> List[IfcAsset]:
                 bdns_code=assignment[0] if assignment else None,
                 classification_name=assignment[1] if assignment else None,
                 classification_reference_id=assignment[2] if assignment else None,
+                source_path=source_path,
             )
         )
     return assets
 
 
-def _containment_relations(model, asset_guids: Set[str], spatial_guids: Set[str]) -> List[Relation]:
+def _containment_relations(
+    model,
+    asset_guids: Set[str],
+    spatial_guids: Set[str],
+    source_path: Optional[str] = None,
+) -> List[Relation]:
     result: List[Relation] = []
     for rel in _by_type(model, "IfcRelContainedInSpatialStructure"):
         container = _guid(getattr(rel, "RelatingStructure", None))
@@ -173,7 +199,10 @@ def _containment_relations(model, asset_guids: Set[str], spatial_guids: Set[str]
                         object_guid=container,
                         source="IfcRelContainedInSpatialStructure",
                         method="explicit",
-                        evidence={"ifc_relation_id": _entity_id(rel)},
+                        evidence={
+                            "ifc_relation_id": _entity_id(rel),
+                            "source_path": source_path,
+                        },
                     )
                 )
     return result
@@ -204,7 +233,11 @@ def _flow_direction(port) -> str:
     return str(getattr(port, "FlowDirection", None) or "").upper()
 
 
-def _feed_relations(model, asset_guids: Set[str]) -> Tuple[List[Relation], int]:
+def _feed_relations(
+    model,
+    asset_guids: Set[str],
+    source_path: Optional[str] = None,
+) -> Tuple[List[Relation], int]:
     owners = _port_owners(model)
     result: List[Relation] = []
     unresolved = 0
@@ -245,6 +278,7 @@ def _feed_relations(model, asset_guids: Set[str]) -> Tuple[List[Relation], int]:
                     "ifc_relation_id": _entity_id(rel),
                     "relating_flow_direction": first_direction,
                     "related_flow_direction": second_direction,
+                    "source_path": source_path,
                 },
             )
         )
@@ -257,13 +291,22 @@ def _capability(status: str, evidence: str) -> Dict[str, str]:
 
 def extract_ifc(bundle: IfcBundle) -> ExtractionResult:
     model = bundle.model
-    spatial = _spatial_elements(model)
+    spatial = _spatial_elements(model, bundle.source_path)
     assignments, bdns_counts = _bdns_assignments(model)
-    assets = _distribution_assets(model, assignments)
+    assets = _distribution_assets(model, assignments, bundle.source_path)
     asset_guids = {item.ifc_guid for item in assets}
     spatial_guids = {item.ifc_guid for item in spatial}
-    containment = _containment_relations(model, asset_guids, spatial_guids)
-    feeds, unresolved_port_connections = _feed_relations(model, asset_guids)
+    containment = _containment_relations(
+        model,
+        asset_guids,
+        spatial_guids,
+        bundle.source_path,
+    )
+    feeds, unresolved_port_connections = _feed_relations(
+        model,
+        asset_guids,
+        bundle.source_path,
+    )
 
     classification_names = Counter(
         _classification_name(item) or "(unnamed)" for item in _by_type(model, "IfcClassification")
@@ -288,73 +331,151 @@ def extract_ifc(bundle: IfcBundle) -> ExtractionResult:
         "capabilities": {
             "IDENTITY": _capability("PASS" if assets else "FAIL", f"{len(assets)} distribution assets with GlobalId"),
             "CLASSIFICATION": _capability(
-                "PASS" if classified_count else "WARN",
+                "PASS" if assets and classified_count == len(assets) else "WARN",
                 f"{classified_count}/{len(assets)} assets associated with the BDNS classification",
             ),
-            "SPATIAL_HIERARCHY": _capability("PASS" if spatial else "WARN", f"{len(spatial)} spatial elements"),
-            "LOCATION": _capability("PASS" if containment else "WARN", f"{len(contained_assets)} assets explicitly contained"),
-            "FLOW_TOPOLOGY": _capability("PASS" if feeds else "WARN", f"{len(feeds)} directed feeds; {unresolved_port_connections} ambiguous connections"),
+            "SPATIAL_HIERARCHY": _capability(
+                "PASS" if any(item.parent_guid for item in spatial) else "WARN",
+                f"{len(spatial)} spatial elements; {sum(item.parent_guid is not None for item in spatial)} hierarchy links",
+            ),
+            "LOCATION": _capability(
+                "PASS" if assets and len(contained_assets) == len(assets) else "WARN",
+                f"{len(contained_assets)}/{len(assets)} assets explicitly contained",
+            ),
+            "FLOW_TOPOLOGY": _capability(
+                "PASS" if feeds and unresolved_port_connections == 0 else "WARN",
+                f"{len(feeds)} directed feeds; {unresolved_port_connections} ambiguous connections",
+            ),
         },
     }
     return ExtractionResult(spatial=spatial, assets=assets, relations=relations, audit=audit)
 
 
-def infer_geometry_locations(
-    bundle: IfcBundle,
-    extraction: ExtractionResult,
-) -> List[Relation]:
-    """Infer missing equipment locations with geometry AABBs.
+def extract_spatial_elements(bundle: IfcBundle) -> List[SpatialElement]:
+    """Extract only spatial elements from an architectural IFC model."""
+    return _spatial_elements(bundle.model, bundle.source_path)
+
+
+def infer_cross_model_geometry_locations(
+    mep_models: Sequence[Tuple[IfcBundle, ExtractionResult]],
+    arc_bundles: Sequence[IfcBundle],
+    existing_relations: Iterable[Relation],
+) -> Tuple[List[Relation], Dict[str, Any]]:
+    """Infer missing MEP equipment locations against ARC space AABBs.
 
     This deliberately runs only when requested. Explicit containment always wins.
     AABB inference is approximate, so every result is marked review-required.
     """
     import ifcopenshell.geom
+    import ifcopenshell.util.unit
 
     settings = ifcopenshell.geom.settings()
     settings.set(settings.USE_WORLD_COORDS, True)
-    model = bundle.model
-    explicit = {item.subject_guid for item in extraction.relations if item.predicate == "brick:hasLocation"}
+    explicit = {item.subject_guid for item in existing_relations if item.predicate == "brick:hasLocation"}
+    diagnostics = {
+        "space_geometry_failures": 0,
+        "equipment_geometry_failures": 0,
+        "ambiguous_space_matches": 0,
+        "coordinate_reference_status": "unverified_local",
+        "coordinate_reference_conflicts": 0,
+    }
 
-    def bounds(obj):
+    def coordinate_signature(model):
+        values = []
+        for crs in _by_type(model, "IfcProjectedCRS"):
+            values.append(
+                tuple(
+                    str(getattr(crs, attr, None) or "").strip()
+                    for attr in ("Name", "GeodeticDatum", "MapProjection", "MapZone")
+                )
+            )
+        return tuple(sorted(values)) or None
+
+    signatures = [
+        coordinate_signature(bundle.model)
+        for bundle, _extraction in mep_models
+    ] + [coordinate_signature(bundle.model) for bundle in arc_bundles]
+    explicit_signatures = {value for value in signatures if value is not None}
+    if len(explicit_signatures) > 1:
+        diagnostics["coordinate_reference_status"] = "conflict"
+        diagnostics["coordinate_reference_conflicts"] = len(explicit_signatures)
+        return [], diagnostics
+    if len(explicit_signatures) == 1 and all(value is not None for value in signatures):
+        diagnostics["coordinate_reference_status"] = "verified"
+
+    def unit_scale(model) -> float:
+        try:
+            return float(ifcopenshell.util.unit.calculate_unit_scale(model))
+        except Exception:
+            return 1.0
+
+    def bounds(obj, scale: float):
         try:
             shape = ifcopenshell.geom.create_shape(settings, obj)
-            verts = list(shape.geometry.verts)
+            verts = [float(value) * scale for value in shape.geometry.verts]
             xs, ys, zs = verts[0::3], verts[1::3], verts[2::3]
             return (min(xs), min(ys), min(zs)), (max(xs), max(ys), max(zs))
         except Exception:
             return None
 
     spaces = []
-    for item in extraction.spatial:
-        if item.raw_ifc_class != "IfcSpace":
-            continue
-        obj = model.by_guid(item.ifc_guid)
-        box = bounds(obj)
-        if box:
-            spaces.append((item.ifc_guid, box))
+    seen_spaces: Set[str] = set()
+    for bundle in arc_bundles:
+        scale = unit_scale(bundle.model)
+        for obj in _by_type(bundle.model, "IfcSpace"):
+            guid = _guid(obj)
+            if not guid or guid in seen_spaces:
+                continue
+            seen_spaces.add(guid)
+            box = bounds(obj, scale)
+            if box:
+                spaces.append((guid, box, bundle.source_path))
+            else:
+                diagnostics["space_geometry_failures"] += 1
 
     inferred: List[Relation] = []
-    for asset in extraction.assets:
-        if asset.ifc_guid in explicit:
-            continue
-        obj = model.by_guid(asset.ifc_guid)
-        box = bounds(obj)
-        if not box:
-            continue
-        lo, hi = box
-        center = tuple((lo[i] + hi[i]) / 2.0 for i in range(3))
-        matches = [guid for guid, (slo, shi) in spaces if all(slo[i] <= center[i] <= shi[i] for i in range(3))]
-        if len(matches) == 1:
-            inferred.append(
-                Relation(
-                    subject_guid=asset.ifc_guid,
-                    predicate="brick:hasLocation",
-                    object_guid=matches[0],
-                    source="IFC geometry",
-                    method="inferred_aabb_centroid",
-                    confidence=0.5,
-                    review_required=True,
-                    evidence={"equipment_centroid": center},
+    for bundle, extraction in mep_models:
+        scale = unit_scale(bundle.model)
+        for asset in extraction.assets:
+            if asset.ifc_guid in explicit:
+                continue
+            try:
+                obj = bundle.model.by_guid(asset.ifc_guid)
+            except RuntimeError:
+                obj = None
+            box = bounds(obj, scale) if obj is not None else None
+            if not box:
+                diagnostics["equipment_geometry_failures"] += 1
+                continue
+            lo, hi = box
+            center = tuple((lo[i] + hi[i]) / 2.0 for i in range(3))
+            matches = [
+                (guid, source_path)
+                for guid, (slo, shi), source_path in spaces
+                if all(slo[i] <= center[i] <= shi[i] for i in range(3))
+            ]
+            if len(matches) == 1:
+                space_guid, arc_source = matches[0]
+                inferred.append(
+                    Relation(
+                        subject_guid=asset.ifc_guid,
+                        predicate="brick:hasLocation",
+                        object_guid=space_guid,
+                        source="MEP equipment geometry + ARC space geometry",
+                        method="inferred_cross_model_aabb_centroid",
+                        confidence=0.5,
+                        review_required=True,
+                        evidence={
+                            "equipment_centroid": center,
+                            "mep_source": bundle.source_path,
+                            "arc_source": arc_source,
+                            "coordinates_normalized_to_metres": True,
+                            "coordinate_reference_status": diagnostics[
+                                "coordinate_reference_status"
+                            ],
+                        },
+                    )
                 )
-            )
-    return inferred
+            elif len(matches) > 1:
+                diagnostics["ambiguous_space_matches"] += 1
+    return inferred, diagnostics

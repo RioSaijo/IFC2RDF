@@ -45,3 +45,43 @@ def test_bdns_ifc_relationship_is_primary_source(tmp_path):
     assert result.assets[0].bdns_code == "AHU-1"
     assert result.assets[0].classification_name == "BDNS"
     assert result.audit["capabilities"]["CLASSIFICATION"]["status"] == "PASS"
+
+
+def test_partial_classification_is_warning(tmp_path):
+    model = ifcopenshell.file(schema="IFC4")
+    classification = model.create_entity(
+        "IfcClassification",
+        Source="Synthetic",
+        Edition="example",
+        Name="BDNS",
+    )
+    reference = model.create_entity(
+        "IfcClassificationReference",
+        Identification="AHU-1",
+        Name="Air handling unit",
+        ReferencedSource=classification,
+    )
+    classified = model.create_entity(
+        "IfcUnitaryEquipment",
+        GlobalId=ifcopenshell.guid.new(),
+        Name="Classified",
+    )
+    model.create_entity(
+        "IfcUnitaryEquipment",
+        GlobalId=ifcopenshell.guid.new(),
+        Name="Unclassified",
+    )
+    model.create_entity(
+        "IfcRelAssociatesClassification",
+        GlobalId=ifcopenshell.guid.new(),
+        RelatedObjects=[classified],
+        RelatingClassification=reference,
+    )
+    path = tmp_path / "partial.ifc"
+    model.write(path)
+
+    result = extract_ifc(load_ifc(path))
+
+    assert result.audit["counts"]["bdns_classified_assets"] == 1
+    assert result.audit["counts"]["unresolved_assets"] == 1
+    assert result.audit["capabilities"]["CLASSIFICATION"]["status"] == "WARN"

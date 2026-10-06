@@ -1,8 +1,10 @@
 # IFC2RDF
 
-IFC2RDF is a case-study converter for connecting IFC building-service assets to
-Brick RDF. Its primary semantic input is a **BDNS classification registered in
-the IFC model**, not an equipment `Name` that merely resembles a BDNS label.
+IFC2RDF is a case-study converter for connecting equipment from one or more MEP
+IFC models with spaces from one or more architectural IFC models and publishing
+the result as Brick RDF. Its primary semantic input is a **BDNS classification
+registered in a MEP IFC model**, not an equipment `Name` that merely resembles
+a BDNS label.
 
 The implementation demonstrates three things:
 
@@ -24,7 +26,7 @@ tested independently:
 
 | Stage | Module | Responsibility |
 | --- | --- | --- |
-| 1 | `src/ifc.py` | Load IFC; extract BDNS classifications, spatial elements, containment, ports, and connections |
+| 1 | `src/ifc.py` | Load multiple MEP/ARC IFC files; extract BDNS equipment, ARC spaces, containment, ports, and connections |
 | 2 | `src/mapping.py` | Apply the project BDNS-to-Brick crosswalk and retain unresolved equipment |
 | 3 | `src/points.py` | Load BMS point metadata and link points using explicit BDNS identifiers |
 | 4 | `src/rdf.py` | Build Brick/BOT RDF and write relationship provenance |
@@ -33,6 +35,16 @@ tested independently:
 | 7 | `src/run.py` | Provide the command-line interface |
 
 ## IFC input contract
+
+The two IFC roles are intentionally separate:
+
+- MEP IFC files provide BDNS-classified equipment, distribution ports,
+  equipment connectivity, and any explicit containment references.
+- ARC IFC files provide the authoritative Site/Building/Storey/Space hierarchy
+  and spatial attributes.
+
+Both roles accept multiple files. ARC spatial attributes replace MEP spatial
+stubs when their `GlobalId` values match.
 
 BDNS assignments are read in this order:
 
@@ -69,9 +81,16 @@ The converter prioritizes explicit IFC relationships:
 
 Ambiguous port connections are reported and are not converted into directional
 `brick:feeds` assertions. Optional geometry fallback is available only for
-equipment lacking explicit containment. It uses an AABB centroid test, never
-overrides explicit relationships, and marks every inferred result as
-review-required with lower confidence.
+equipment lacking explicit containment. It compares each MEP equipment
+centroid against ARC `IfcSpace` AABBs, never overrides explicit relationships,
+and marks every inferred result as review-required with lower confidence.
+
+BMS points receive spatial context through the two-hop Brick path
+`Point <- brick:hasPoint - Equipment -> brick:hasLocation -> Space`. The
+converter does not assert `brick:hasLocation` directly on a Point. Geometry
+coordinates are normalized to metres before cross-model comparison. If MEP and
+ARC models declare conflicting projected coordinate reference systems,
+geometry inference is stopped and the conflict is reported.
 
 ## Outputs
 
@@ -104,7 +123,8 @@ From the repository root:
 
 ```bash
 python src/run.py \
-  --ifc path/to/model.ifc \
+  --mep-ifc path/to/mep-a.ifc path/to/mep-b.ifc \
+  --arc-ifc path/to/arc-a.ifc path/to/arc-b.ifc \
   --out data/output \
   --base-ns https://example.org/my-building#
 ```
@@ -113,7 +133,8 @@ To add BMS points:
 
 ```bash
 python src/run.py \
-  --ifc path/to/model.ifc \
+  --mep-ifc path/to/mep.ifc \
+  --arc-ifc path/to/arc.ifc \
   --points-csv path/to/points.csv \
   --out data/output
 ```
@@ -126,18 +147,23 @@ as a compatibility fallback and is marked review-required.
 Geometry fallback must be requested explicitly:
 
 ```bash
-python src/run.py --ifc path/to/model.ifc --out data/output --geometry-fallback
+python src/run.py \
+  --mep-ifc path/to/mep.ifc \
+  --arc-ifc path/to/arc.ifc \
+  --out data/output \
+  --geometry-fallback
 ```
 
 ## Fully synthetic example
 
-The example creates a temporary IFC4 model containing:
+The example creates two temporary MEP IFC4 models and two temporary ARC IFC4
+models containing:
 
 - an explicit `IfcClassification(Name="BDNS")`;
 - `AHU-1` and `FCU-1` classification references;
-- two classified equipment objects in one synthetic space;
+- three classified equipment objects in two ARC spaces;
 - SOURCE/SINK distribution ports and one explicit port connection; and
-- two synthetic BMS points linked by the classification reference values.
+- three synthetic BMS points linked by the classification reference values.
 
 Run it from the repository root:
 
@@ -146,8 +172,8 @@ python examples/run_synthetic_example.py
 ```
 
 Inputs and outputs are written below `examples/generated/`, which is excluded
-from Git. The run is expected to produce two equipment entities, two
-`brick:hasLocation` relationships, one `brick:feeds` relationship, two
+from Git. The run is expected to produce three equipment entities, three
+`brick:hasLocation` relationships, one `brick:feeds` relationship, three
 `brick:hasPoint` relationships, and no review-required records.
 
 ## Mapping policy
@@ -160,8 +186,9 @@ BDNS, Brick, or buildingSMART.
 
 ## Current limitations
 
-- IFC2x3 is the tested schema. IFC4 port ownership via `IfcRelNests` is
-  implemented but not yet validated with the case-study dataset.
+- The public automated example tests IFC4. IFC2x3 port ownership via
+  `IfcRelConnectsPortToElement` is implemented but needs a public synthetic
+  regression fixture.
 - The project crosswalk is partial and experimental.
 - Geometry fallback is approximate and must be reviewed.
 - Full Brick SHACL validation is future work; the current validation report is

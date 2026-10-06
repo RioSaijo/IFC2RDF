@@ -17,6 +17,8 @@ class SpatialElement:
     name: Optional[str]
     raw_ifc_class: str
     parent_guid: Optional[str] = None
+    source_path: Optional[str] = None
+    properties: Dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass(frozen=True)
@@ -27,6 +29,7 @@ class IfcAsset:
     bdns_code: Optional[str] = None
     classification_name: Optional[str] = None
     classification_reference_id: Optional[int] = None
+    source_path: Optional[str] = None
 
 
 @dataclass(frozen=True)
@@ -39,6 +42,7 @@ class BrickEquipment:
     mapping_status: str
     mapping_source: Optional[str]
     classification_name: Optional[str]
+    source_path: Optional[str] = None
 
 
 @dataclass(frozen=True)

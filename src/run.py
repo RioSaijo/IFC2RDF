@@ -9,8 +9,21 @@ from app.pipeline import DEFAULT_BASE_NS, run_pipeline
 
 def main() -> None:
     project_root = Path(__file__).resolve().parent.parent
-    parser = argparse.ArgumentParser(description="Convert BDNS-classified IFC equipment and relationships to Brick RDF.")
-    parser.add_argument("--ifc", required=True, help="IFC STEP input file")
+    parser = argparse.ArgumentParser(
+        description="Convert MEP IFC equipment and ARC IFC spaces to Brick RDF."
+    )
+    parser.add_argument(
+        "--mep-ifc",
+        required=True,
+        nargs="+",
+        help="One or more MEP IFC files containing equipment and BDNS classifications",
+    )
+    parser.add_argument(
+        "--arc-ifc",
+        required=True,
+        nargs="+",
+        help="One or more architectural IFC files containing the spatial hierarchy",
+    )
     parser.add_argument("--out", required=True, help="Output directory")
     parser.add_argument("--points-csv", help="Optional BMS point CSV")
     parser.add_argument("--base-ns", default=DEFAULT_BASE_NS)
@@ -26,7 +39,8 @@ def main() -> None:
     )
     args = parser.parse_args()
     result = run_pipeline(
-        ifc_path=args.ifc,
+        mep_ifc_paths=args.mep_ifc,
+        arc_ifc_paths=args.arc_ifc,
         output_dir=args.out,
         mapping_csv_path=args.mapping_csv,
         points_csv=args.points_csv,

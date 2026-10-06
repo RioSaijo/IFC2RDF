@@ -38,6 +38,22 @@ def _term(value: str) -> URIRef:
     return URIRef(value)
 
 
+def _unit_term(value: str | None) -> URIRef | None:
+    if not value:
+        return None
+    units = {
+        "degc": QUDT.DEG_C,
+        "°c": QUDT.DEG_C,
+        "pa": QUDT.PA,
+        "ppm": QUDT.PPM,
+        "%": QUDT.PERCENT,
+        "%rh": QUDT.PERCENT,
+        "m3/s": QUDT["M3-PER-SEC"],
+        "m³/s": QUDT["M3-PER-SEC"],
+    }
+    return units.get(value.strip().lower())
+
+
 def build_graph(
     spatial: Iterable[SpatialElement],
     equipment: Iterable[BrickEquipment],
@@ -64,6 +80,16 @@ def build_graph(
         graph.add((subject, project.ifcGlobalId, Literal(item.ifc_guid)))
         if item.name:
             graph.add((subject, RDFS.label, Literal(item.name)))
+        spatial_properties = {
+            "LongName": project.ifcLongName,
+            "Description": project.ifcDescription,
+            "ObjectType": project.ifcObjectType,
+            "CompositionType": project.ifcCompositionType,
+            "Elevation": project.ifcElevation,
+        }
+        for name, predicate in spatial_properties.items():
+            if name in item.properties:
+                graph.add((subject, predicate, Literal(item.properties[name])))
         if item.parent_guid and item.parent_guid in spatial_by_guid:
             graph.add((spatial_iri(base_ns, item.parent_guid), BRICK.hasPart, subject))
 
@@ -84,6 +110,9 @@ def build_graph(
         subject = URIRef(item.iri)
         graph.add((subject, RDF.type, _term(item.brick_class)))
         graph.add((subject, RDFS.label, Literal(item.name)))
+        unit = _unit_term(item.unit)
+        if unit is not None:
+            graph.add((subject, BRICK.hasUnit, unit))
 
     for item in relations:
         if item.subject_guid not in equipment_by_guid:
@@ -115,7 +144,17 @@ def write_outputs(
         writer = csv.writer(handle)
         writer.writerow(["record_type", "subject", "predicate_or_class", "object", "source", "method", "confidence", "review_required", "evidence"])
         for item in equipment:
-            writer.writerow(["mapping", item.ifc_guid, item.brick_class, "", item.mapping_source or "", item.mapping_status, 1.0 if item.bdns_code else 0.0, item.mapping_status != "project-defined", ""])
+            writer.writerow([
+                "mapping",
+                item.ifc_guid,
+                item.brick_class,
+                "",
+                item.mapping_source or "",
+                item.mapping_status,
+                1.0 if item.bdns_code else 0.0,
+                item.mapping_status != "project-defined",
+                json.dumps({"source_path": item.source_path}, ensure_ascii=False),
+            ])
         for item in relations:
             writer.writerow(["relation", item.subject_guid, item.predicate, item.object_guid, item.source, item.method, item.confidence, item.review_required, json.dumps(item.evidence, ensure_ascii=False)])
         for item in point_links:

@@ -40,8 +40,13 @@ def load_and_link_points(
     equipment: Iterable[BrickEquipment],
     base_ns: str,
 ) -> Tuple[list[BrickPoint], list[PointLink], list[str]]:
-    by_bdns = {item.bdns_code.upper(): item for item in equipment if item.bdns_code}
-    by_name = {item.label.upper(): item for item in equipment if item.label}
+    by_bdns: dict[str, list[BrickEquipment]] = {}
+    by_name: dict[str, list[BrickEquipment]] = {}
+    for item in equipment:
+        if item.bdns_code:
+            by_bdns.setdefault(item.bdns_code.upper(), []).append(item)
+        if item.label:
+            by_name.setdefault(item.label.upper(), []).append(item)
     points: list[BrickPoint] = []
     links: list[PointLink] = []
     unresolved: list[str] = []
@@ -72,11 +77,13 @@ def load_and_link_points(
 
             # Classification values are authoritative. Name matching supports
             # legacy BMS exports only and is explicitly marked for review.
-            target = by_bdns.get(equipment_ref.upper())
+            candidates = by_bdns.get(equipment_ref.upper(), [])
+            target = candidates[0] if len(candidates) == 1 else None
             method = "explicit_bdns_identifier"
             review = False
-            if target is None:
-                target = by_name.get(equipment_ref.upper())
+            if not candidates:
+                name_candidates = by_name.get(equipment_ref.upper(), [])
+                target = name_candidates[0] if len(name_candidates) == 1 else None
                 method = "legacy_name_match"
                 review = True
             if target is None:
