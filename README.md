@@ -13,6 +13,25 @@ The implementation demonstrates three things:
 It is a research prototype and does not claim to be a general IFC-to-Brick
 converter or an authoritative BDNS-to-Brick standard mapping.
 
+No project IFC model, project BMS export, converted RDF, GUID, coordinate, or
+project-specific validation result is included in this repository. The public
+example is generated synthetically at runtime.
+
+## Processing flow and modules
+
+The processing steps remain separated so that each stage can be inspected and
+tested independently:
+
+| Stage | Module | Responsibility |
+| --- | --- | --- |
+| 1 | `src/ifc.py` | Load IFC; extract BDNS classifications, spatial elements, containment, ports, and connections |
+| 2 | `src/mapping.py` | Apply the project BDNS-to-Brick crosswalk and retain unresolved equipment |
+| 3 | `src/points.py` | Load BMS point metadata and link points using explicit BDNS identifiers |
+| 4 | `src/rdf.py` | Build Brick/BOT RDF and write relationship provenance |
+| 5 | `src/validation.py` | Report unresolved mappings, relationships, and BMS point links |
+| 6 | `src/app/pipeline.py` | Execute the stages in order without embedding project data |
+| 7 | `src/run.py` | Provide the command-line interface |
+
 ## IFC input contract
 
 BDNS assignments are read in this order:
@@ -109,6 +128,27 @@ Geometry fallback must be requested explicitly:
 ```bash
 python src/run.py --ifc path/to/model.ifc --out data/output --geometry-fallback
 ```
+
+## Fully synthetic example
+
+The example creates a temporary IFC4 model containing:
+
+- an explicit `IfcClassification(Name="BDNS")`;
+- `AHU-1` and `FCU-1` classification references;
+- two classified equipment objects in one synthetic space;
+- SOURCE/SINK distribution ports and one explicit port connection; and
+- two synthetic BMS points linked by the classification reference values.
+
+Run it from the repository root:
+
+```bash
+python examples/run_synthetic_example.py
+```
+
+Inputs and outputs are written below `examples/generated/`, which is excluded
+from Git. The run is expected to produce two equipment entities, two
+`brick:hasLocation` relationships, one `brick:feeds` relationship, two
+`brick:hasPoint` relationships, and no review-required records.
 
 ## Mapping policy
 

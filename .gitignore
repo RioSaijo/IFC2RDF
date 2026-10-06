@@ -17,3 +17,4 @@ data/**/*.ifc
 data/**/*.ttl
 data/intermediate/
 data/Out/
+examples/generated/
