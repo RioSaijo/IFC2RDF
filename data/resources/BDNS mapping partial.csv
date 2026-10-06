@@ -1,0 +1,85 @@
+bdns_abbriviation,bdns_tag,raw_ifc_class,brick_class_candidate
+AAV,valve - air admittance valve,IfcFlowController,brick:Valve
+ACCH,chiller - air cooled chiller,IfcEnergyConversionDevice,brick:Air_Cooled_Chiller
+AHU,air handling unit - air handling unit,IfcEnergyConversionDevice,brick:Air_Handling_Unit
+ATS,electric distribution - automatic transfer switch,IfcFlowController,brick:Automatic_Transfer_Switch
+BB,electric distribution - busbar,IfcFlowSegment,brick:Electrical_Equipment
+BCBOX,dx system - branch controller/selector box,IfcEnergyConversionDevice,brick:HVAC_Equipment
+BGU,fire detection - break glass unit,IfcDistributionControlElement,brick:Manual_Fire_Alarm_Activation_Equipment
+BLR,burner - boiler,IfcEnergyConversionDevice,brick:Boiler
+BMS,system - control,IfcDistributionElement,brick:System
+BTK,tank - break tank,IfcFlowStorageDevice,brick:Tank
+BTKBS,tank - break tank and booster set,IfcFlowStorageDevice,brick:Tank
+BUFF,tank - buffer vessel - generic,IfcFlowStorageDevice,brick:Tank
+CALAD,cable management - cable ladder,IfcFlowSegment,brick:Electrical_System
+CAM,camera,IfcFlowTerminal,brick:Camera
+CATR,cable management - cable tray,IfcFlowSegment,brick:Electrical_System
+CDU,condensing unit,IfcEnergyConversionDevice,brick:Condensing_Unit
+CKV,valve - check valve,IfcFlowController,brick:Check_Valve
+CP,pump - circulating pump,IfcFlowMovingDevice,brick:Circulator_Pump
+CTRP,panel - control panel,IfcDistributionElement,brick:ICT_Equipment
+CUSF,outlet - connection unit switched fused,IfcFlowTerminal,brick:Electrical_Equipment
+CUUF,outlet - connection unit unswitched fused,IfcFlowTerminal,brick:Electrical_Equipment
+DATA,outlet - data wall outlet,IfcFlowTerminal,brick:ICT_Equipment
+DB,electric distribution - distribution panel / board,IfcDistributionElement,brick:Electrical_Equipment
+DG,generator - diesel electricity generator,IfcEnergyConversionDevice,brick:Electrical_Equipment
+DL,lighting - fixture - downlight,IfcFlowTerminal,brick:Luminaire
+DPOT,water treatment - dosing pot,IfcFlowStorageDevice,brick:HVAC_Equipment
+DR,door,IfcDoor,rec:Door
+DRC,controller - door controller,IfcDistributionControlElement,brick:Access_Control_Equipment
+DSSO,outlet - double switched socket outlet,IfcFlowTerminal,brick:Electrical_Equipment
+DUW,distribution ventilation - ductwork,IfcFlowSegment,brick:HVAC_System
+DWBP,pump - potable/domestic water booster pump,IfcFlowMovingDevice,brick:Booster_Pump
+DWCPC,emergency assistance - disabled wc pull cord,IfcDistributionControlElement,brick:Safety_System
+DWST,tank - potable/domestic water storage tank,IfcFlowStorageDevice,brick:Water_Storage_Tank
+EISO,electric protective device - electrical isolator (disconnector),IfcFlowController,brick:Disconnect_Switch
+EL,lighting - fixture - standalone emergency light,IfcFlowTerminal,brick:Lighting
+EM,meter - electric meter,IfcFlowController,brick:Electrical_Meter
+EMWC,water treatment - electro magnetic water conditioner,IfcFlowTreatmentDevice,brick:HVAC_Equipment
+ERAD,heat emitter - radiator electric,IfcEnergyConversionDevice,brick:Radiator
+ET,tank - expansion tank,IfcFlowStorageDevice,brick:Thermal_Expansion_Tank
+EVCO,emergency voice communication - outstation,IfcFlowTerminal,brick:Emergency_Phone
+EXIT,lighting - fixture - illuminated exit sign,IfcFlowTerminal,brick:Lighting
+FACP,panel - fire alarm control panel,IfcElectricDistributionPoint,brick:Fire_Alarm_Control_Panel
+FAN,fan,IfcFlowMovingDevice,brick:Fan
+FAS,fire detection - alarm annunciator sounder or beacon,IfcDistributionControlElement,brick:Fire_Alarm
+FCU,fan coil unit,IfcEnergyConversionDevice,brick:Fan_Coil_Unit
+FD,damper - fire damper,IfcFlowController,brick:Damper
+FLRDX,outlet - floor duplex outlet,IfcDiscreteAccessory,brick:Electrical_Equipment
+FOST,tank - fuel oil storage tank,IfcFlowStorageDevice,brick:Storage_Tank
+GWH,water heater - gas water heater,IfcEnergyConversionDevice,brick:Water_Heater
+HRU,air handling unit - heat recovery unit,IfcEnergyConversionDevice,brick:Heat_Exchanger
+HS,horn strobe,IfcDistributionControlElement,brick:Fire_Safety_Equipment
+HX,heat exchanger,IfcEnergyConversionDevice,brick:Heat_Exchanger
+IFU,fire detection - input output interface unit,IfcDistributionControlElement,brick:ICT_Equipment
+LCM,lighting - control - module,IfcDistributionControlElement,brick:ICT_Equipment
+LCP,lighting - control - panel,IfcDistributionControlElement,brick:Interface
+LL,lighting - fixture - linear,IfcFlowTerminal,brick:Luminaire
+LSW,lighting - control - switch,IfcFlowController,brick:Switch
+LVSB,electric distribution - low voltage switchboard,IfcDistributionElement,brick:Electrical_Equipment
+MEV,fan - mechanical extract ventilation,IfcFlowMovingDevice,brick:Exhaust_Fan
+MFSD,damper - motorised fire smoke damper,IfcFlowController,brick:Damper
+MOS,sensor - motion sensor,IfcDistributionControlElement,brick:Motion_Sensor
+PL,lighting - fixture - pendant,IfcFlowTerminal,brick:Luminaire
+PROXR,access control - proximity reader - generic,IfcDistributionControlElement,brick:Access_Reader
+PRV,valve - pressure reducing valve,IfcFlowController,brick:Pressure_Reducing_Valve
+PW,distribution piped services - pipework,IfcFlowSegment,brick:HVAC_System
+RRFLT,filter - water - reverse rinsing filter,IfcFlowTreatmentDevice,brick:Filter
+RTE,access control - door release button,IfcFlowController,brick:Access_Control_Equipment
+RTISD,damper - return isolation damper,IfcFlowController,brick:Isolation_Damper
+SD,fire detection - smoke detector,IfcDistributionControlElement,brick:Smoke_Detector
+SEF,fan - smoke exhaust fan,IfcFlowMovingDevice,brick:Fan
+SF,fan - supply fan,IfcFlowMovingDevice,brick:Supply_Fan
+SG,air terminal - grille - supply,IfcFlowTerminal,brick:Terminal_Unit
+SL,lighting - fixture - spot light,IfcFlowTerminal,brick:Luminaire
+SLCR,duct silencer - attenuator,IfcFlowTreatmentDevice,brick:HVAC_Equipment
+SRV,ict equipment - multi-purpose server,IfcFurnishingElement,brick:Server
+TXMR,transformer,IfcEnergyConversionDevice,brick:Transformer
+UVDU,uv disinfection unit,IfcFlowTreatmentDevice,brick:Equipment
+VAV,air terminal box - variable air volume box,IfcFlowController,brick:Variable_Air_Volume_Box
+VAVS,air terminal box - variable air volume box - supply,IfcFlowController,brick:Variable_Air_Volume_Box
+VCD,damper - volume control damper,IfcFlowController,brick:Damper
+VLV,valve,IfcFlowController,brick:Valve
+WL,lighting - fixture - wall light,IfcFlowTerminal,brick:Luminaire
+WM,meter - water meter,IfcFlowController,brick:Water_Meter
+WSTT,waste terminal,IfcFlowFitting,brick:Equipment
