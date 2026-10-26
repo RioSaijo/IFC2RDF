@@ -9,8 +9,9 @@ from ifc import (
     extract_spatial_elements,
     infer_cross_model_geometry_locations,
     load_ifc,
+    write_connection_inferences,
 )
-from mapping import map_assets
+from mapping import map_assets, write_mapping_results
 from models import IfcAsset, Relation, SpatialElement
 from points import load_and_link_points
 from rdf import build_graph, write_outputs
@@ -120,9 +121,17 @@ def run_pipeline(
     mep_extractions = [extract_ifc(bundle) for bundle in mep_bundles]
     arc_spatial_groups = [extract_spatial_elements(bundle) for bundle in arc_bundles]
 
-    assets, duplicate_asset_guids = _merge_assets(mep_extractions)
+    all_distribution_assets, duplicate_asset_guids = _merge_assets(mep_extractions)
+    assets = [item for item in all_distribution_assets if item.bdns_code]
     spatial, duplicate_arc_guids, arc_guids = _merge_spatial(mep_extractions, arc_spatial_groups)
     asset_guids = {item.ifc_guid for item in assets}
+    connection_inferences = [
+        item
+        for extraction in mep_extractions
+        for item in extraction.connection_inferences
+        if item.relating_equipment_guid in asset_guids
+        and item.related_equipment_guid in asset_guids
+    ]
     spatial_guids = {item.ifc_guid for item in spatial}
     relations = _merge_relations(
         mep_extractions,
@@ -161,7 +170,7 @@ def run_pipeline(
         base_ns=base_ns,
     )
 
-    classified_count = sum(item.bdns_code is not None for item in assets)
+    classified_count = len(assets)
     located_assets = {
         item.subject_guid for item in relations if item.predicate == "brick:hasLocation"
     }
@@ -177,23 +186,42 @@ def run_pipeline(
         for item in relations
     )
     feeds = [item for item in relations if item.predicate == "brick:feeds"]
+    mapped_equipment_guids = {
+        item.ifc_guid for item in equipment if item.brick_class is not None
+    }
+    rdf_feeds = [
+        item
+        for item in feeds
+        if item.subject_guid in mapped_equipment_guids
+        and item.object_guid in mapped_equipment_guids
+    ]
     ambiguous_connections = sum(
-        extraction.audit["counts"]["undirected_port_connections"]
-        for extraction in mep_extractions
+        item.decision_status == "ambiguous" for item in connection_inferences
     )
     hierarchy_links = sum(
         item.parent_guid in arc_guids
         for item in spatial
         if item.ifc_guid in arc_guids
     )
+    ambiguous_bdns_count = sum(
+        extraction.audit["bdns"].get("ambiguous_asset_count", 0)
+        for extraction in mep_extractions
+    )
     capabilities = {
         "IDENTITY": {
             "status": _status(bool(assets) and not duplicate_asset_guids, bool(assets)),
-            "evidence": f"{len(assets)} unique equipment; {len(duplicate_asset_guids)} duplicate GlobalIds",
+            "evidence": (
+                f"{len(assets)} BDNS-classified equipment selected from "
+                f"{len(all_distribution_assets)} distribution elements; "
+                f"{len(duplicate_asset_guids)} duplicate GlobalIds"
+            ),
         },
         "CLASSIFICATION": {
-            "status": _status(bool(assets) and classified_count == len(assets), bool(assets)),
-            "evidence": f"{classified_count}/{len(assets)} equipment associated with BDNS",
+            "status": _status(bool(assets) and ambiguous_bdns_count == 0, bool(assets)),
+            "evidence": (
+                f"{classified_count} equipment selected by explicit BDNS association; "
+                f"{ambiguous_bdns_count} ambiguous assignments"
+            ),
         },
         "SPATIAL_HIERARCHY": {
             "status": _status(bool(arc_guids) and hierarchy_links > 0, bool(arc_guids)),
@@ -207,8 +235,12 @@ def run_pipeline(
             ),
         },
         "FLOW_TOPOLOGY": {
-            "status": _status(bool(feeds) and ambiguous_connections == 0, True),
-            "evidence": f"{len(feeds)} directed feeds; {ambiguous_connections} ambiguous connections",
+            "status": _status(bool(rdf_feeds) and ambiguous_connections == 0, True),
+            "evidence": (
+                f"{len(feeds)} direction-resolved connections; "
+                f"{len(rdf_feeds)} RDF-eligible feeds; "
+                f"{ambiguous_connections} ambiguous connections"
+            ),
         },
         "POINT_LINKAGE": {
             "status": (
@@ -240,12 +272,14 @@ def run_pipeline(
         "counts": {
             "mep_models": len(mep_bundles),
             "arc_models": len(arc_bundles),
+            "ifc_distribution_elements": len(all_distribution_assets),
             "equipment": len(assets),
             "bdns_classified_equipment": classified_count,
             "arc_spatial_elements": len(arc_guids),
             "explicit_locations": explicit_locations,
             "inferred_locations": inferred_locations,
             "directed_feeds": len(feeds),
+            "rdf_eligible_directed_feeds": len(rdf_feeds),
             "bms_points": len(points),
             "point_links": len(point_links),
             "point_spatial_contexts": point_spatial_contexts,
@@ -268,14 +302,19 @@ def run_pipeline(
 
     output_dir = Path(output_dir)
     paths = write_outputs(graph, equipment, relations, point_links, output_dir)
+    paths["equipment_mapping"] = write_mapping_results(
+        equipment,
+        output_dir / "equipment_mapping.csv",
+    )
+    paths["connection_inference"] = write_connection_inferences(
+        connection_inferences,
+        output_dir / "connection_inference.csv",
+    )
     validation = build_validation_report(graph, equipment, relations, point_links, unresolved_points)
     input_conflicts = {
         "duplicate_equipment_global_ids": duplicate_asset_guids,
         "duplicate_arc_spatial_global_ids": duplicate_arc_guids,
-        "ambiguous_bdns_assignment_count": sum(
-            extraction.audit["bdns"].get("ambiguous_asset_count", 0)
-            for extraction in mep_extractions
-        ),
+        "ambiguous_bdns_assignment_count": ambiguous_bdns_count,
     }
     validation["input_conflicts"] = input_conflicts
     if duplicate_asset_guids or duplicate_arc_guids or input_conflicts["ambiguous_bdns_assignment_count"]:

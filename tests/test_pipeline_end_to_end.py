@@ -1,3 +1,4 @@
+import csv
 from pathlib import Path
 import sys
 
@@ -77,8 +78,28 @@ def test_complete_synthetic_ifc_and_bms_pipeline(tmp_path):
 
     for name in (
         "building_brick.ttl",
+        "connection_inference.csv",
+        "equipment_mapping.csv",
         "provenance.csv",
         "requirement_report.json",
         "validation_report.json",
     ):
         assert (output / name).is_file()
+
+    with (output / "equipment_mapping.csv").open(
+        "r", encoding="utf-8", newline=""
+    ) as handle:
+        mapping_rows = list(csv.DictReader(handle))
+    assert len(mapping_rows) == 3
+    assert {row["bdns_code"] for row in mapping_rows} == {"AHU-1", "FCU-1", "CP-1"}
+    assert all(row["target_ontology_class"] for row in mapping_rows)
+    assert all(row["mapping_status"] == "project-defined" for row in mapping_rows)
+
+    with (output / "connection_inference.csv").open(
+        "r", encoding="utf-8", newline=""
+    ) as handle:
+        connection_rows = list(csv.DictReader(handle))
+    assert len(connection_rows) == 1
+    assert connection_rows[0]["decision_status"] == "directed"
+    assert connection_rows[0]["inference_method"] == "explicit_source_sink_flow_direction"
+    assert connection_rows[0]["review_required"] == "false"

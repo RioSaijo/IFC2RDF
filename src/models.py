@@ -35,7 +35,7 @@ class IfcAsset:
 @dataclass(frozen=True)
 class BrickEquipment:
     ifc_guid: str
-    brick_class: str
+    brick_class: Optional[str]
     label: str
     bdns_code: Optional[str]
     raw_ifc_class: str
@@ -67,6 +67,24 @@ class Relation:
 
 
 @dataclass(frozen=True)
+class ConnectionInference:
+    connection_id: str
+    source_path: Optional[str]
+    relating_port_guid: Optional[str]
+    related_port_guid: Optional[str]
+    relating_equipment_guid: str
+    related_equipment_guid: str
+    relating_flow_direction: str
+    related_flow_direction: str
+    source_equipment_guid: Optional[str]
+    target_equipment_guid: Optional[str]
+    decision_status: str
+    inference_method: str
+    confidence: float
+    review_required: bool
+
+
+@dataclass(frozen=True)
 class PointLink:
     equipment_guid: str
     point_iri: str
@@ -80,5 +98,6 @@ class ExtractionResult:
     spatial: List[SpatialElement]
     assets: List[IfcAsset]
     relations: List[Relation]
+    connection_inferences: List[ConnectionInference]
     audit: Dict[str, Any]
 

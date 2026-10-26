@@ -1,12 +1,20 @@
 from __future__ import annotations
 
+import csv
 from collections import Counter
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional, Sequence, Set, Tuple
 
 import ifcopenshell
 
-from models import ExtractionResult, IfcAsset, IfcBundle, Relation, SpatialElement
+from models import (
+    ConnectionInference,
+    ExtractionResult,
+    IfcAsset,
+    IfcBundle,
+    Relation,
+    SpatialElement,
+)
 
 
 SPATIAL_CLASSES = ("IfcSite", "IfcBuilding", "IfcBuildingStorey", "IfcSpace")
@@ -237,10 +245,10 @@ def _feed_relations(
     model,
     asset_guids: Set[str],
     source_path: Optional[str] = None,
-) -> Tuple[List[Relation], int]:
+) -> Tuple[List[Relation], List[ConnectionInference]]:
     owners = _port_owners(model)
     result: List[Relation] = []
-    unresolved = 0
+    decisions: List[ConnectionInference] = []
     seen: Set[Tuple[str, str]] = set()
     for rel in _by_type(model, "IfcRelConnectsPorts"):
         first = getattr(rel, "RelatingPort", None)
@@ -257,12 +265,59 @@ def _feed_relations(
         first_direction = _flow_direction(first)
         second_direction = _flow_direction(second)
         source = target = None
+        method = "unresolved_flow_direction"
+        confidence = 0.0
+        review_required = True
         if first_direction == "SOURCE" and second_direction == "SINK":
             source, target = first_guid, second_guid
+            method = "explicit_source_sink_flow_direction"
+            confidence = 1.0
+            review_required = False
         elif first_direction == "SINK" and second_direction == "SOURCE":
             source, target = second_guid, first_guid
+            method = "explicit_source_sink_flow_direction"
+            confidence = 1.0
+            review_required = False
+        elif first_direction == "SOURCE" and second_direction == "SOURCEANDSINK":
+            source, target = first_guid, second_guid
+            method = "source_with_bidirectional_peer"
+            confidence = 0.9
+            review_required = False
+        elif first_direction == "SOURCEANDSINK" and second_direction == "SOURCE":
+            source, target = second_guid, first_guid
+            method = "source_with_bidirectional_peer"
+            confidence = 0.9
+            review_required = False
+        elif first_direction == "SINK" and second_direction == "SOURCEANDSINK":
+            source, target = second_guid, first_guid
+            method = "sink_with_bidirectional_peer"
+            confidence = 0.9
+            review_required = False
+        elif first_direction == "SOURCEANDSINK" and second_direction == "SINK":
+            source, target = first_guid, second_guid
+            method = "sink_with_bidirectional_peer"
+            confidence = 0.9
+            review_required = False
+
+        decisions.append(
+            ConnectionInference(
+                connection_id=_guid(rel) or f"ifc-entity-{_entity_id(rel)}",
+                source_path=source_path,
+                relating_port_guid=_guid(first),
+                related_port_guid=_guid(second),
+                relating_equipment_guid=first_guid,
+                related_equipment_guid=second_guid,
+                relating_flow_direction=first_direction or "UNSPECIFIED",
+                related_flow_direction=second_direction or "UNSPECIFIED",
+                source_equipment_guid=source,
+                target_equipment_guid=target,
+                decision_status="directed" if source is not None else "ambiguous",
+                inference_method=method,
+                confidence=confidence,
+                review_required=review_required,
+            )
+        )
         if source is None:
-            unresolved += 1
             continue
         if (source, target) in seen:
             continue
@@ -279,10 +334,58 @@ def _feed_relations(
                     "relating_flow_direction": first_direction,
                     "related_flow_direction": second_direction,
                     "source_path": source_path,
+                    "connection_id": _guid(rel) or f"ifc-entity-{_entity_id(rel)}",
                 },
             )
         )
-    return result, unresolved
+    return result, decisions
+
+
+def write_connection_inferences(
+    records: Iterable[ConnectionInference],
+    output_path: str | Path,
+) -> str:
+    path = Path(output_path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    columns = [
+        "connection_id",
+        "source_ifc",
+        "relating_port_guid",
+        "related_port_guid",
+        "relating_equipment_guid",
+        "related_equipment_guid",
+        "relating_flow_direction",
+        "related_flow_direction",
+        "source_equipment_guid",
+        "target_equipment_guid",
+        "decision_status",
+        "inference_method",
+        "confidence",
+        "review_required",
+    ]
+    with path.open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=columns)
+        writer.writeheader()
+        for item in records:
+            writer.writerow(
+                {
+                    "connection_id": item.connection_id,
+                    "source_ifc": item.source_path or "",
+                    "relating_port_guid": item.relating_port_guid or "",
+                    "related_port_guid": item.related_port_guid or "",
+                    "relating_equipment_guid": item.relating_equipment_guid,
+                    "related_equipment_guid": item.related_equipment_guid,
+                    "relating_flow_direction": item.relating_flow_direction,
+                    "related_flow_direction": item.related_flow_direction,
+                    "source_equipment_guid": item.source_equipment_guid or "",
+                    "target_equipment_guid": item.target_equipment_guid or "",
+                    "decision_status": item.decision_status,
+                    "inference_method": item.inference_method,
+                    "confidence": item.confidence,
+                    "review_required": str(item.review_required).lower(),
+                }
+            )
+    return str(path)
 
 
 def _capability(status: str, evidence: str) -> Dict[str, str]:
@@ -302,10 +405,13 @@ def extract_ifc(bundle: IfcBundle) -> ExtractionResult:
         spatial_guids,
         bundle.source_path,
     )
-    feeds, unresolved_port_connections = _feed_relations(
+    feeds, connection_inferences = _feed_relations(
         model,
         asset_guids,
         bundle.source_path,
+    )
+    unresolved_port_connections = sum(
+        item.decision_status == "ambiguous" for item in connection_inferences
     )
 
     classification_names = Counter(
@@ -348,7 +454,13 @@ def extract_ifc(bundle: IfcBundle) -> ExtractionResult:
             ),
         },
     }
-    return ExtractionResult(spatial=spatial, assets=assets, relations=relations, audit=audit)
+    return ExtractionResult(
+        spatial=spatial,
+        assets=assets,
+        relations=relations,
+        connection_inferences=connection_inferences,
+        audit=audit,
+    )
 
 
 def extract_spatial_elements(bundle: IfcBundle) -> List[SpatialElement]:

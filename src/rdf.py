@@ -18,7 +18,9 @@ QUDT = Namespace("http://qudt.org/vocab/unit/")
 
 
 def _safe_local(value: str) -> str:
-    local = re.sub(r"[^A-Za-z0-9_\-]", "_", value)
+    # IFC compressed GlobalIds may contain both "$" and "_". Replacing "$"
+    # with "_" collapses distinct valid IDs into the same RDF subject.
+    local = re.sub(r"[^A-Za-z0-9_$\-]", "_", value)
     return local if re.match(r"^[A-Za-z_]", local) else f"X_{local}"
 
 
@@ -93,7 +95,12 @@ def build_graph(
         if item.parent_guid and item.parent_guid in spatial_by_guid:
             graph.add((spatial_iri(base_ns, item.parent_guid), BRICK.hasPart, subject))
 
-    equipment_by_guid = {item.ifc_guid: item for item in equipment}
+    # A TBD mapping is retained in provenance and validation, but the equipment
+    # and any relationships that would reference it are omitted from RDF.
+    all_equipment_by_guid = {item.ifc_guid: item for item in equipment}
+    equipment_by_guid = {
+        item.ifc_guid: item for item in equipment if item.brick_class is not None
+    }
     for item in equipment_by_guid.values():
         subject = equipment_iri(base_ns, item.ifc_guid)
         graph.add((subject, RDF.type, _term(item.brick_class)))
@@ -116,6 +123,11 @@ def build_graph(
 
     for item in relations:
         if item.subject_guid not in equipment_by_guid:
+            continue
+        if (
+            item.object_guid in all_equipment_by_guid
+            and item.object_guid not in equipment_by_guid
+        ):
             continue
         subject = equipment_iri(base_ns, item.subject_guid)
         target = equipment_iri(base_ns, item.object_guid) if item.object_guid in equipment_by_guid else spatial_iri(base_ns, item.object_guid)
@@ -147,11 +159,11 @@ def write_outputs(
             writer.writerow([
                 "mapping",
                 item.ifc_guid,
-                item.brick_class,
+                item.brick_class or "",
                 "",
                 item.mapping_source or "",
                 item.mapping_status,
-                1.0 if item.bdns_code else 0.0,
+                1.0 if item.mapping_status == "project-defined" else 0.0,
                 item.mapping_status != "project-defined",
                 json.dumps({"source_path": item.source_path}, ensure_ascii=False),
             ])

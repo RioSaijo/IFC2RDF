@@ -43,6 +43,8 @@ def load_and_link_points(
     by_bdns: dict[str, list[BrickEquipment]] = {}
     by_name: dict[str, list[BrickEquipment]] = {}
     for item in equipment:
+        if item.brick_class is None:
+            continue
         if item.bdns_code:
             by_bdns.setdefault(item.bdns_code.upper(), []).append(item)
         if item.label:

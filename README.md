@@ -8,7 +8,7 @@ a BDNS label.
 
 The implementation demonstrates three things:
 
-1. mapping BDNS-classified IFC equipment to Brick classes;
+1. mapping BDNS-classified IFC assets to Brick or BOT classes;
 2. connecting BMS point metadata to that equipment; and
 3. deriving Brick relationships from IFC relationships, with provenance.
 
@@ -27,7 +27,7 @@ tested independently:
 | Stage | Module | Responsibility |
 | --- | --- | --- |
 | 1 | `src/ifc.py` | Load multiple MEP/ARC IFC files; extract BDNS equipment, ARC spaces, containment, ports, and connections |
-| 2 | `src/mapping.py` | Apply the project BDNS-to-Brick crosswalk and retain unresolved equipment |
+| 2 | `src/mapping.py` | Apply the project BDNS-to-Brick/BOT crosswalk and retain unresolved assets |
 | 3 | `src/points.py` | Load BMS point metadata and link points using explicit BDNS identifiers |
 | 4 | `src/rdf.py` | Build Brick/BOT RDF and write relationship provenance |
 | 5 | `src/validation.py` | Report unresolved mappings, relationships, and BMS point links |
@@ -55,18 +55,34 @@ IfcClassification(Name = "BDNS")
   -> IfcDistributionElement
 ```
 
+In this representation, `IfcClassification.Name` identifies the classification
+system as BDNS. The BDNS tag is stored by the associated
+`IfcClassificationReference` (`ItemReference` in IFC2x3 or `Identification` in
+newer IFC schemas, with `Name` accepted only as a reference-field fallback).
+`IfcRelAssociatesClassification.RelatedObjects` links that reference to the IFC
+equipment entity. The equipment entity's ordinary `Name` attribute is not the
+BDNS tag store and is never used to infer that an object is BDNS-classified.
+
 The classification reference value is the BDNS code used by the project
 crosswalk. `GlobalId` remains the stable RDF identity. `Name` is retained only
 as a human-readable label; it is not treated as proof of a BDNS assignment.
+
+Only IFC equipment with an explicit BDNS classification association enters the
+mapping, relationship reasoning, and RDF stages. Other IFC distribution
+elements remain visible in the input audit but are not passed to the mapping
+CSV and are not RDF conversion candidates. The mapping CSV is used only as a
+BDNS-tag-to-Brick/BOT-class lookup; it does not classify equipment from IFC
+entity type or `Name`.
 
 This distinction is intentional. BDNS defines identifiers such as `asset.guid`
 and `asset.name`, but it does not by itself require every IFC authoring tool to
 store `asset.name` in the IFC `Name` attribute. This case study therefore uses
 the explicit IFC classification relationship as its primary, auditable source.
 
-Assets without an explicit BDNS classification are not silently discarded.
-They are emitted as `brick:Equipment`, marked
-`missing_bdns_classification`, and listed for review.
+BDNS-classified assets without a verified ontology class are marked `tbd` for
+review. They and their dependent relationships are omitted from RDF rather
+than being forced into a generic class. Assets without BDNS are outside the
+mapping and RDF candidate set.
 
 ## Relationship policy
 
@@ -79,8 +95,12 @@ The converter prioritizes explicit IFC relationships:
 | `IfcRelConnectsPortToElement` / IFC4 port nesting + `IfcRelConnectsPorts` + `FlowDirection` | `brick:feeds` | derived |
 | BMS point CSV matched by BDNS classification value | `brick:hasPoint` | explicit BDNS identifier |
 
-Ambiguous port connections are reported and are not converted into directional
-`brick:feeds` assertions. Optional geometry fallback is available only for
+`SOURCE`/`SINK` is used directly. A `SOURCEANDSINK` port is assigned a direction
+only when its connected peer is explicitly `SOURCE` or `SINK`; connections that
+remain ambiguous are recorded but are not converted into directional
+`brick:feeds` assertions. Every port-level decision is written to
+`connection_inference.csv` with its IFC relationship, endpoint ports and
+equipment, method, confidence, and review status. Optional geometry fallback is available only for
 equipment lacking explicit containment. It compares each MEP equipment
 centroid against ARC `IfcSpace` AABBs, never overrides explicit relationships,
 and marks every inferred result as review-required with lower confidence.
@@ -97,6 +117,8 @@ geometry inference is stopped and the conflict is reported.
 Each run produces:
 
 - `building_brick.ttl` — Brick/BOT RDF in Turtle;
+- `equipment_mapping.csv` — one IFC asset per row with its BDNS code, target ontology class, status, and provenance;
+- `connection_inference.csv` — one BDNS-equipment port connection per row, including directed and unresolved decisions;
 - `requirement_report.json` — capability-level IFC input audit;
 - `provenance.csv` — evidence, method, confidence, and review status for mappings and relationships;
 - `validation_report.json` — unresolved mappings, inferred relationships, and BMS links.
@@ -179,10 +201,45 @@ from Git. The run is expected to produce three equipment entities, three
 ## Mapping policy
 
 `data/resources/BDNS mapping partial.csv` is a project-defined research
-crosswalk. A unique row produces a project-defined Brick class. Missing or
-ambiguous mappings fall back to `brick:Equipment` and require review. The
-repository does not present this crosswalk as an official mapping issued by
-BDNS, Brick, or buildingSMART.
+crosswalk. A unique verified row produces a project-defined Brick or BOT class.
+Class selection is based on the semantic text in `bdns_tag`; `raw_ifc_class` is
+retained for audit and does not decide the mapping. Spatial tags use BOT:
+`architecture - room` and `space` map to `bot:Space`, while `spatial zone` and
+`zone` map conservatively to their containing parent class `bot:Zone`. A word
+such as “room” inside an equipment tag does not make that asset spatial.
+The BDNS `SG` tag (`air terminal - grille - supply`) maps to
+`brick:Air_Diffuser`. Brick 1.4.4 defines `Air_Diffuser` as a subclass of
+`Terminal_Unit` but has no separate `Supply_Air_Diffuser` class, so supply
+direction remains BDNS provenance rather than a more specific Brick type.
+
+Rows reviewed against Brick 1.4.4 carry a `mapping_method` of
+`brick144_exact`, `brick144_close`, `brick144_broader`, or
+`brick144_no_match`, and a `mapping_rationale`. `close` means the Brick
+definition fits although the names differ; `broader` uses the nearest correct
+ancestor class but never the root `brick:Equipment`; `no_match` stays `tbd`.
+Physical devices are mapped to Equipment classes only: Brick `*_Sensor` and
+`Alarm` classes are Points, so sensor tags use `Sensor_Equipment` subclasses,
+and system tags (`brick:System` is a Collection) stay `tbd`. Ductwork, pipework,
+cable trays, and cable ladders have no Brick 1.4.4 Equipment class and stay
+`tbd`. `data/resources/brick_1.4.4_equipment_classes.json` lists the
+non-deprecated Brick 1.4.4 Equipment classes, and the test suite rejects any
+mapped `brick:` class outside it. Every equipment row has been reviewed this
+way; the BOT spatial rows keep their `bdns_tag_bot_*` methods. Systems,
+structure, furniture, appliances, sanitary terminals, and virtual devices have
+no Brick 1.4.4 Equipment class and stay `tbd`.
+Missing, ambiguous, or unsupported mappings use `tbd`; those assets are listed
+for review and omitted from RDF. The repository does not present this
+crosswalk as an official mapping issued by BDNS, Brick, BOT, or buildingSMART.
+
+This CSV is an interim case-study artifact, not a standards deliverable. When a
+versioned BDNS-to-Brick/BOT mapping is published and maintained through the
+[buildingSMART Data Dictionary (bSDD)](https://www.buildingsmart.org/users/services/buildingsmart-data-dictionary/)
+by the responsible standards organisation, the converter should use that
+mapping in preference to this CSV. Adoption must verify the bSDD dictionary
+owner, version, status, and class URIs; publication in bSDD alone does not make
+third-party content an official BDNS or Brick mapping. The bSDD API is the
+intended machine-readable access path; see the
+[official API guidance](https://technical.buildingsmart.org/services/bsdd/using-the-bsdd-api/).
 
 ## Current limitations
 

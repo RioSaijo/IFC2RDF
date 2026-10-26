@@ -1,85 +1,937 @@
-bdns_abbriviation,bdns_tag,raw_ifc_class,brick_class_candidate
-AAV,valve - air admittance valve,IfcFlowController,brick:Valve
-ACCH,chiller - air cooled chiller,IfcEnergyConversionDevice,brick:Air_Cooled_Chiller
-AHU,air handling unit - air handling unit,IfcEnergyConversionDevice,brick:Air_Handling_Unit
-ATS,electric distribution - automatic transfer switch,IfcFlowController,brick:Automatic_Transfer_Switch
-BB,electric distribution - busbar,IfcFlowSegment,brick:Electrical_Equipment
-BCBOX,dx system - branch controller/selector box,IfcEnergyConversionDevice,brick:HVAC_Equipment
-BGU,fire detection - break glass unit,IfcDistributionControlElement,brick:Manual_Fire_Alarm_Activation_Equipment
-BLR,burner - boiler,IfcEnergyConversionDevice,brick:Boiler
-BMS,system - control,IfcDistributionElement,brick:System
-BTK,tank - break tank,IfcFlowStorageDevice,brick:Tank
-BTKBS,tank - break tank and booster set,IfcFlowStorageDevice,brick:Tank
-BUFF,tank - buffer vessel - generic,IfcFlowStorageDevice,brick:Tank
-CALAD,cable management - cable ladder,IfcFlowSegment,brick:Electrical_System
-CAM,camera,IfcFlowTerminal,brick:Camera
-CATR,cable management - cable tray,IfcFlowSegment,brick:Electrical_System
-CDU,condensing unit,IfcEnergyConversionDevice,brick:Condensing_Unit
-CKV,valve - check valve,IfcFlowController,brick:Check_Valve
-CP,pump - circulating pump,IfcFlowMovingDevice,brick:Circulator_Pump
-CTRP,panel - control panel,IfcDistributionElement,brick:ICT_Equipment
-CUSF,outlet - connection unit switched fused,IfcFlowTerminal,brick:Electrical_Equipment
-CUUF,outlet - connection unit unswitched fused,IfcFlowTerminal,brick:Electrical_Equipment
-DATA,outlet - data wall outlet,IfcFlowTerminal,brick:ICT_Equipment
-DB,electric distribution - distribution panel / board,IfcDistributionElement,brick:Electrical_Equipment
-DG,generator - diesel electricity generator,IfcEnergyConversionDevice,brick:Electrical_Equipment
-DL,lighting - fixture - downlight,IfcFlowTerminal,brick:Luminaire
-DPOT,water treatment - dosing pot,IfcFlowStorageDevice,brick:HVAC_Equipment
-DR,door,IfcDoor,rec:Door
-DRC,controller - door controller,IfcDistributionControlElement,brick:Access_Control_Equipment
-DSSO,outlet - double switched socket outlet,IfcFlowTerminal,brick:Electrical_Equipment
-DUW,distribution ventilation - ductwork,IfcFlowSegment,brick:HVAC_System
-DWBP,pump - potable/domestic water booster pump,IfcFlowMovingDevice,brick:Booster_Pump
-DWCPC,emergency assistance - disabled wc pull cord,IfcDistributionControlElement,brick:Safety_System
-DWST,tank - potable/domestic water storage tank,IfcFlowStorageDevice,brick:Water_Storage_Tank
-EISO,electric protective device - electrical isolator (disconnector),IfcFlowController,brick:Disconnect_Switch
-EL,lighting - fixture - standalone emergency light,IfcFlowTerminal,brick:Lighting
-EM,meter - electric meter,IfcFlowController,brick:Electrical_Meter
-EMWC,water treatment - electro magnetic water conditioner,IfcFlowTreatmentDevice,brick:HVAC_Equipment
-ERAD,heat emitter - radiator electric,IfcEnergyConversionDevice,brick:Radiator
-ET,tank - expansion tank,IfcFlowStorageDevice,brick:Thermal_Expansion_Tank
-EVCO,emergency voice communication - outstation,IfcFlowTerminal,brick:Emergency_Phone
-EXIT,lighting - fixture - illuminated exit sign,IfcFlowTerminal,brick:Lighting
-FACP,panel - fire alarm control panel,IfcElectricDistributionPoint,brick:Fire_Alarm_Control_Panel
-FAN,fan,IfcFlowMovingDevice,brick:Fan
-FAS,fire detection - alarm annunciator sounder or beacon,IfcDistributionControlElement,brick:Fire_Alarm
-FCU,fan coil unit,IfcEnergyConversionDevice,brick:Fan_Coil_Unit
-FD,damper - fire damper,IfcFlowController,brick:Damper
-FLRDX,outlet - floor duplex outlet,IfcDiscreteAccessory,brick:Electrical_Equipment
-FOST,tank - fuel oil storage tank,IfcFlowStorageDevice,brick:Storage_Tank
-GWH,water heater - gas water heater,IfcEnergyConversionDevice,brick:Water_Heater
-HRU,air handling unit - heat recovery unit,IfcEnergyConversionDevice,brick:Heat_Exchanger
-HS,horn strobe,IfcDistributionControlElement,brick:Fire_Safety_Equipment
-HX,heat exchanger,IfcEnergyConversionDevice,brick:Heat_Exchanger
-IFU,fire detection - input output interface unit,IfcDistributionControlElement,brick:ICT_Equipment
-LCM,lighting - control - module,IfcDistributionControlElement,brick:ICT_Equipment
-LCP,lighting - control - panel,IfcDistributionControlElement,brick:Interface
-LL,lighting - fixture - linear,IfcFlowTerminal,brick:Luminaire
-LSW,lighting - control - switch,IfcFlowController,brick:Switch
-LVSB,electric distribution - low voltage switchboard,IfcDistributionElement,brick:Electrical_Equipment
-MEV,fan - mechanical extract ventilation,IfcFlowMovingDevice,brick:Exhaust_Fan
-MFSD,damper - motorised fire smoke damper,IfcFlowController,brick:Damper
-MOS,sensor - motion sensor,IfcDistributionControlElement,brick:Motion_Sensor
-PL,lighting - fixture - pendant,IfcFlowTerminal,brick:Luminaire
-PROXR,access control - proximity reader - generic,IfcDistributionControlElement,brick:Access_Reader
-PRV,valve - pressure reducing valve,IfcFlowController,brick:Pressure_Reducing_Valve
-PW,distribution piped services - pipework,IfcFlowSegment,brick:HVAC_System
-RRFLT,filter - water - reverse rinsing filter,IfcFlowTreatmentDevice,brick:Filter
-RTE,access control - door release button,IfcFlowController,brick:Access_Control_Equipment
-RTISD,damper - return isolation damper,IfcFlowController,brick:Isolation_Damper
-SD,fire detection - smoke detector,IfcDistributionControlElement,brick:Smoke_Detector
-SEF,fan - smoke exhaust fan,IfcFlowMovingDevice,brick:Fan
-SF,fan - supply fan,IfcFlowMovingDevice,brick:Supply_Fan
-SG,air terminal - grille - supply,IfcFlowTerminal,brick:Terminal_Unit
-SL,lighting - fixture - spot light,IfcFlowTerminal,brick:Luminaire
-SLCR,duct silencer - attenuator,IfcFlowTreatmentDevice,brick:HVAC_Equipment
-SRV,ict equipment - multi-purpose server,IfcFurnishingElement,brick:Server
-TXMR,transformer,IfcEnergyConversionDevice,brick:Transformer
-UVDU,uv disinfection unit,IfcFlowTreatmentDevice,brick:Equipment
-VAV,air terminal box - variable air volume box,IfcFlowController,brick:Variable_Air_Volume_Box
-VAVS,air terminal box - variable air volume box - supply,IfcFlowController,brick:Variable_Air_Volume_Box
-VCD,damper - volume control damper,IfcFlowController,brick:Damper
-VLV,valve,IfcFlowController,brick:Valve
-WL,lighting - fixture - wall light,IfcFlowTerminal,brick:Luminaire
-WM,meter - water meter,IfcFlowController,brick:Water_Meter
-WSTT,waste terminal,IfcFlowFitting,brick:Equipment
+bdns_abbreviation,bdns_tag,raw_ifc_class,brick_class_candidate,mapping_status,mapping_method,mapping_rationale
+RFIDC,access control - RFID controller,IfcController,brick:Access_Control_Equipment,mapped,brick144_broader,RFID controller belongs to access control; brick:Controller is generic ICT.
+RFIDR,access control - RFID reader,IfcCommunicationsAppliance,brick:Access_Reader,mapped,brick144_exact,Same concept as brick:Access_Reader.
+ACS,access control - access control system,IfcDistributionSystem,tbd,tbd,brick144_no_match,"Tag denotes a system; brick:System is a Collection, not Equipment."
+AIC,access control - audio intercom,IfcSwitchingDevice,brick:Intercom_Equipment,mapped,brick144_exact,Same concept as brick:Intercom_Equipment.
+BIOR,access control - biometric reader,IfcCommunicationsAppliance,brick:Access_Reader,mapped,brick144_exact,Same concept as brick:Access_Reader.
+RTE,access control - door release button,IfcSwitchingDevice,brick:Access_Control_Equipment,mapped,brick144_broader,Door release (request-to-exit) button.
+PROXR,access control - proximity reader - generic,IfcCommunicationsAppliance,brick:Access_Reader,mapped,brick144_exact,Proximity reader.
+VIC,access control - video intercom,IfcSwitchingDevice,brick:Video_Intercom,mapped,brick144_exact,Same concept as brick:Video_Intercom.
+ACT,actuator,IfcActuator,tbd,tbd,brick144_no_match,"Generic actuator; domain unknown, only common ancestor would be brick:Equipment."
+FPSW,actuator - frost protection switch,IfcActuator,brick:Sensor_Equipment,mapped,brick144_broader,Frost protection thermostat switch senses temperature.
+WDO,actuator - motorized window operator,IfcActuator,tbd,tbd,brick144_no_match,Window operator; Brick 1.4.4 has no class for it.
+SWACT,actuator - switch actuator,IfcActuator,brick:Relay,mapped,brick144_close,Switch actuator is an electrically operated switch.
+ACU,air conditioning unit,IfcUnitaryEquipment,brick:HVAC_Equipment,mapped,brick144_broader,Air conditioning unit is not an air handling unit; type unspecified.
+CRAC,air conditioning unit - computer room AC unit,IfcUnitaryEquipment,brick:Computer_Room_Air_Conditioning,mapped,brick144_exact,Same concept as brick:Computer_Room_Air_Conditioning.
+DX,air conditioning unit - direct expansion cooling unit,IfcUnitaryEquipment,brick:HVAC_Equipment,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+MVHR,air handling - mechanical ventilation with heat recovery,IfcAirToAirHeatRecovery,brick:Air_Handling_Unit,mapped,brick144_close,Ventilation unit with fans and heat recovery fits the AHU definition.
+AHU,air handling unit - air handling unit,IfcUnitaryEquipment,brick:Air_Handling_Unit,mapped,brick144_exact,Air handling unit (equivalent to brick:AHU).
+CRAH,air handling unit - computer room air handler,IfcUnitaryEquipment,brick:Computer_Room_Air_Handler,mapped,brick144_exact,Same concept as brick:Computer_Room_Air_Handler.
+DOAS,air handling unit - dedicated outside air system unit,IfcUnitaryEquipment,brick:Dedicated_Outdoor_Air_System_Unit,mapped,brick144_exact,Same concept as brick:Dedicated_Outdoor_Air_System_Unit.
+HRU,air handling unit - heat recovery unit,IfcAirToAirHeatRecovery,brick:HVAC_Equipment,mapped,brick144_broader,Heat recovery unit may be a ventilation unit or a heat exchanger; common parent used.
+MAU,air handling unit - make-up air handler,IfcUnitaryEquipment,brick:Makeup_Air_Unit,mapped,brick144_exact,Same concept as brick:Makeup_Air_Unit.
+RTU,air handling unit - roof top unit,IfcUnitaryEquipment,brick:Rooftop_Unit,mapped,brick144_exact,Same concept as brick:Rooftop_Unit.
+EAV,air terminal - air valve - extract,IfcAirTerminal,brick:Terminal_Unit,mapped,brick144_broader,Extract air valve regulates airflow; Air_Diffuser is defined for supply into a room.
+SAV,air terminal - air valve - supply,IfcAirTerminal,brick:Air_Diffuser,mapped,brick144_close,Supply air valve delivers air into a room.
+ATB,air terminal - box,IfcAirTerminalBox,brick:Terminal_Unit,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+AT,air terminal - generic,IfcAirTerminal,brick:Terminal_Unit,mapped,brick144_broader,Generic air terminal may be supply or extract; Air_Diffuser is supply only.
+GR,air terminal - grille,IfcAirTerminal,brick:Terminal_Unit,mapped,brick144_broader,Grille may be supply or extract; Air_Diffuser is supply only.
+EG,air terminal - grille - extract,IfcAirTerminal,brick:Terminal_Unit,mapped,brick144_broader,Extract grille; Air_Diffuser is defined for supply into a room.
+SG,air terminal - grille - supply,IfcAirTerminal,brick:Air_Diffuser,mapped,brick144_close,Supply grille delivers air into a room; Brick has no grille class.
+LOU,air terminal - louvre,IfcAirTerminal,brick:Terminal_Unit,mapped,brick144_broader,Louvre is an air terminal; Air_Diffuser is defined for supply into a room.
+ELOU,air terminal - louvre - exhaust/extract,IfcAirTerminal,brick:Terminal_Unit,mapped,brick144_broader,Exhaust louvre; Air_Diffuser is defined for supply into a room.
+ILOU,air terminal - louvre - inlet/intake,IfcAirTerminal,brick:Terminal_Unit,mapped,brick144_broader,Intake louvre; Air_Diffuser is defined for supply into a room.
+CAV,air terminal box - constant air volume box,IfcAirTerminalBox,brick:CAV,mapped,brick144_exact,Same concept as brick:CAV.
+CAVE,air terminal box - constant air volume box - extract,IfcAirTerminalBox,brick:CAV,mapped,brick144_close,Extract CAV box; Brick CAV has no supply/extract subclasses.
+CAVEF,air terminal box - constant air volume box - extract - fixed,IfcAirTerminalBox,brick:CAV,mapped,brick144_close,Extract fixed CAV box.
+CAVEM,air terminal box - constant air volume box - extract - mechanically actuated,IfcAirTerminalBox,brick:CAV,mapped,brick144_close,Extract mechanically actuated CAV box.
+CAVS,air terminal box - constant air volume box - supply,IfcAirTerminalBox,brick:CAV,mapped,brick144_exact,Same concept as brick:CAV.
+CAVSF,air terminal box - constant air volume box - supply - fixed,IfcAirTerminalBox,brick:CAV,mapped,brick144_exact,Same concept as brick:CAV.
+CAVSM,air terminal box - constant air volume box - supply - mechanically actuated,IfcAirTerminalBox,brick:CAV,mapped,brick144_exact,Same concept as brick:CAV.
+FPB,air terminal box - fan powered box,IfcAirTerminalBox,brick:Terminal_Unit,mapped,brick144_broader,Fan powered box; Brick 1.4.4 has no fan powered terminal class.
+UFT,air terminal box - under floor variable air volume box,IfcAirTerminalBox,brick:Variable_Air_Volume_Box,mapped,brick144_close,Underfloor VAV box.
+VAV,air terminal box - variable air volume box,IfcAirTerminalBox,brick:Variable_Air_Volume_Box,mapped,brick144_exact,Variable air volume box.
+VAVE,air terminal box - variable air volume box - extract,IfcAirTerminalBox,brick:Variable_Air_Volume_Box,mapped,brick144_close,Extract VAV box; Brick definition describes supply to a zone.
+VAVS,air terminal box - variable air volume box - supply,IfcAirTerminalBox,brick:Variable_Air_Volume_Box,mapped,brick144_exact,Supply variable air volume box.
+VVTB,air terminal box - variable volume and temperature box,IfcAirTerminalBox,brick:Variable_Air_Volume_Box,mapped,brick144_close,Variable volume and temperature box.
+VVT,air terminal box - variable volume terminal unit,IfcAirTerminalBox,brick:Variable_Air_Volume_Box,mapped,brick144_close,Variable volume terminal unit.
+ALR,alarm,IfcAlarm,tbd,tbd,brick144_no_match,Generic alarm device; brick:Alarm is a Point and safety/security scope is unknown.
+DA,alarm - disabled alarm,IfcAlarm,brick:Safety_Equipment,mapped,brick144_broader,Disabled assistance alarm; brick:Alarm is a Point.
+ANT,antenna,IfcCommunicationsAppliance,tbd,tbd,brick144_no_match,Passive antenna; ICT_Equipment is defined as processor-based.
+WANT,antenna - wi-fi antenna,IfcCommunicationsAppliance,tbd,tbd,brick144_no_match,Passive antenna; ICT_Equipment is defined as processor-based.
+COV,architecture - covering,IfcCovering,tbd,tbd,brick144_no_match,Building structure or architectural element; not Brick Equipment.
+FUR,architecture - furniture,IfcFurniture,tbd,tbd,brick144_no_match,Furniture; not Brick Equipment.
+NAV,architecture - navigation element,IfcNavigationElement,tbd,tbd,brick144_no_match,Building structure or architectural element; not Brick Equipment.
+ROOM,architecture - room,IfcSpace,bot:Space,mapped,bdns_tag_bot_direct,
+SIGN,architecture - sign,IfcSign,tbd,tbd,brick144_no_match,Building structure or architectural element; not Brick Equipment.
+SFE,arhitecture - system furniture element,IfcSystemFurnitureElement,tbd,tbd,brick144_no_match,Furniture; not Brick Equipment.
+AVEQ,av equipment,IfcAudioVisualAppliance,brick:Audio_Visual_Equipment,mapped,brick144_exact,Same concept as brick:Audio_Visual_Equipment.
+AMP,av equipment - audio amplifier,IfcAudioVisualAppliance,brick:Audio_Visual_Equipment,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+AAE,av equipment - audio assistive equipment,IfcAudioVisualAppliance,brick:Audio_Visual_Equipment,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+AMIX,av equipment - audio mixer / splitter / equalizer / diplexer,IfcAudioVisualAppliance,brick:Audio_Visual_Equipment,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+MIX,av equipment - audio mixing desk,IfcAudioVisualAppliance,brick:Audio_Visual_Equipment,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+AMON,av equipment - audio monitor,IfcAudioVisualAppliance,brick:Audio_Visual_Equipment,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+AVKP,av equipment - audio video control keypad,IfcAudioVisualAppliance,brick:Audio_Visual_Equipment,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+AVE,av equipment - audio visual encoder,IfcAudioVisualAppliance,brick:Audio_Visual_Equipment,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+AVO,av equipment - audio visual outlet,IfcAudioVisualAppliance,brick:Audio_Visual_Equipment,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+AVS,av equipment - audio visual switch,IfcAudioVisualAppliance,brick:Audio_Visual_Equipment,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+BTAI,av equipment - bluetooth audio interface,IfcAudioVisualAppliance,brick:Audio_Visual_Equipment,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+CCU,av equipment - camera control unit,IfcAudioVisualAppliance,brick:Audio_Visual_Equipment,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+CD,av equipment - codec device,IfcAudioVisualAppliance,brick:Audio_Visual_Equipment,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+DSP,av equipment - digital signal processor,IfcAudioVisualAppliance,brick:Audio_Visual_Equipment,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+DWB,av equipment - digital whiteboard,IfcAudioVisualAppliance,brick:Audio_Visual_Equipment,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+DS,av equipment - display screen,IfcAudioVisualAppliance,brick:Audio_Visual_Equipment,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+DEC,av equipment - iptv / digital signage decoder,IfcAudioVisualAppliance,brick:Audio_Visual_Equipment,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+CMS,av equipment - iptv content management system device,IfcAudioVisualAppliance,brick:Audio_Visual_Equipment,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+MSW,av equipment - matrix switcher,IfcAudioVisualAppliance,brick:Audio_Visual_Equipment,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+MIC,av equipment - microphone,IfcAudioVisualAppliance,brick:Audio_Visual_Equipment,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+NVR,av equipment - networked video recorder,IfcAudioVisualAppliance,brick:Network_Video_Recorder,mapped,brick144_exact,Same concept as brick:Network_Video_Recorder.
+RBP,av equipment - room booking panel,IfcAudioVisualAppliance,brick:Audio_Visual_Equipment,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+SPK,av equipment - speaker,IfcAudioVisualAppliance,brick:Audio_Visual_Equipment,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+TCD,av equipment - thin client device,IfcAudioVisualAppliance,brick:Audio_Visual_Equipment,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+TPAN,av equipment - touch panel,IfcAudioVisualAppliance,brick:Audio_Visual_Equipment,mapped,brick144_broader,AV touch panel; brick:Touchpanel is defined for lighting control.
+VDW,av equipment - video wall,IfcAudioVisualAppliance,brick:Audio_Visual_Equipment,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+VMIX,av equipment - vision mixing desk,IfcAudioVisualAppliance,brick:Audio_Visual_Equipment,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+WNG,av equipment - white noise generator,IfcAudioVisualAppliance,brick:Audio_Visual_Equipment,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+WPD,av equipment - wireless presentation device,IfcAudioVisualAppliance,brick:Audio_Visual_Equipment,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+WRCVR,av equipment - wireless receiver,IfcAudioVisualAppliance,brick:Audio_Visual_Equipment,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+WSEND,av equipment - wireless sender,IfcAudioVisualAppliance,brick:Audio_Visual_Equipment,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+BATT,battery,IfcElectricFlowStorageDevice,brick:Battery,mapped,brick144_exact,Same concept as brick:Battery.
+BTR,battery - battery trip unit,IfcProtectiveDevice,brick:Electrical_Equipment,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+EHB,battery - electric heater battery,IfcElectricFlowStorageDevice,brick:Heating_Coil,mapped,brick144_close,Electric heater battery is an electric heating coil in a duct.
+BATTLI,battery - lithium ion cell,IfcElectricFlowStorageDevice,brick:Battery,mapped,brick144_exact,Same concept as brick:Battery.
+BVAP,beverage machine - airpot,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+BVC,beverage machine - chai machine,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+BVCFMG,beverage machine - coffee grinder,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+BVCFM,beverage machine - coffee machine,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+BVCFMN,beverage machine - coffee nitro machine,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+BVCFMU,beverage machine - coffee urn,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+BVCFME,beverage machine - espresso machine,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+BVKOC,beverage machine - knock out chute,IfcWasteTerminal,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+BVS,beverage machine - steamer,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+BVWB,beverage machine - water boiler,IfcBoiler,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+BHL,borehole,IfcBorehole,tbd,tbd,brick144_no_match,Below-ground chamber or civil element; not Brick Equipment.
+BLR,burner - boiler,IfcBoiler,brick:Boiler,mapped,brick144_exact,Boiler.
+FR,burner - furnace,IfcBurner,brick:HVAC_Equipment,mapped,brick144_broader,Furnace; Brick 1.4.4 has no furnace class.
+BUR,burner - generic,IfcBurner,brick:HVAC_Equipment,mapped,brick144_broader,Burner; Brick 1.4.4 has no burner class.
+SB,burner - steam boiler,IfcBoiler,brick:Boiler,mapped,brick144_exact,Same concept as brick:Boiler.
+CABASK,cable management - cable basket,IfcCableCarrierSegment,tbd,tbd,brick144_no_match,"No Brick 1.4.4 Equipment class; physical distribution path, kept as topology evidence only."
+CCF,cable management - cable carrier fitting,IfcCableCarrierFitting,tbd,tbd,brick144_no_match,"No Brick 1.4.4 Equipment class; physical distribution path, kept as topology evidence only."
+CCS,cable management - cable carrier segment,IfcCableCarrierSegment,tbd,tbd,brick144_no_match,"No Brick 1.4.4 Equipment class; physical distribution path, kept as topology evidence only."
+CFT,cable management - cable fitting,IfcCableFitting,tbd,tbd,brick144_no_match,"No Brick 1.4.4 Equipment class; physical distribution path, kept as topology evidence only."
+CALAD,cable management - cable ladder,IfcCableCarrierSegment,tbd,tbd,brick144_no_match,"No Brick 1.4.4 Equipment class; physical distribution path, kept as topology evidence only."
+CATR,cable management - cable tray,IfcCableCarrierSegment,tbd,tbd,brick144_no_match,"No Brick 1.4.4 Equipment class; physical distribution path, kept as topology evidence only."
+CATRK,cable management - cable trunking,IfcCableCarrierSegment,tbd,tbd,brick144_no_match,"No Brick 1.4.4 Equipment class; physical distribution path, kept as topology evidence only."
+CAFTRK,cable management - floor trunking,IfcCableCarrierSegment,tbd,tbd,brick144_no_match,"No Brick 1.4.4 Equipment class; physical distribution path, kept as topology evidence only."
+CAM,camera,IfcAudioVisualAppliance,brick:Camera,mapped,brick144_exact,Camera.
+PTZCAM,camera - pan tilt zoom camera,IfcAudioVisualAppliance,brick:Camera,mapped,brick144_broader,PTZ camera; surveillance use not stated.
+CH,chiller,IfcChiller,brick:Chiller,mapped,brick144_exact,Same concept as brick:Chiller.
+ACCH,chiller - air cooled chiller,IfcChiller,brick:Air_Cooled_Chiller,mapped,brick144_exact,Air cooled chiller.
+CT,chiller - cooling tower,IfcCoolingTower,brick:Cooling_Tower,mapped,brick144_exact,Same concept as brick:Cooling_Tower.
+CCCH,chiller - critical cooling chiller,IfcChiller,brick:Chiller,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+DAC,chiller - dry air cooler,IfcCondenser,brick:Dry_Cooler,mapped,brick144_exact,Same concept as brick:Dry_Cooler.
+HTCH,chiller - high temperature chiller,IfcChiller,brick:Chiller,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+HYAC,chiller - hybrid air cooler or fluid cooler,IfcEvaporativeCooler,brick:Dry_Cooler,mapped,brick144_close,"Hybrid air/fluid cooler is a fluid cooler, not a chiller."
+IRCL,chiller - in row cooler/chiller,IfcChiller,brick:HVAC_Equipment,mapped,brick144_broader,In-row unit may be a cooler or a chiller.
+LTCH,chiller - low temperature chiller,IfcChiller,brick:Chiller,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+WCCH,chiller - water cooled chiller,IfcChiller,brick:Water_Cooled_Chiller,mapped,brick144_exact,Same concept as brick:Water_Cooled_Chiller.
+FCSD,cleaning - floor cleaner scrubber dryer,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+TDY,cleaning - standalone laundry tumble dryer,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+WSH,cleaning - standalone laundry washing mashine,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+COIL,coil,IfcCoil,brick:Coil,mapped,brick144_exact,Same concept as brick:Coil.
+CC,coil - cooling coil,IfcCoil,brick:Cooling_Coil,mapped,brick144_exact,Same concept as brick:Cooling_Coil.
+DXC,coil - dx reversible coil,IfcCoil,brick:Coil,mapped,brick144_broader,Reversible DX coil; Brick DX coils are cooling-only or heating-only.
+PHC,coil - frost or preheat coil,IfcCoil,brick:Heating_Coil,mapped,brick144_close,Frost/preheat coil heats air.
+HC,coil - heating coil,IfcCoil,brick:Heating_Coil,mapped,brick144_exact,Same concept as brick:Heating_Coil.
+RHC,coil - reheat coil,IfcCoil,brick:Heating_Coil,mapped,brick144_close,Reheat coil heats air.
+RAC,coil - run around coil,IfcAirToAirHeatRecovery,brick:Coil,mapped,brick144_broader,Run-around heat recovery coil.
+CMA,communication appliance,IfcCommunicationsAppliance,brick:ICT_Equipment,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+PRNTR,communication appliance - printing device,IfcCommunicationsAppliance,brick:ICT_Equipment,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+CGW,communication gateway,IfcCommunicationsAppliance,brick:Gateway,mapped,brick144_exact,Same concept as brick:Gateway.
+CGWV,communication gateway (virtual),IfcCommunicationsAppliance,tbd,tbd,brick144_no_match,Virtual (non-physical) device; not Brick Equipment.
+CMP,compressor,IfcCompressor,brick:Compressor,mapped,brick144_exact,Same concept as brick:Compressor.
+ACP,compressor - air compressor,IfcCompressor,brick:Compressor,mapped,brick144_exact,Same concept as brick:Compressor.
+CDU,condensing unit,IfcCondenser,brick:Condensing_Unit,mapped,brick144_exact,Condensing unit.
+CNTRL,controller,IfcController,brick:Controller,mapped,brick144_exact,Same concept as brick:Controller.
+DDC,controller - direct digital controller,IfcController,brick:Controller,mapped,brick144_exact,Same concept as brick:Controller.
+DRC,controller - door controller,IfcController,brick:Access_Control_Equipment,mapped,brick144_broader,Door controller belongs to access control.
+IRRC,controller - irrigation controller,IfcController,brick:Controller,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+PLC,controller - programmable logic controller,IfcController,brick:Controller,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+ROC,controller - room controller,IfcController,brick:Controller,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+CNV,conveyor segment,IfcConveyorSegment,tbd,tbd,brick144_no_match,Conveyor segment; Brick 1.4.4 has no class for it.
+CKBP,cooking appliance - bratt pan,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+CKCGR,cooking appliance - chargrill,IfcFlowTerminal,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+CKCMWO,cooking appliance - combination microwave/high speed oven,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+CKCMOV,cooking appliance - combination oven,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+CKCVOV,cooking appliance - convection oven,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+CKDOVN,cooking appliance - deck/pizza oven,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+CKDSTE,cooking appliance - dim sum steamer,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+CKFRYD,cooking appliance - fry dump,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+CKFRY,cooking appliance - fryer,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+CKGRCK,cooking appliance - gas range,IfcFlowTerminal,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+CKGWR,cooking appliance - gas wok range,IfcFlowTerminal,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+CKGRD,cooking appliance - griddle,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+CKHOVN,cooking appliance - hearth oven,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+CKICOV,cooking appliance - impinger conveyor oven,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+CKIU,cooking appliance - induction,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+CKIRCK,cooking appliance - induction range,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+CKIW,cooking appliance - induction wok,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+CKKET,cooking appliance - kettle,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+KMCS,cooking appliance - mobile cook station,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+CKPC,cooking appliance - pasta cooker,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+CKPOVN,cooking appliance - potato oven,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+CKPBP,cooking appliance - pressure bratt pan,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+CKPSTE,cooking appliance - pressure steamer,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+CKRC,cooking appliance - rice cooker,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+CKROT,cooking appliance - rotisserie,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+CKSGRL,cooking appliance - salamander grill,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+CKSTE,cooking appliance - steamer,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+CKTOVN,cooking appliance - tandoori oven,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+DMP,damper,IfcDamper,brick:Damper,mapped,brick144_exact,Same concept as brick:Damper.
+BYCD,damper - bypass control damper,IfcDamper,brick:Bypass_Damper,mapped,brick144_exact,Same concept as brick:Bypass_Damper.
+EXD,damper - exhaust damper,IfcDamper,brick:Exhaust_Damper,mapped,brick144_exact,Same concept as brick:Exhaust_Damper.
+FD,damper - fire damper,IfcDamper,brick:Damper,mapped,brick144_broader,Fire damper; Brick has no fire damper class.
+ICD,damper - inlet control damper,IfcDamper,brick:Damper,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+IISD,damper - inlet isolation damper,IfcDamper,brick:Isolation_Damper,mapped,brick144_exact,Same concept as brick:Isolation_Damper.
+MD,damper - motorised damper,IfcDamper,brick:Damper,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+MFSD,damper - motorised fire smoke damper,IfcDamper,brick:Damper,mapped,brick144_broader,Motorised fire/smoke damper; no specific class.
+MSCD,damper - motorised smoke control damper,IfcDamper,brick:Damper,mapped,brick144_broader,Smoke control damper; no specific class.
+MSD,damper - motorised smoke damper,IfcDamper,brick:Damper,mapped,brick144_broader,Smoke damper; no specific class.
+PRLD,damper - pressure relief dampers,IfcDamper,brick:Relief_Damper,mapped,brick144_close,Pressure relief damper.
+RECD,damper - recirculation control damper,IfcDamper,brick:Damper,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+RTCD,damper - return control damper,IfcDamper,brick:Return_Damper,mapped,brick144_exact,Same concept as brick:Return_Damper.
+RTISD,damper - return isolation damper,IfcDamper,brick:Isolation_Damper,mapped,brick144_exact,Return isolation damper.
+VCD,damper - volume control damper,IfcDamper,brick:Damper,mapped,brick144_broader,Volume control damper; no balancing damper class.
+DPU,data processing unit / computer,IfcCommunicationsAppliance,brick:ICT_Hardware,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+DHUM,dehumidifier,IfcUnitaryEquipment,brick:HVAC_Equipment,mapped,brick144_broader,Dehumidifier; Brick 1.4.4 has no dehumidifier class.
+DISP,dispenser,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+DISPB,dispenser - broth,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+DISPC,dispenser - cereal,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+DISPIB,dispenser - ice/beverage,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+DISPJ,dispenser - juice,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+DISPMK,dispenser - milk,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+DISPIC,dispenser - soft serve ice cream,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+DISPW,dispenser - water,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+IC,distibution chamber - inspection chamber,IfcDistributionChamberElement,tbd,tbd,brick144_no_match,Below-ground chamber or civil element; not Brick Equipment.
+MH,distibution chamber - man hole,IfcDistributionChamberElement,tbd,tbd,brick144_no_match,Below-ground chamber or civil element; not Brick Equipment.
+MTRC,distibution chamber - meter chamber,IfcDistributionChamberElement,tbd,tbd,brick144_no_match,Below-ground chamber or civil element; not Brick Equipment.
+SUMP,distibution chamber - sump,IfcDistributionChamberElement,tbd,tbd,brick144_no_match,Below-ground chamber or civil element; not Brick Equipment.
+TRENCH,distibution chamber - trench,IfcDistributionChamberElement,tbd,tbd,brick144_no_match,Below-ground chamber or civil element; not Brick Equipment.
+VLVC,distibution chamber - valve chamber,IfcDistributionChamberElement,tbd,tbd,brick144_no_match,Below-ground chamber or civil element; not Brick Equipment.
+DCE,distribution - chamber,IfcDistributionChamberElement,tbd,tbd,brick144_no_match,Below-ground chamber or civil element; not Brick Equipment.
+DCT,distribution - circuit,IfcDistributionCircuit,tbd,tbd,brick144_no_match,Generic or abstract object; Brick class cannot be determined from the tag.
+DSYS,distribution - system,IfcDistributionSystem,tbd,tbd,brick144_no_match,"Tag denotes a system; brick:System is a Collection, not Equipment."
+COAXCA,distribution data - coaxial cable,IfcCableSegment,tbd,tbd,brick144_no_match,"No Brick 1.4.4 Equipment class; physical distribution path, kept as topology evidence only."
+DCA,distribution data - data cable,IfcCableSegment,tbd,tbd,brick144_no_match,"No Brick 1.4.4 Equipment class; physical distribution path, kept as topology evidence only."
+EVDP,distribution electric - EVC electric vehicle charging distribution panel,IfcDistributionBoard,brick:Electrical_Equipment,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+EVCE,distribution electric - EVC electric vehicle charging equipment,IfcOutlet,brick:Electric_Vehicle_Charging_Station,mapped,brick144_exact,Same concept as brick:Electric_Vehicle_Charging_Station.
+AHF,distribution electric - active harmonic filter,IfcElectricFlowStorageDevice,brick:Electrical_Equipment,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+ATS,distribution electric - automatic transfer switch,IfcProtectiveDevice,brick:Automatic_Transfer_Switch,mapped,brick144_exact,Automatic transfer switch.
+LVCPB,distribution electric - branch circuit panel board 120/208V,IfcDistributionBoard,brick:Breaker_Panel,mapped,brick144_close,Branch circuit panel board distributes power to end uses through breakers.
+HVCPB,distribution electric - branch circuit panel board 277/480V,IfcDistributionBoard,brick:Breaker_Panel,mapped,brick144_close,Branch circuit panel board distributes power to end uses through breakers.
+BB,distribution electric - busbar,IfcCableSegment,brick:Electrical_Equipment,mapped,brick144_broader,Busbar; brick:Bus_Riser only covers vertical risers.
+BBTO,distribution electric - busbar tapoff,IfcCableSegment,brick:Electrical_Equipment,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+CA,distribution electric - cable,IfcCableSegment,tbd,tbd,brick144_no_match,"No Brick 1.4.4 Equipment class; physical distribution path, kept as topology evidence only."
+DCDC,distribution electric - dc-dc converter,IfcTransformer,brick:Electrical_Equipment,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+DB,distribution electric - distribution panel / board,IfcDistributionBoard,brick:Electrical_Equipment,mapped,brick144_broader,"Distribution board; protective device type not stated, so not narrowed to Breaker_Panel."
+CU,distribution electric - distribution panel / board - consumer unit,IfcDistributionBoard,brick:Electrical_Equipment,mapped,brick144_broader,"Consumer unit; protective device type not stated, so not narrowed to Breaker_Panel."
+LVDP,distribution electric - distribution panel 120/208V,IfcDistributionBoard,brick:Electrical_Equipment,mapped,brick144_broader,Distribution panel; protective device type not stated.
+HVDP,distribution electric - distribution panel 277/480V,IfcDistributionBoard,brick:Electrical_Equipment,mapped,brick144_broader,Distribution panel; protective device type not stated.
+ITDP,distribution electric - distribution panel for itc equipment,IfcDistributionBoard,brick:Electrical_Equipment,mapped,brick144_broader,Distribution panel; protective device type not stated.
+ELSW,distribution electric - electric switch,IfcSwitchingDevice,brick:Electrical_Equipment,mapped,brick144_broader,Electrical switch; brick:Switch is defined as a lighting switch.
+FCA,distribution electric - fire rated cable,IfcCableSegment,tbd,tbd,brick144_no_match,"No Brick 1.4.4 Equipment class; physical distribution path, kept as topology evidence only."
+HVSB,distribution electric - high voltage switchboard,IfcDistributionBoard,brick:Switchgear,mapped,brick144_close,High voltage switchboard.
+IVT,distribution electric - invertor,IfcTransformer,brick:Inverter,mapped,brick144_exact,Same concept as brick:Inverter.
+KDP,distribution electric - kitchen electric distribution panel/board,IfcDistributionBoard,brick:Electrical_Equipment,mapped,brick144_broader,Distribution panel; protective device type not stated.
+LB,distribution electric - load bank,IfcElectricFlowStorageDevice,brick:Electrical_Equipment,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+LVSB,distribution electric - low voltage switchboard,IfcDistributionBoard,brick:Switchgear,mapped,brick144_close,Low voltage switchboard distributing power to the building.
+MPNL,distribution electric - main panel / board,IfcDistributionBoard,brick:Electrical_Equipment,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+MSP,distribution electric - main switch panel,IfcDistributionBoard,brick:Switchgear,mapped,brick144_close,Main switch panel.
+MDU,distribution electric - mains distribution unit,IfcDistributionBoard,brick:Electrical_Equipment,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+MSB,distribution electric - mains switchboard,IfcDistributionBoard,brick:Switchgear,mapped,brick144_close,Mains switchboard distributing power to the building.
+MDP,distribution electric - mechanical distribution panel / board,IfcDistributionBoard,brick:Electrical_Equipment,mapped,brick144_broader,Distribution panel; protective device type not stated.
+MVSB,distribution electric - medium voltage switchboard,IfcDistributionBoard,brick:Switchgear,mapped,brick144_close,Medium voltage switchboard.
+PB,distribution electric - panel board,IfcDistributionBoard,brick:Breaker_Panel,mapped,brick144_close,Panel board distributes power to end uses through breakers.
+PHF,distribution electric - passive harmonic filter,IfcElectricFlowStorageDevice,brick:Electrical_Equipment,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+PDU,distribution electric - power distribution unit,IfcDistributionBoard,brick:Electrical_Equipment,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+PFC,distribution electric - power factor correction system,IfcElectricFlowTreatmentDevice,brick:Electrical_Equipment,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+REC,distribution electric - rectifier,IfcTransformer,brick:Electrical_Equipment,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+RMU,distribution electric - ring main unit,IfcDistributionBoard,brick:Switchgear,mapped,brick144_close,Ring main unit is medium voltage switchgear.
+RBB,distribution electric - rising busbar,IfcCableSegment,brick:Bus_Riser,mapped,brick144_exact,Same concept as brick:Bus_Riser.
+STS,distribution electric - static transfer switch,IfcSwitchingDevice,brick:Static_Transfer_Switch,mapped,brick144_exact,Same concept as brick:Static_Transfer_Switch.
+SWGR,distribution electric - switchgear (12kv typ),IfcDistributionBoard,brick:Switchgear,mapped,brick144_exact,Same concept as brick:Switchgear.
+USS,distribution electric - unit substation,IfcUnitaryEquipment,brick:Electrical_Equipment,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+UPSB,distribution electric - ups panel / board,IfcDistributionBoard,brick:Electrical_Equipment,mapped,brick144_broader,Distribution panel; protective device type not stated.
+PW,distribution piped services - pipework,IfcPipeSegment,tbd,tbd,brick144_no_match,"No Brick 1.4.4 Equipment class; physical distribution path, kept as topology evidence only."
+PWF,distribution piped services - pipework fitting,IfcPipeFitting,tbd,tbd,brick144_no_match,"No Brick 1.4.4 Equipment class; physical distribution path, kept as topology evidence only."
+DUW,distribution ventilation - ductwork,IfcDuctSegment,tbd,tbd,brick144_no_match,"No Brick 1.4.4 Equipment class; physical distribution path, kept as topology evidence only."
+FDUW,distribution ventilation - ductwork fire rated,IfcDuctSegment,tbd,tbd,brick144_no_match,"No Brick 1.4.4 Equipment class; physical distribution path, kept as topology evidence only."
+FDUWF,distribution ventilation - ductwork fire rated fitting,IfcDuctFitting,tbd,tbd,brick144_no_match,"No Brick 1.4.4 Equipment class; physical distribution path, kept as topology evidence only."
+DUWF,distribution ventilation - ductwork fitting,IfcDuctFitting,tbd,tbd,brick144_no_match,"No Brick 1.4.4 Equipment class; physical distribution path, kept as topology evidence only."
+DR,door,IfcDoor,tbd,tbd,brick144_no_match,"Door is a building element, not Brick Equipment."
+ELOCK,door - electric lock,IfcElectricAppliance,brick:Access_Control_Equipment,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+EMDH,door - electromagnetic door holder,IfcElectricAppliance,brick:Fire_Safety_Equipment,mapped,brick144_broader,Door holder releases on fire alarm.
+FDR,door - fire door,IfcDoor,tbd,tbd,brick144_no_match,Building structure or architectural element; not Brick Equipment.
+LLOCK,door - latch lock,IfcElectricAppliance,tbd,tbd,brick144_no_match,Mechanical latch lock; not Brick Equipment.
+MLOCK,door - magnetic lock,IfcElectricAppliance,brick:Access_Control_Equipment,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+DFT,duct fitting,IfcDuctFitting,tbd,tbd,brick144_no_match,"No Brick 1.4.4 Equipment class; physical distribution path, kept as topology evidence only."
+SLCR,duct silencer - attenuator,IfcDuctSilencer,brick:HVAC_Equipment,mapped,brick144_broader,Duct silencer/attenuator; no specific class.
+BCBOX,dx system - branch controller/selector box,IfcUnitaryEquipment,brick:Branch_Selector,mapped,brick144_exact,Brick defines Branch_Selector as the VRF device distributing refrigerant to indoor units.
+HVRF,dx system - hybrid variable refrigerant flow unit,IfcUnitaryEquipment,brick:HVAC_Equipment,mapped,brick144_broader,VRF unit may be indoor or outdoor.
+VRF,dx system - variable refrigerant flow unit,IfcUnitaryEquipment,brick:HVAC_Equipment,mapped,brick144_broader,VRF unit may be indoor or outdoor.
+VRV,dx system - variable refrigerant volume unit,IfcUnitaryEquipment,brick:HVAC_Equipment,mapped,brick144_broader,VRV unit may be indoor or outdoor.
+SWD,electric - switching device,IfcSwitchingDevice,brick:Electrical_Equipment,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+EAPPL,electric appliance,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+ADY,electric appliance - air dryer,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+DW,electric appliance - dishwasher,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+EPOS,electric appliance - electronic point of sale,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+GYMEQ,electric appliance - exercise / gym equipment,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+FOODEQ,electric appliance - food equipment,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+FRY,electric appliance - fryer,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+VEND,electric appliance - generic vending machine,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+HDY,electric appliance - hand dryer,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+OVN,electric appliance - oven,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+SCAN,electric appliance - scanning device,IfcCommunicationsAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+STE,electric appliance - steamer,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+EFT,electric flow treatment device,IfcElectricFlowTreatmentDevice,tbd,tbd,brick144_no_match,Generic or abstract object; Brick class cannot be determined from the tag.
+CB,electric protective device - circuit breaker,IfcProtectiveDevice,brick:Circuit_Breaker,mapped,brick144_exact,Same concept as brick:Circuit_Breaker.
+DSCTF,electric protective device - disconnect fuse,IfcProtectiveDevice,brick:Disconnect_Switch,mapped,brick144_close,Fused disconnect.
+EISO,electric protective device - electrical isolator (disconnector),IfcSwitchingDevice,brick:Disconnect_Switch,mapped,brick144_exact,Electrical isolator (Disconnect_Switch is equivalent to Isolation_Switch).
+HTCO,electric protective device - high temperature cut out switch,IfcSwitchingDevice,brick:Electrical_Equipment,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+EISOTX,electric protective device - isolation transformer,IfcProtectiveDevice,brick:Transformer,mapped,brick144_exact,Same concept as brick:Transformer.
+MCB,electric protective device - miniature circuit breaker,IfcProtectiveDevice,brick:Circuit_Breaker,mapped,brick144_exact,Same concept as brick:Circuit_Breaker.
+RCCB,electric protective device - residual current circuit breaker,IfcProtectiveDevice,brick:Circuit_Breaker,mapped,brick144_close,Residual current circuit breaker.
+RCBO,electric protective device - residual current circuit breaker with over-current,IfcProtectiveDevice,brick:Circuit_Breaker,mapped,brick144_close,Residual current breaker with overcurrent protection.
+DSCTS,electric protective device - safety switch or disconnect switch,IfcSwitchingDevice,brick:Disconnect_Switch,mapped,brick144_exact,Same concept as brick:Disconnect_Switch.
+ESB,electric protective device - safety switch or disconnect switch - emergency stop button,IfcSwitchingDevice,brick:Safety_Equipment,mapped,brick144_broader,Emergency stop button.
+SCS,electric protective device - sectionalizer switch,IfcSwitchingDevice,brick:Switchgear,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+SPD,electric protective device - surge protection,IfcProtectiveDevice,brick:Electrical_Equipment,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+ETC,electric time control,IfcElectricTimeControl,brick:Controller,mapped,brick144_broader,Electric time control.
+ENG,electrical equipment - engine,IfcEngine,brick:Motor,mapped,brick144_close,Engine converts fuel energy into mechanical motion.
+EMT,electrical equipment - motor,IfcElectricMotor,brick:Motor,mapped,brick144_exact,Same concept as brick:Motor.
+PDV,electrical protective device,IfcProtectiveDevice,brick:Electrical_Equipment,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+PTU,electrical tripping unit,IfcProtectiveDeviceTrippingUnit,brick:Electrical_Equipment,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+ECG,electrochromic glass,IfcWindow,brick:Automatic_Tint_Window,mapped,brick144_close,Electrochromic glass is a window with tint control.
+EKC,electronic key cabinet,IfcFurniture,brick:Security_Equipment,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+ASM,element assembly,IfcElementAssembly,tbd,tbd,brick144_no_match,Generic or abstract object; Brick class cannot be determined from the tag.
+DWCCP,emergency assistance - disabled wc control panel,IfcController,brick:Safety_Equipment,mapped,brick144_broader,Assistance alarm control panel.
+DWCOI,emergency assistance - disabled wc overdoor indicator,IfcAlarm,brick:Safety_Equipment,mapped,brick144_broader,Assistance alarm indicator.
+DWCPC,emergency assistance - disabled wc pull cord,IfcAlarm,brick:Safety_Equipment,mapped,brick144_broader,Assistance call pull cord; not fire equipment.
+DWCRB,emergency assistance - disabled wc reset button,IfcController,brick:Safety_Equipment,mapped,brick144_broader,Assistance alarm reset button.
+PDB,emergency assistance - panic duress button,IfcAlarm,brick:Security_Equipment,mapped,brick144_broader,Panic/duress button.
+EVCCP,emergency voice communication - control panel,IfcAudioVisualAppliance,brick:Intercom_Equipment,mapped,brick144_broader,Emergency voice communication control panel.
+EVCO,emergency voice communication - outstation,IfcAudioVisualAppliance,brick:Emergency_Phone,mapped,brick144_close,Emergency voice communication outstation.
+DRO,emergency voice communication - outstation disabled refuge,IfcAudioVisualAppliance,brick:Emergency_Phone,mapped,brick144_close,Disabled refuge outstation.
+ETO,emergency voice communication - outstation emergency telephone,IfcAudioVisualAppliance,brick:Emergency_Phone,mapped,brick144_exact,Same concept as brick:Emergency_Phone.
+FTO,emergency voice communication - outstation fire telephone,IfcAudioVisualAppliance,brick:Emergency_Phone,mapped,brick144_close,Fire telephone outstation.
+EVCRU,emergency voice communication - repeater unit,IfcAudioVisualAppliance,brick:Intercom_Equipment,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+VAM,emergency voice communication - voice alarm microphones,IfcAudioVisualAppliance,brick:Fire_Safety_Equipment,mapped,brick144_broader,Voice alarm microphone.
+VAS,emergency voice communication - voice alarm speaker,IfcAudioVisualAppliance,brick:Fire_Safety_Equipment,mapped,brick144_broader,Voice alarm speaker.
+ETCFP,employee timeclock with fingerprint scanner,IfcElectricAppliance,tbd,tbd,brick144_no_match,Time and attendance clock; Brick 1.4.4 has no class for it.
+EVCL,evaporative cooler,IfcEvaporativeCooler,brick:HVAC_Equipment,mapped,brick144_broader,Evaporative cooler; no specific class.
+EVP,evaporator,IfcEvaporator,brick:Heat_Exchanger,mapped,brick144_broader,Evaporator is a refrigerant heat exchanger.
+FAN,fan,IfcFan,brick:Fan,mapped,brick144_exact,Fan.
+CTF,fan - cooling tower fan,IfcFan,brick:Cooling_Tower_Fan,mapped,brick144_exact,Same concept as brick:Cooling_Tower_Fan.
+ELVPF,fan - elevator / lift well pressurization fan,IfcFan,brick:Pressurization_Fan,mapped,brick144_exact,Same concept as brick:Pressurization_Fan.
+EF,fan - exhaust fan,IfcFan,brick:Exhaust_Fan,mapped,brick144_exact,Same concept as brick:Exhaust_Fan.
+FHEX,fan - fume hood exhaust fan,IfcDamper,brick:Exhaust_Fan,mapped,brick144_exact,Same concept as brick:Exhaust_Fan.
+GSF,fan - garage / car park supply fan,IfcFan,brick:Supply_Fan,mapped,brick144_exact,Same concept as brick:Supply_Fan.
+GTF,fan - garage / car park transfer fan,IfcFan,brick:Transfer_Fan,mapped,brick144_exact,Same concept as brick:Transfer_Fan.
+KEF,fan - kitchen exhaust fan,IfcFan,brick:Exhaust_Fan,mapped,brick144_exact,Same concept as brick:Exhaust_Fan.
+MEV,fan - mechanical extract ventilation,IfcFan,brick:Exhaust_Fan,mapped,brick144_exact,Mechanical extract ventilation fan.
+MEVK,fan - mechanical extract ventilation kitchen,IfcFan,brick:Exhaust_Fan,mapped,brick144_exact,Same concept as brick:Exhaust_Fan.
+PF,fan - pressurization fan,IfcFan,brick:Pressurization_Fan,mapped,brick144_exact,Same concept as brick:Pressurization_Fan.
+RLF,fan - relief fan,IfcFan,brick:Relief_Fan,mapped,brick144_exact,Same concept as brick:Relief_Fan.
+RTF,fan - return fan,IfcFan,brick:Return_Fan,mapped,brick144_exact,Same concept as brick:Return_Fan.
+SEF,fan - smoke exhaust fan,IfcFan,brick:Exhaust_Fan,mapped,brick144_close,Smoke exhaust fan removes contaminated air.
+SPF,fan - stairwell pressurization fan,IfcFan,brick:Pressurization_Fan,mapped,brick144_exact,Same concept as brick:Pressurization_Fan.
+SF,fan - supply fan,IfcFan,brick:Supply_Fan,mapped,brick144_exact,Supply fan.
+TEF,fan - toilet extract fan,IfcFan,brick:Exhaust_Fan,mapped,brick144_exact,Same concept as brick:Exhaust_Fan.
+TF,fan - transfer fan,IfcFan,brick:Transfer_Fan,mapped,brick144_exact,Same concept as brick:Transfer_Fan.
+FCU,fan coil unit,IfcUnitaryEquipment,brick:Fan_Coil_Unit,mapped,brick144_exact,Fan coil unit.
+FLT,filter,IfcFilter,brick:Filter,mapped,brick144_exact,Same concept as brick:Filter.
+ADS,filter - air and dirt separator,IfcFlowTreatmentDevice,brick:Filter,mapped,brick144_close,Separates air and dirt from a fluid.
+APU,filter - air purifier unit,IfcFilter,brick:Filter,mapped,brick144_broader,Air purifier unit.
+AS,filter - air separator,IfcFlowTreatmentDevice,brick:Filter,mapped,brick144_close,Separates air from a fluid.
+AWSH,filter - air washer unit,IfcFilter,brick:HVAC_Equipment,mapped,brick144_broader,Air washer.
+BFLT,filter - bag filter,IfcFilter,brick:Filter,mapped,brick144_exact,Same concept as brick:Filter.
+CFLT,filter - carbon filter,IfcFilter,brick:Filter,mapped,brick144_exact,Same concept as brick:Filter.
+CTFU,filter - cooling tower filtration unit/system,IfcUnitaryEquipment,brick:Filter,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+CTSFLT,filter - cooling tower sand filter,IfcFilter,brick:Filter,mapped,brick144_exact,Same concept as brick:Filter.
+CTSEP,filter - cooling tower separator,IfcFilter,brick:Filter,mapped,brick144_close,Separator removes solids from cooling tower water.
+CTSSEP,filter - cooling tower separator / sand separator,IfcFilter,brick:Filter,mapped,brick144_close,Separator removes solids from cooling tower water.
+DGA,filter - degasser filter,IfcFilter,brick:Filter,mapped,brick144_close,Degasser removes gases from a fluid.
+DTS,filter - dirt separator,IfcFilter,brick:Filter,mapped,brick144_close,Dirt separator removes solids from a fluid.
+DSU,filter - exhaust dry scrubber unit,IfcFilter,brick:Filter,mapped,brick144_broader,Exhaust dry scrubber.
+PFLT,filter - panel filter,IfcFilter,brick:Filter,mapped,brick144_exact,Same concept as brick:Filter.
+PCU,filter - pollution control unit,IfcFilter,brick:Filter,mapped,brick144_broader,Kitchen exhaust pollution control unit.
+PFU,filter - process filtration unit,IfcUnitaryEquipment,brick:Filter,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+RO,filter - reverse osmosis system,IfcFilter,brick:Filter,mapped,brick144_broader,Reverse osmosis removes dissolved solids from water.
+SSFLT,filter - side stream water filters,IfcFilter,brick:Filter,mapped,brick144_exact,Same concept as brick:Filter.
+VSFLT,filter - vacuum system filter,IfcFilter,brick:Filter,mapped,brick144_exact,Same concept as brick:Filter.
+RRFLT,filter - water - reverse rinsing filter,IfcFilter,brick:Filter,mapped,brick144_broader,Reverse rinsing water filter.
+WCR,filter - water conditioner,IfcFilter,tbd,tbd,brick144_no_match,Water treatment equipment; Brick 1.4.4 has no class for it (Filter covers separation only).
+WSR,filter - water softener,IfcFilter,tbd,tbd,brick144_no_match,Water treatment equipment; Brick 1.4.4 has no class for it (Filter covers separation only).
+FAS,fire detection - alarm annunciator sounder or beacon,IfcAlarm,brick:Fire_Alarm,mapped,brick144_close,Fire alarm sounder or beacon; brick:Fire_Alarm has no definition but is Fire_Safety_Equipment.
+ASD,fire detection - aspirating smoke detector,IfcSensor,brick:Smoke_Detector,mapped,brick144_exact,Same concept as brick:Smoke_Detector.
+BGU,fire detection - break glass unit,IfcAlarm,brick:Fire_Alarm_Manual_Call_Point,mapped,brick144_exact,Break glass unit is a manual call point.
+CIE,fire detection - control and indication equipment,IfcUnitaryControlElement,brick:Fire_Alarm_Control_Panel,mapped,brick144_exact,Same concept as brick:Fire_Alarm_Control_Panel.
+GD,fire detection - gas detector,IfcSensor,brick:Sensor_Equipment,mapped,brick144_broader,Gas detector.
+HD,fire detection - heat detector,IfcSensor,brick:Heat_Detector,mapped,brick144_exact,Same concept as brick:Heat_Detector.
+HDS,fire detection - hydrogen detector,IfcSensor,brick:Sensor_Equipment,mapped,brick144_broader,Hydrogen detector.
+IFU,fire detection - input output interface unit,IfcSwitchingDevice,brick:Fire_Safety_Equipment,mapped,brick144_broader,Fire detection input/output interface unit.
+SD,fire detection - smoke detector,IfcSensor,brick:Smoke_Detector,mapped,brick144_exact,Smoke detector.
+FJP,fire suppression - fire jockey pump,IfcPump,brick:Water_Pump,mapped,brick144_broader,Fire jockey pump.
+FP,fire suppression - fire pump,IfcPump,brick:Water_Pump,mapped,brick144_broader,Fire pump.
+FPCP,fire suppression - fire pump control panel,IfcUnitaryControlElement,brick:Fire_Control_Panel,mapped,brick144_close,Fire pump control panel.
+FMO,fire suppression - firemans override switch,IfcSwitchingDevice,brick:Fire_Safety_Equipment,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+GSCP,fire suppression - gas suppression control panel,IfcUnitaryControlElement,brick:Fire_Control_Panel,mapped,brick144_close,Gas suppression control panel.
+GSH,fire suppression - gas suppression head,IfcFireSuppressionTerminal,brick:Fire_Safety_Equipment,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+KHRL,fire suppression - hose reel terminal,IfcFireSuppressionTerminal,brick:Fire_Safety_Equipment,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+FB,fire suppression - sprinkler alarm bell,IfcAlarm,brick:Fire_Alarm,mapped,brick144_close,Sprinkler alarm bell.
+FS,fire suppression - sprinkler flow switch,IfcSwitchingDevice,brick:Fire_Safety_Equipment,mapped,brick144_broader,Sprinkler flow switch.
+SPH,fire suppression - sprinkler head terminal,IfcFireSuppressionTerminal,brick:Fire_Safety_Equipment,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+SISV,fire suppression - sprinkler isolation valve,IfcValve,brick:Isolation_Valve,mapped,brick144_exact,Same concept as brick:Isolation_Valve.
+FSS,fire suppression - system gas release panel,IfcUnitaryControlElement,brick:Fire_Control_Panel,mapped,brick144_close,Gas release panel.
+VZP,fire suppression - vaporizer panel,IfcUnitaryControlElement,brick:Fire_Safety_Equipment,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+WDP,fire suppression - window drencher pump,IfcPump,brick:Water_Pump,mapped,brick144_broader,Window drencher pump.
+WDT,fire suppression - window drencher tank,IfcTank,brick:Fire_Sprinkler_Water_Storage_Tank,mapped,brick144_close,Drencher tank stores water for fire suppression.
+FSP,fire suppression terminal,IfcFireSuppressionTerminal,brick:Fire_Safety_Equipment,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+FH,fire suppression terminal - fire hydrant,IfcFireSuppressionTerminal,brick:Fire_Safety_Equipment,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+HR,fire suppression terminal - hose reel,IfcFireSuppressionTerminal,brick:Fire_Safety_Equipment,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+IBRV,fire suppression terminal - inlet breaching valve,IfcFireSuppressionTerminal,brick:Fire_Safety_Equipment,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+FIN,flow instrument / gauge,IfcFlowInstrument,brick:Sensor_Equipment,mapped,brick144_broader,Flow instrument / gauge.
+FSCPL,food serving - cold plate,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+FSCWL,food serving - cold well,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+FSHL,food serving - heat lamp,IfcSpaceHeater,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+FSHCPL,food serving - hot and cold plate,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+FSHCWL,food serving - hot and cold well,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+FSHPL,food serving - hot plate,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+FSHWL,food serving - hot well,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+FSICD,food serving - ice cream display,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+FSIWL,food serving - ice well,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+FSIW,food serving - induction warmer,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+FSSG,food serving - sneeze guard,IfcFurniture,tbd,tbd,brick144_no_match,Furniture; not Brick Equipment.
+FSSWL,food serving - soup well,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+CSC,furniture - chemical storage cabinet,IfcFurniture,tbd,tbd,brick144_no_match,Furniture; not Brick Equipment.
+KSINKM,furniture - commercial kitchen mobile soak sink,IfcSanitaryTerminal,tbd,tbd,brick144_no_match,Furniture; not Brick Equipment.
+KSINK,furniture - commercial kitchen sink,IfcSanitaryTerminal,tbd,tbd,brick144_no_match,Furniture; not Brick Equipment.
+KSTC,furniture - commercial kitchen storage cabinet,IfcFurniture,tbd,tbd,brick144_no_match,Furniture; not Brick Equipment.
+KSTCH,furniture - commercial kitchen storage cabinet heated,IfcElectricAppliance,tbd,tbd,brick144_no_match,Furniture; not Brick Equipment.
+KTBL,furniture - commercial kitchen table,IfcFurniture,tbd,tbd,brick144_no_match,Furniture; not Brick Equipment.
+KCART,furniture - commercial kitchen trolley/cart,IfcFurniture,tbd,tbd,brick144_no_match,Furniture; not Brick Equipment.
+KUCS,furniture - commercial kitchen utility chase system,IfcDistributionSystem,tbd,tbd,brick144_no_match,Furniture; not Brick Equipment.
+KUDS,furniture - commercial kitchen utility distribution system,IfcDistributionSystem,tbd,tbd,brick144_no_match,Furniture; not Brick Equipment.
+KWMGR,furniture - commercial kitchen wall mounted glass rack,IfcFurniture,tbd,tbd,brick144_no_match,Furniture; not Brick Equipment.
+DESK,furniture - desk,IfcFurniture,tbd,tbd,brick144_no_match,Furniture; not Brick Equipment.
+EEW,furniture - emergency eyewash station,IfcSanitaryTerminal,brick:Eye_Wash_Station,mapped,brick144_exact,Same concept as brick:Eye_Wash_Station.
+LCKR,furniture - locker,IfcFurniture,tbd,tbd,brick144_no_match,Furniture; not Brick Equipment.
+CSG,generator - clean steam generator,IfcElectricGenerator,brick:HVAC_Equipment,mapped,brick144_broader,Clean steam generator.
+CHP,generator - combined heat and power generator,IfcElectricGenerator,brick:Electrical_Equipment,mapped,brick144_broader,CHP generator; Brick 1.4.4 has no generator class.
+DG,generator - diesel electricity generator,IfcElectricGenerator,brick:Electrical_Equipment,mapped,brick144_broader,Diesel generator; Brick 1.4.4 has no generator class.
+GEN,generator - electricity generator,IfcElectricGenerator,brick:Electrical_Equipment,mapped,brick144_broader,Generator; Brick 1.4.4 has no generator class.
+ELEM,generic built object - built element,IfcBuiltElement,tbd,tbd,brick144_no_match,Generic or abstract object; Brick class cannot be determined from the tag.
+PROXY,generic built object - element proxy,IfcBuildingElementProxy,tbd,tbd,brick144_no_match,Generic or abstract object; Brick class cannot be determined from the tag.
+GEO,geographic element,IfcGeographicElement,tbd,tbd,brick144_no_match,Generic or abstract object; Brick class cannot be determined from the tag.
+GI,grease waste interceptor,IfcInterceptor,brick:Grease_Interceptor,mapped,brick144_exact,Same concept as brick:Grease_Interceptor.
+GRD,grid,IfcGrid,tbd,tbd,brick144_no_match,Generic or abstract object; Brick class cannot be determined from the tag.
+GRP,group,IfcGroup,tbd,tbd,brick144_no_match,Generic or abstract object; Brick class cannot be determined from the tag.
+AHR,heat emitter - air heater,IfcSpaceHeater,brick:Space_Heater,mapped,brick144_close,Air heater warms room air.
+DH,heat emitter - duct heater,IfcSpaceHeater,brick:Heating_Coil,mapped,brick144_close,Duct heater heats air in a duct.
+EUH,heat emitter - electric unit heater,IfcSpaceHeater,brick:Space_Heater,mapped,brick144_close,Electric unit heater.
+GUH,heat emitter - gas unit heater,IfcSpaceHeater,brick:Space_Heater,mapped,brick144_close,Gas unit heater.
+HTR,heat emitter - heater,IfcSpaceHeater,brick:HVAC_Equipment,mapped,brick144_broader,Generic heater.
+TC,heat emitter - hydronic trench convector,IfcSpaceHeater,brick:Radiator,mapped,brick144_close,Trench convector transfers heat to the room.
+RP,heat emitter - radiant panel,IfcSpaceHeater,brick:Radiant_Panel,mapped,brick144_exact,Same concept as brick:Radiant_Panel.
+RAD,heat emitter - radiator,IfcSpaceHeater,brick:Radiator,mapped,brick144_exact,Same concept as brick:Radiator.
+ERAD,heat emitter - radiator electric,IfcSpaceHeater,brick:Electric_Radiator,mapped,brick144_exact,Electric radiator.
+EHT,heat emitter - trace heating,IfcSpaceHeater,tbd,tbd,brick144_no_match,Trace heating cable; Brick 1.4.4 has no class for it.
+TRHC,heat emitter - trench heater and cooler,IfcSpaceHeater,brick:Terminal_Unit,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+TRH,heat emitter - trench heating,IfcSpaceHeater,brick:Radiator,mapped,brick144_close,Trench heater transfers heat to the room.
+UFM,heat emitter - underfloor manifold,IfcSpaceHeater,tbd,tbd,brick144_no_match,"No Brick 1.4.4 Equipment class; physical distribution path, kept as topology evidence only."
+UH,heat emitter - unit heater,IfcSpaceHeater,brick:Space_Heater,mapped,brick144_close,Unit heater.
+WAC,heat emitter - warm air curtain,IfcSpaceHeater,brick:HVAC_Equipment,mapped,brick144_broader,Warm air curtain.
+HX,heat exchanger,IfcHeatExchanger,brick:Heat_Exchanger,mapped,brick144_exact,Heat exchanger.
+CPHX,heat exchanger - cooling plate heat exchanger,IfcHeatExchanger,brick:Heat_Exchanger,mapped,brick144_broader,Plate heat exchanger; no plate subclass.
+HPHX,heat exchanger - heating plate heat exchanger,IfcHeatExchanger,brick:Heat_Exchanger,mapped,brick144_broader,Plate heat exchanger; no plate subclass.
+PHX,heat exchanger - plate heat exchanger,IfcHeatExchanger,brick:Heat_Exchanger,mapped,brick144_broader,Plate heat exchanger; no plate subclass.
+HIU,heat interface unit,IfcUnitaryEquipment,brick:HVAC_Equipment,mapped,brick144_broader,Heat interface unit.
+ASHP,heat pump - air source heat pump,IfcUnitaryEquipment,brick:HVAC_Equipment,mapped,brick144_broader,Heat pump; packaged or split not stated.
+GSHP,heat pump - ground source heat pump,IfcUnitaryEquipment,brick:HVAC_Equipment,mapped,brick144_broader,Heat pump; packaged or split not stated.
+HP,heat pump - heat pump,IfcUnitaryEquipment,brick:HVAC_Equipment,mapped,brick144_broader,Heat pump; packaged or split not stated.
+WSHP,heat pump - water source heat pump,IfcUnitaryEquipment,brick:HVAC_Equipment,mapped,brick144_broader,Heat pump; packaged or split not stated.
+HLI,high level interface,IfcController,brick:Gateway,mapped,brick144_close,High level interface.
+HS,horn strobe,IfcAlarm,brick:Fire_Safety_Equipment,mapped,brick144_broader,Horn strobe alarm appliance.
+HMI,human machine interface,IfcCommunicationsAppliance,brick:ICT_Hardware,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+HUM,humidifier,IfcHumidifier,brick:Humidifier,mapped,brick144_exact,Same concept as brick:Humidifier.
+ETS,ict equipment - ethernet switch,IfcCommunicationsAppliance,brick:Ethernet_Switch,mapped,brick144_exact,Same concept as brick:Ethernet_Switch.
+FBS,ict equipment - fibre switch,IfcCommunicationsAppliance,brick:Data_Network_Equipment,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+IDF,ict equipment - intermediate distribution frame,IfcCommunicationsAppliance,brick:ICT_Rack,mapped,brick144_close,Intermediate distribution frame.
+SRV,ict equipment - multi-purpose server,IfcCommunicationsAppliance,brick:Server,mapped,brick144_exact,Multi-purpose server.
+NAM,ict equipment - network access manager,IfcCommunicationsAppliance,brick:Network_Security_Equipment,mapped,brick144_close,Network access manager.
+FW,ict equipment - network firewall,IfcCommunicationsAppliance,brick:Network_Security_Equipment,mapped,brick144_exact,Same concept as brick:Network_Security_Equipment.
+NMS,ict equipment - network monitoring system,IfcCommunicationsAppliance,brick:ICT_Hardware,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+RTR,ict equipment - network router,IfcCommunicationsAppliance,brick:Network_Router,mapped,brick144_exact,Same concept as brick:Network_Router.
+PDUIPD,ict equipment - pdu ip dongle,IfcCommunicationsAppliance,brick:ICT_Hardware,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+PC,ict equipment - personal computer,IfcCommunicationsAppliance,brick:ICT_Hardware,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+POEETS,ict equipment - power-over-ethernet network switch,IfcCommunicationsAppliance,brick:Ethernet_Switch,mapped,brick144_exact,Same concept as brick:Ethernet_Switch.
+SDNC,ict equipment - software-defined networking controller,IfcCommunicationsAppliance,brick:Data_Network_Equipment,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+UPSMS,ict equipment - ups management system,IfcCommunicationsAppliance,brick:ICT_Hardware,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+WRTR,ict equipment - wi-fi router,IfcCommunicationsAppliance,brick:Network_Router,mapped,brick144_exact,Same concept as brick:Network_Router.
+WAP,ict equipment - wireless access point,IfcCommunicationsAppliance,brick:Wireless_Access_Point,mapped,brick144_exact,Same concept as brick:Wireless_Access_Point.
+WLC,ict equipment - wireless lan controller,IfcController,brick:Data_Network_Equipment,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+IPD,impact protection device,IfcImpactProtectionDevice,tbd,tbd,brick144_no_match,Building structure or architectural element; not Brick Equipment.
+INT,interceptor,IfcInterceptor,brick:Separation_Tank,mapped,brick144_broader,Interceptor separates material from wastewater.
+ITCP,interceptor,IfcInterceptor,brick:Separation_Tank,mapped,brick144_broader,Interceptor separates material from wastewater.
+ITCPC,interceptor - cyclonic,IfcInterceptor,brick:Separation_Tank,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+ITCPG,interceptor - grease,IfcInterceptor,brick:Grease_Interceptor,mapped,brick144_exact,Same concept as brick:Grease_Interceptor.
+ITCPO,interceptor - oil,IfcInterceptor,brick:Separation_Tank,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+ITCPP,interceptor - petrol,IfcInterceptor,brick:Separation_Tank,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+JB,junction box,IfcJunctionBox,tbd,tbd,brick144_no_match,Passive junction box; not Brick Equipment.
+KSMBL,kitchen appliance - blender/smoothie maker,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+KBBL,kitchen appliance - bowl blender,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+KBC,kitchen appliance - bowl cutter,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+KCO,kitchen appliance - can opener,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+KCWM,kitchen appliance - crepe and waffle maker,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+KCDY,kitchen appliance - cutlery dryer,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+KDR,kitchen appliance - dough divider/rounder,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+KDPR,kitchen appliance - dough press,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+KICT,kitchen appliance - insect trap,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+KJC,kitchen appliance - juicer,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+KMBS,kitchen appliance - meat bone saw,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+KMM,kitchen appliance - meat mincer,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+KMS,kitchen appliance - meat slicer,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+CKMWO,kitchen appliance - microwave oven,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+KMIX,kitchen appliance - mixer,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+KPM,kitchen appliance - pacotizing machine,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+KPPM,kitchen appliance - potato peeling machine,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+KFS,kitchen appliance - scale,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+KSBL,kitchen appliance - stick blender,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+KSR,kitchen appliance - storage rack,IfcFurniture,tbd,tbd,brick144_no_match,Furniture; not Brick Equipment.
+KTST,kitchen appliance - toaster,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+KUVSC,kitchen appliance - uv knife steralizer,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+KVPM,kitchen appliance - vacuum packing machine,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+KVCM,kitchen appliance - veg cutting machine,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+KVWM,kitchen appliance - vegetable washer,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+KVW,kitchen appliance - vegetable washer and dryer,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+WDR,kitchen appliance - warming drawer,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+KVCH,kitchen ventilation - condensate hood,IfcDamper,brick:HVAC_Equipment,mapped,brick144_broader,Kitchen canopy hood; Fume_Hood is a laboratory exhaust device.
+KVGH,kitchen ventilation - extraction/exhuast grease hood,IfcDamper,brick:HVAC_Equipment,mapped,brick144_broader,Kitchen canopy hood; Fume_Hood is a laboratory exhaust device.
+KVVC,kitchen ventilation - ventilated ceiling,IfcAirTerminalBox,brick:HVAC_Equipment,mapped,brick144_broader,Kitchen ventilated ceiling.
+DIM,lighting - control - dimmer,IfcSwitchingDevice,brick:Dimmer,mapped,brick144_exact,Same concept as brick:Dimmer.
+LKP,lighting - control - keypad,IfcSwitchingDevice,brick:Interface,mapped,brick144_close,Lighting keypad gives occupants control over lighting.
+LCM,lighting - control - module,IfcUnitaryControlElement,brick:Controller,mapped,brick144_broader,Lighting control module; no lighting-specific controller class.
+LCP,lighting - control - panel,IfcUnitaryControlElement,brick:Controller,mapped,brick144_close,Lighting control panel / area controller.
+LSW,lighting - control - switch,IfcSwitchingDevice,brick:Switch,mapped,brick144_exact,Brick Switch is defined as a switch operating a lighting installation.
+LT,lighting - fixture,IfcLightFixture,brick:Luminaire,mapped,brick144_exact,Same concept as brick:Luminaire.
+DL,lighting - fixture - downlight,IfcLightFixture,brick:Luminaire,mapped,brick144_broader,Downlight; Brick has no luminaire subtypes.
+EXIT,lighting - fixture - illuminated exit sign,IfcLightFixture,brick:Luminaire,mapped,brick144_broader,Illuminated exit sign is an emergency luminaire with its own light source.
+LL,lighting - fixture - linear,IfcLightFixture,brick:Luminaire,mapped,brick144_broader,Linear luminaire; Brick has no luminaire subtypes.
+TL,lighting - fixture - linear tape,IfcLightFixture,brick:Luminaire,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+PL,lighting - fixture - pendant,IfcLightFixture,brick:Luminaire,mapped,brick144_broader,Pendant luminaire; Brick has no luminaire subtypes.
+SL,lighting - fixture - spot light,IfcLightFixture,brick:Luminaire,mapped,brick144_broader,Spot light; Brick has no luminaire subtypes.
+EL,lighting - fixture - standalone emergency light,IfcLightFixture,brick:Luminaire,mapped,brick144_broader,Emergency luminaire; Brick has no emergency luminaire subclass.
+UL,lighting - fixture - uplight,IfcLightFixture,brick:Luminaire,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+WL,lighting - fixture - wall light,IfcLightFixture,brick:Luminaire,mapped,brick144_broader,Wall light; Brick has no luminaire subtypes.
+LBO,lighting - fixture external - bollard,IfcLightFixture,brick:Luminaire,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+LPO,lighting - fixture external - lampost,IfcLightFixture,brick:Luminaire,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+LTGW,lighting - gateway,IfcCommunicationsAppliance,brick:Gateway,mapped,brick144_close,Lighting gateway.
+LGRP,lighting - group,IfcGroup,tbd,tbd,brick144_no_match,Generic or abstract object; Brick class cannot be determined from the tag.
+LMP,lighting - lamp,IfcLamp,brick:Lighting,mapped,brick144_broader,"Lamp is a lighting component, not a complete luminaire."
+TR,lighting - track - electric track for lights,IfcCableSegment,brick:Lighting,mapped,brick144_broader,Lighting track.
+CIS,lightning protection - cast-in-socket,IfcFastener,tbd,tbd,brick144_no_match,Lightning protection component; Brick 1.4.4 has no class for it.
+CIP,lightning protection - concrete inspection pit,IfcDistributionChamberElement,tbd,tbd,brick144_no_match,Lightning protection component; Brick 1.4.4 has no class for it.
+EBA,lightning protection - earthing bar,IfcCableSegment,tbd,tbd,brick144_no_match,Lightning protection component; Brick 1.4.4 has no class for it.
+ECL,lightning protection - earthing clamp,IfcFastener,tbd,tbd,brick144_no_match,Lightning protection component; Brick 1.4.4 has no class for it.
+ERO,lightning protection - earthing rod,IfcCableSegment,tbd,tbd,brick144_no_match,Lightning protection component; Brick 1.4.4 has no class for it.
+ETA,lightning protection - earthing tape,IfcCableSegment,tbd,tbd,brick144_no_match,Lightning protection component; Brick 1.4.4 has no class for it.
+LQT,liquid terminal,IfcLiquidTerminal,tbd,tbd,brick144_no_match,Generic or abstract object; Brick class cannot be determined from the tag.
+LBCN,location services - beacon,IfcCommunicationsAppliance,brick:ICT_Hardware,mapped,brick144_broader,Location beacon.
+MED,medical device,IfcMedicalDevice,tbd,tbd,brick144_no_match,Medical device; Brick 1.4.4 has no class for it.
+MTR,meter,IfcFlowMeter,brick:Meter,mapped,brick144_exact,Same concept as brick:Meter.
+EBM,meter - electric branch meter,IfcFlowMeter,brick:Electrical_Meter,mapped,brick144_exact,Same concept as brick:Electrical_Meter.
+EM,meter - electric meter,IfcFlowMeter,brick:Electrical_Meter,mapped,brick144_exact,Electric meter.
+EMV,meter - electric meter (virtual),IfcFlowMeter,tbd,tbd,brick144_no_match,Virtual (non-physical) device; not Brick Equipment.
+FM,meter - flow meter,IfcFlowMeter,brick:Meter,mapped,brick144_broader,Flow meter; medium not stated.
+GM,meter - gas meter,IfcFlowMeter,brick:Gas_Meter,mapped,brick144_exact,Same concept as brick:Gas_Meter.
+GMV,meter - gas meter (virtual),IfcFlowMeter,tbd,tbd,brick144_no_match,Virtual (non-physical) device; not Brick Equipment.
+HM,meter - heat meter,IfcFlowMeter,brick:Thermal_Power_Meter,mapped,brick144_close,Heat meter.
+HMV,meter - heat meter (virtual),IfcFlowMeter,tbd,tbd,brick144_no_match,Virtual (non-physical) device; not Brick Equipment.
+WM,meter - water meter,IfcFlowMeter,brick:Water_Meter,mapped,brick144_exact,Water meter.
+WMV,meter - water meter (virtual),IfcFlowMeter,tbd,tbd,brick144_no_match,Virtual (non-physical) device; not Brick Equipment.
+MTA,mobile telecommunications appliance,IfcMobileTelecommunicationsAppliance,brick:ICT_Equipment,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+MCN,motor connection,IfcMotorConnection,tbd,tbd,brick144_no_match,Generic or abstract object; Brick class cannot be determined from the tag.
+VSD,motor controller - vsd (inverter drive),IfcMotorConnection,brick:Variable_Frequency_Drive,mapped,brick144_exact,Same concept as brick:Variable_Frequency_Drive.
+AVR,natural air ventilator,IfcStackTerminal,brick:HVAC_Equipment,mapped,brick144_broader,Natural ventilator.
+OI,oil interceptor,IfcInterceptor,brick:Separation_Tank,mapped,brick144_broader,Oil interceptor separates oil from wastewater.
+OUT,outlet,IfcOutlet,brick:Electrical_Equipment,mapped,brick144_broader,Outlet; Brick has no outlet class.
+CGDXO,outlet - ceiling duplex,IfcOutlet,brick:Electrical_Equipment,mapped,brick144_broader,Outlet; Brick has no outlet class.
+CUSF,outlet - connection unit switched fused,IfcOutlet,brick:Electrical_Equipment,mapped,brick144_broader,Switched fused connection unit; Brick has no outlet class.
+CUUF,outlet - connection unit unswitched fused,IfcOutlet,brick:Electrical_Equipment,mapped,brick144_broader,Unswitched fused connection unit; Brick has no outlet class.
+CNDO,outlet - controlled duplex,IfcOutlet,brick:Electrical_Equipment,mapped,brick144_broader,Outlet; Brick has no outlet class.
+DATA,outlet - data wall outlet,IfcOutlet,tbd,tbd,brick144_no_match,"Passive data outlet; brick:Ethernet_Port sits under ICT_Equipment, defined as processor-based."
+DDR,outlet - double 20A duplex receptacle,IfcOutlet,brick:Electrical_Equipment,mapped,brick144_broader,Outlet; Brick has no outlet class.
+DSSO,outlet - double switched socket outlet,IfcOutlet,brick:Electrical_Equipment,mapped,brick144_broader,Socket outlet; Brick has no outlet class (PlugStrip is a power strip).
+DSO,outlet - double unswitched socket outlet,IfcOutlet,brick:Electrical_Equipment,mapped,brick144_broader,Outlet; Brick has no outlet class.
+DXO,outlet - duplex outlets,IfcOutlet,brick:Electrical_Equipment,mapped,brick144_broader,Outlet; Brick has no outlet class.
+FLRB,outlet - floor box,IfcOutlet,brick:Electrical_Equipment,mapped,brick144_broader,Floor box; Brick has no outlet class.
+FLRDX,outlet - floor duplex outlet,IfcOutlet,brick:Electrical_Equipment,mapped,brick144_broader,Floor duplex outlet; Brick has no outlet class.
+FLRQD,outlet - floor quad outlet,IfcOutlet,brick:Electrical_Equipment,mapped,brick144_broader,Outlet; Brick has no outlet class.
+INSO,outlet - industrial (commando) socket outlet,IfcOutlet,brick:Electrical_Equipment,mapped,brick144_broader,Outlet; Brick has no outlet class.
+LER,outlet - linear electric receptacle,IfcOutlet,brick:Electrical_Equipment,mapped,brick144_broader,Outlet; Brick has no outlet class.
+SSSO,outlet - single switched socket outlet,IfcOutlet,brick:Electrical_Equipment,mapped,brick144_broader,Outlet; Brick has no outlet class.
+SSO,outlet - single unswitched socket outlet,IfcOutlet,brick:Electrical_Equipment,mapped,brick144_broader,Outlet; Brick has no outlet class.
+AP,panel - alarm panel,IfcUnitaryControlElement,tbd,tbd,brick144_no_match,Generic alarm panel; fire or security scope unknown.
+CTCP,panel - chemical treatment control panel,IfcUnitaryControlElement,brick:Controller,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+CTRP,panel - control panel,IfcUnitaryControlElement,brick:Electrical_Equipment,mapped,brick144_broader,Control panel (IfcElectricDistributionPoint CONTROLPANEL); contents unspecified.
+FACP,panel - fire alarm control panel,IfcUnitaryControlElement,brick:Fire_Alarm_Control_Panel,mapped,brick144_exact,Fire alarm control panel.
+GBCP,panel - gas booster control panel,IfcUnitaryControlElement,brick:Controller,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+GASDET,panel - gas detection panel,IfcUnitaryControlElement,brick:Controller,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+GENCP,panel - generator control panel,IfcUnitaryControlElement,brick:Controller,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+GWCP,panel - greywater control panel,IfcUnitaryControlElement,brick:Controller,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+HVACCP,panel - hvac control panel,IfcUnitaryControlElement,brick:Controller,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+LDP,panel - leak detection panel,IfcUnitaryControlElement,brick:Controller,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+MCC,panel - motor control center,IfcUnitaryControlElement,brick:Motor_Control_Center,mapped,brick144_exact,Same concept as brick:Motor_Control_Center.
+RIO,panel - remote i/o control panel,IfcUnitaryControlElement,brick:Controller,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+RDT,panel - rodent repellent panel,IfcUnitaryControlElement,tbd,tbd,brick144_no_match,Rodent repellent panel; Brick 1.4.4 has no class for it.
+VAVCTR,panel - variable air volume control station / panel,IfcUnitaryControlElement,brick:Controller,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+PFT,pipe fitting,IfcPipeFitting,tbd,tbd,brick144_no_match,"No Brick 1.4.4 Equipment class; physical distribution path, kept as topology evidence only."
+PLT,plate,IfcPlate,tbd,tbd,brick144_no_match,Generic or abstract object; Brick class cannot be determined from the tag.
+PU,pressurisation unit,IfcUnitaryEquipment,brick:HVAC_Equipment,mapped,brick144_broader,Pressurisation unit.
+WMS,pressurisation unit - water system makeup unit,IfcUnitaryEquipment,brick:HVAC_Equipment,mapped,brick144_broader,Makeup / pressurisation unit.
+PMP,pump,IfcPump,brick:Pump,mapped,brick144_exact,Same concept as brick:Pump.
+CNP,pump - automatic condensate pump,IfcPump,brick:Water_Pump,mapped,brick144_broader,Condensate pump.
+AXCWP,pump - auxilliary process cooling water pump,IfcPump,brick:Water_Pump,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+BSP,pump - booster pump,IfcPump,brick:Booster_Pump,mapped,brick144_exact,Same concept as brick:Booster_Pump.
+CHWP,pump - chilled water pump,IfcPump,brick:Chilled_Water_Pump,mapped,brick144_exact,Same concept as brick:Chilled_Water_Pump.
+CP,pump - circulating pump,IfcPump,brick:Circulator_Pump,mapped,brick144_exact,Circulating pump.
+CDWP,pump - condenser water pump,IfcPump,brick:Condenser_Water_Pump,mapped,brick144_exact,Same concept as brick:Condenser_Water_Pump.
+CTSEPP,pump - cooling tower separator pump,IfcPump,brick:Water_Pump,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+DHWP,pump - domestic hot water circulation pump,IfcPump,brick:Domestic_Hot_Water_Circulator_Pump,mapped,brick144_exact,Same concept as brick:Domestic_Hot_Water_Circulator_Pump.
+DP,pump - dosing pump,IfcPump,brick:Pump,mapped,brick144_broader,Dosing pump.
+FHP,pump - fire hydrant pump,IfcPump,brick:Water_Pump,mapped,brick144_broader,Fire hydrant pump.
+FOP,pump - fuel oil pump,IfcPump,brick:Pump,mapped,brick144_broader,Fuel oil pump.
+GBP,pump - gas booster pump,IfcPump,brick:Pump,mapped,brick144_broader,Gas booster.
+GWBP,pump - greywater booster pump,IfcPump,brick:Booster_Pump,mapped,brick144_exact,Same concept as brick:Booster_Pump.
+HXP,pump - heat exchanger pump,IfcPump,brick:Pump,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+HTCHP,pump - high temperature chilled water pump,IfcPump,brick:Chilled_Water_Pump,mapped,brick144_exact,Same concept as brick:Chilled_Water_Pump.
+HTCWP,pump - high temperature condenser water pump,IfcPump,brick:Condenser_Water_Pump,mapped,brick144_exact,Same concept as brick:Condenser_Water_Pump.
+HWP,pump - hot water pump,IfcPump,brick:Hot_Water_Pump,mapped,brick144_exact,Same concept as brick:Hot_Water_Pump.
+LTCHWP,pump - low temperature chilled water pump,IfcPump,brick:Chilled_Water_Pump,mapped,brick144_exact,Same concept as brick:Chilled_Water_Pump.
+LTCDWP,pump - low temperature condenser water pump,IfcPump,brick:Condenser_Water_Pump,mapped,brick144_exact,Same concept as brick:Condenser_Water_Pump.
+LTHWP,pump - low temperature hot water pump,IfcPump,brick:Hot_Water_Pump,mapped,brick144_exact,Same concept as brick:Hot_Water_Pump.
+PAPS,pump - packaged pump set,IfcPump,brick:Pump,mapped,brick144_broader,Packaged pump set.
+DWBP,pump - potable/domestic water booster pump,IfcPump,brick:Booster_Pump,mapped,brick144_exact,Domestic water booster pump.
+DWTP,pump - potable/domestic water transfer pump,IfcPump,brick:Water_Pump,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+PCHWP,pump - primary chilled water pump,IfcPump,brick:Chilled_Water_Pump,mapped,brick144_exact,Same concept as brick:Chilled_Water_Pump.
+PLTHWP,pump - primary low temperature hot water pump,IfcPump,brick:Hot_Water_Pump,mapped,brick144_exact,Same concept as brick:Hot_Water_Pump.
+PP,pump - primary pump,IfcPump,brick:Pump,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+PCWP,pump - process cooling water pump,IfcPump,brick:Water_Pump,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+PWP,pump - process water pump,IfcPump,brick:Water_Pump,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+RNWBP,pump - rainwater booster pump,IfcPump,brick:Booster_Pump,mapped,brick144_exact,Same concept as brick:Booster_Pump.
+RNWP,pump - rainwater pump,IfcPump,brick:Water_Pump,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+RCP,pump - recirculation pump,IfcPump,brick:Circulator_Pump,mapped,brick144_close,Recirculation pump.
+RWP,pump - recycled water pump,IfcPump,brick:Water_Pump,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+SCHWP,pump - secondary chilled water pump,IfcPump,brick:Chilled_Water_Pump,mapped,brick144_exact,Same concept as brick:Chilled_Water_Pump.
+SHCP,pump - secondary heating circulation pump,IfcPump,brick:Hot_Water_Circulator_Pump,mapped,brick144_close,Secondary heating circulation pump.
+SHWP,pump - secondary hot water circulating pump,IfcPump,brick:Hot_Water_Circulator_Pump,mapped,brick144_exact,Same concept as brick:Hot_Water_Circulator_Pump.
+SLTHWP,pump - secondary low temperature hot water pump,IfcPump,brick:Hot_Water_Pump,mapped,brick144_exact,Same concept as brick:Hot_Water_Pump.
+SP,pump - secondary pump,IfcPump,brick:Pump,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+SEPP,pump - separator pump,IfcPump,brick:Pump,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+SEP,pump - sewage ejector pump,IfcPump,brick:Pump,mapped,brick144_broader,Sewage ejector pump.
+SPP,pump - sprinkler pump,IfcPump,brick:Water_Pump,mapped,brick144_broader,Sprinkler pump.
+SMPP,pump - sump pump,IfcPump,brick:Pump,mapped,brick144_broader,Sump pump.
+TMUP,pump - tower make up pump,IfcPump,brick:Water_Pump,mapped,brick144_broader,Tower make-up pump.
+TMUV,pump - tower make up valve,IfcValve,brick:Makeup_Water_Valve,mapped,brick144_exact,Same concept as brick:Makeup_Water_Valve.
+TRP,pump - transfer pump,IfcPump,brick:Pump,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+VCP,pump - vacuum pump,IfcPump,brick:Pump,mapped,brick144_broader,Vacuum pump.
+WWP,pump - waste water pump,IfcPump,brick:Pump,mapped,brick144_broader,Waste water pump.
+WRP,pump - wet riser pump,IfcPump,brick:Water_Pump,mapped,brick144_broader,Wet riser pump.
+PVACDS,pv ac disconnect,IfcSwitchingDevice,brick:Disconnect_Switch,mapped,brick144_exact,Same concept as brick:Disconnect_Switch.
+PVDAS,pv data acquisition system,IfcController,brick:ICT_Hardware,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+PVDCC,pv dc combiner,IfcDistributionBoard,brick:Electrical_Equipment,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+PVDCDS,pv dc disconnect,IfcSwitchingDevice,brick:Disconnect_Switch,mapped,brick144_exact,Same concept as brick:Disconnect_Switch.
+PVDB,pv distribution board,IfcDistributionBoard,brick:Electrical_Equipment,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+PVI,pv inverter,IfcTransformer,brick:Photovoltaic_Inverter,mapped,brick144_exact,Same concept as brick:Photovoltaic_Inverter.
+PVMC,pv microgrid controller,IfcController,brick:Controller,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+PVMLPE,pv module-level power electronics,IfcController,brick:Electrical_Equipment,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+PVP,pv panel,IfcSolarDevice,brick:PV_Panel,mapped,brick144_exact,Same concept as brick:PV_Panel.
+PVTXMR,pv transformer,IfcTransformer,brick:Transformer,mapped,brick144_exact,Same concept as brick:Transformer.
+CHB,radiant surface - chilled beam,IfcCooledBeam,brick:Chilled_Beam,mapped,brick144_exact,Same concept as brick:Chilled_Beam.
+ACHB,radiant surface - chilled beam - active,IfcCooledBeam,brick:Active_Chilled_Beam,mapped,brick144_exact,Same concept as brick:Active_Chilled_Beam.
+PCHB,radiant surface - chilled beam - passive,IfcCooledBeam,brick:Passive_Chilled_Beam,mapped,brick144_exact,Same concept as brick:Passive_Chilled_Beam.
+CCH,radiant surface - chilled ceiling,IfcSpaceHeater,brick:Radiant_Ceiling_Panel,mapped,brick144_close,Chilled ceiling.
+HTB,radiant surface - hot water beam,IfcSpaceHeater,brick:Terminal_Unit,mapped,brick144_broader,Hot water beam.
+FRZBCF,refrigeration - blast chiller/freezer,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+CRFRZ,refrigeration - coldroom freezer,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+CRHW,refrigeration - coldroom hardware/plant,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+CRREF,refrigeration - coldroom refrigerated,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+FRZ,refrigeration - freezer,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+FRZICC,refrigeration - ice cream chest freezer,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+IM,refrigeration - ice maker,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+REF,refrigeration - refrigerator,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+REFRP,refrigeration - retarder/proover,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+SOI,sand oil interceptor,IfcInterceptor,brick:Separation_Tank,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+SSP,sand separator,IfcInterceptor,brick:Filter,mapped,brick144_close,Sand separator removes solids from a fluid.
+SAN,sanitary terminal,IfcSanitaryTerminal,tbd,tbd,brick144_no_match,Sanitary or drainage terminal; Brick 1.4.4 has no class for it.
+WC,sanitary terminal - WC (toilet),IfcSanitaryTerminal,tbd,tbd,brick144_no_match,Sanitary or drainage terminal; Brick 1.4.4 has no class for it.
+BATH,sanitary terminal - bath,IfcSanitaryTerminal,tbd,tbd,brick144_no_match,Sanitary or drainage terminal; Brick 1.4.4 has no class for it.
+BIDET,sanitary terminal - bidet,IfcSanitaryTerminal,tbd,tbd,brick144_no_match,Sanitary or drainage terminal; Brick 1.4.4 has no class for it.
+CIST,sanitary terminal - cistern,IfcSanitaryTerminal,tbd,tbd,brick144_no_match,Sanitary or drainage terminal; Brick 1.4.4 has no class for it.
+DF,sanitary terminal - drinking fountain / bottle filler,IfcSanitaryTerminal,tbd,tbd,brick144_no_match,Sanitary or drainage terminal; Brick 1.4.4 has no class for it.
+SFN,sanitary terminal - sanitary fountain,IfcSanitaryTerminal,tbd,tbd,brick144_no_match,Sanitary or drainage terminal; Brick 1.4.4 has no class for it.
+STAP,sanitary terminal - sensor tap,IfcSanitaryTerminal,tbd,tbd,brick144_no_match,Sanitary or drainage terminal; Brick 1.4.4 has no class for it.
+SHW,sanitary terminal - shower,IfcSanitaryTerminal,tbd,tbd,brick144_no_match,Sanitary or drainage terminal; Brick 1.4.4 has no class for it.
+SINK,sanitary terminal - sink,IfcSanitaryTerminal,tbd,tbd,brick144_no_match,Sanitary or drainage terminal; Brick 1.4.4 has no class for it.
+TAP,sanitary terminal - tap,IfcSanitaryTerminal,tbd,tbd,brick144_no_match,Sanitary or drainage terminal; Brick 1.4.4 has no class for it.
+UR,sanitary terminal - urinal,IfcSanitaryTerminal,tbd,tbd,brick144_no_match,Sanitary or drainage terminal; Brick 1.4.4 has no class for it.
+WHB,sanitary terminal - wash hand basin,IfcSanitaryTerminal,tbd,tbd,brick144_no_match,Sanitary or drainage terminal; Brick 1.4.4 has no class for it.
+WVT,sanitary terminal - washroom vanity trough,IfcSanitaryTerminal,tbd,tbd,brick144_no_match,Sanitary or drainage terminal; Brick 1.4.4 has no class for it.
+SNS,sensor,IfcSensor,brick:Sensor_Equipment,mapped,brick144_broader,Physical sensor; Brick *_Sensor classes are Points.
+COS,sensor - CO sensor,IfcSensor,brick:Sensor_Equipment,mapped,brick144_broader,Physical CO sensor; brick:CO_Sensor is a Point.
+CDS,sensor - CO2 sensor,IfcSensorCO2,brick:Sensor_Equipment,mapped,brick144_broader,Physical CO2 sensor; brick:CO2_Sensor is a Point.
+CS,sensor - condensation water sensor,IfcSensor,brick:Sensor_Equipment,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+CNTS,sensor - contact sensor,IfcSensor,brick:Sensor_Equipment,mapped,brick144_broader,Physical contact sensor; brick:Contact_Sensor is a Point.
+CRRS,sensor - corrosion sensor,IfcSensor,brick:Sensor_Equipment,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+DPS,sensor - differential pressure sensor,IfcSensor,brick:Sensor_Equipment,mapped,brick144_broader,Physical differential pressure sensor; Brick sensor class is a Point.
+GLYPR,sensor - glycol protector sensor,IfcSensor,brick:Sensor_Equipment,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+HMS,sensor - humidity sensor,IfcSensor,brick:Sensor_Equipment,mapped,brick144_broader,Physical humidity sensor; brick:Humidity_Sensor is a Point.
+OHMS,sensor - humidity sensor - outside,IfcSensor,brick:Sensor_Equipment,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+IMUS,sensor - inertial measurement unit sensor,IfcSensor,brick:Sensor_Equipment,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+LDS,sensor - leak detection sensor,IfcSensor,brick:Leak_Detector_Equipment,mapped,brick144_exact,Same concept as brick:Leak_Detector_Equipment.
+LVLS,sensor - level sensor,IfcSensor,brick:Sensor_Equipment,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+LMS,sensor - lighting motion sensor,IfcSensor,brick:Occupancy_Sensor_Equipment,mapped,brick144_close,Lighting motion sensor detects occupancy.
+LTMTS,sensor - lighting multisensor,IfcSensor,brick:Sensor_Equipment,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+LPS,sensor - lighting photocell sensor,IfcSensor,brick:Daylight_Sensor_Equipment,mapped,brick144_close,Lighting photocell senses daylight.
+MCS,sensor - moisture content sensor,IfcSensor,brick:Sensor_Equipment,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+MOS,sensor - motion sensor,IfcSensor,brick:Occupancy_Sensor_Equipment,mapped,brick144_close,Motion/presence detector as physical equipment; brick:Motion_Sensor is a Point.
+MTS,sensor - multi sensor,IfcSensor,brick:Sensor_Equipment,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+NDS,sensor - nitrogen dioxide sensor,IfcSensor,brick:Sensor_Equipment,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+PMS,sensor - particulate matter sensor,IfcSensor,brick:Sensor_Equipment,mapped,brick144_broader,Physical particulate matter sensor; Brick sensor class is a Point.
+PCS,sensor - people counting sensor,IfcSensor,brick:People_Count_Sensor_Equipment,mapped,brick144_exact,Same concept as brick:People_Count_Sensor_Equipment.
+PS,sensor - pressure sensor,IfcSensor,brick:Sensor_Equipment,mapped,brick144_broader,Physical pressure sensor; brick:Pressure_Sensor is a Point.
+SSS,sensor - seismic sensor,IfcSensor,brick:Vibration_Sensor_Equipment,mapped,brick144_close,Seismic sensor measures ground vibration.
+SLS,sensor - sound level sensor,IfcSensor,brick:Sensor_Equipment,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+SPS,sensor - static pressure sensor,IfcSensor,brick:Sensor_Equipment,mapped,brick144_broader,Physical static pressure sensor; Brick sensor class is a Point.
+TPS,sensor - temperature sensor,IfcSensor,brick:Sensor_Equipment,mapped,brick144_broader,Physical temperature sensor; brick:Temperature_Sensor is a Point.
+OTPS,sensor - temperature sensor - outside,IfcSensor,brick:Sensor_Equipment,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+TSTAT,sensor - thermostat,IfcUnitaryControlElement,brick:Thermostat,mapped,brick144_exact,Same concept as brick:Thermostat.
+VS,sensor - velocity sensor,IfcSensor,brick:Sensor_Equipment,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+VBS,sensor - vibration sensor,IfcSensor,brick:Vibration_Sensor_Equipment,mapped,brick144_exact,Same concept as brick:Vibration_Sensor_Equipment.
+AVFS,sensor - volumetric flow sensor - air,IfcSensor,brick:Sensor_Equipment,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+WVFS,sensor - volumetric flow sensor - water,IfcSensor,brick:Sensor_Equipment,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+WS,sensor - wind sensor,IfcSensor,brick:Sensor_Equipment,mapped,brick144_broader,Wind sensor; Weather_Station is a complete station.
+SDACT,shading - shading device actuator,IfcActuator,brick:Shading_Equipment,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+BL,shading - shading device blinds,IfcShadingDevice,brick:Blind,mapped,brick144_exact,Same concept as brick:Blind.
+SDC,shading - shading device controller,IfcController,brick:Controller,mapped,brick144_broader,Shading controller.
+SDKP,shading - shading device keypad,IfcSwitchingDevice,brick:Shading_Equipment,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+SDM,shading - shading device motor,IfcElectricMotor,brick:Motor,mapped,brick144_close,Shading device motor.
+SDSTM,shading - shading device solar tracking module,IfcSensor,brick:Shading_Equipment,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+SHD,shading device,IfcShadingDevice,brick:Shading_Equipment,mapped,brick144_exact,Same concept as brick:Shading_Equipment.
+BCN,signal - beacon,IfcAlarm,tbd,tbd,brick144_no_match,"Signal beacon; purpose (fire, security, process) unknown."
+SOL,solar device,IfcSolarDevice,tbd,tbd,brick144_no_match,Solar device may be PV or thermal; only common ancestor would be brick:Equipment.
+SPACE,space,IfcSpace,bot:Space,mapped,bdns_tag_bot_direct,
+SZONE,spatial zone,IfcSpatialZone,bot:Zone,mapped,bdns_tag_bot_parent,
+BDCG,stack terminal - birdcage,IfcStackTerminal,tbd,tbd,brick144_no_match,Sanitary or drainage terminal; Brick 1.4.4 has no class for it.
+COWL,stack terminal - cowl,IfcStackTerminal,tbd,tbd,brick144_no_match,Sanitary or drainage terminal; Brick 1.4.4 has no class for it.
+RWH,stack terminal - rain water hopper,IfcStackTerminal,tbd,tbd,brick144_no_match,Sanitary or drainage terminal; Brick 1.4.4 has no class for it.
+RE,stack terminal - rodding eye,IfcStackTerminal,tbd,tbd,brick144_no_match,Sanitary or drainage terminal; Brick 1.4.4 has no class for it.
+SVP,stack terminal - soil vent pipe,IfcStackTerminal,tbd,tbd,brick144_no_match,Sanitary or drainage terminal; Brick 1.4.4 has no class for it.
+SS,stack terminal - stubb stack,IfcStackTerminal,tbd,tbd,brick144_no_match,Sanitary or drainage terminal; Brick 1.4.4 has no class for it.
+VP,stack terminal - vent pipe,IfcStackTerminal,tbd,tbd,brick144_no_match,Sanitary or drainage terminal; Brick 1.4.4 has no class for it.
+CFN,structure -  caisson foundation,IfcCaissonFoundation,tbd,tbd,brick144_no_match,Building structure or architectural element; not Brick Equipment.
+TAN,structure - anchor,IfcTendonAnchor,tbd,tbd,brick144_no_match,Building structure or architectural element; not Brick Equipment.
+BEAM,structure - beam,IfcBeam,tbd,tbd,brick144_no_match,Building structure or architectural element; not Brick Equipment.
+BRG,structure - bearing,IfcBearing,tbd,tbd,brick144_no_match,Building structure or architectural element; not Brick Equipment.
+BRDG,structure - bridge,IfcBridge,tbd,tbd,brick144_no_match,Building structure or architectural element; not Brick Equipment.
+CMN,structure - chimney,IfcChimney,tbd,tbd,brick144_no_match,Building structure or architectural element; not Brick Equipment.
+COL,structure - column,IfcColumn,tbd,tbd,brick144_no_match,Building structure or architectural element; not Brick Equipment.
+CTW,structure - curtain wall,IfcCurtainWall,tbd,tbd,brick144_no_match,Building structure or architectural element; not Brick Equipment.
+EWC,structure - earthworks cut,IfcEarthworksCut,tbd,tbd,brick144_no_match,Building structure or architectural element; not Brick Equipment.
+FSTN,structure - fastener,IfcFastener,tbd,tbd,brick144_no_match,Building structure or architectural element; not Brick Equipment.
+FOT,structure - footing,IfcFooting,tbd,tbd,brick144_no_match,Building structure or architectural element; not Brick Equipment.
+KRB,structure - kerb,IfcKerb,tbd,tbd,brick144_no_match,Building structure or architectural element; not Brick Equipment.
+MCF,structure - mechanical fastener,IfcMechanicalFastener,tbd,tbd,brick144_no_match,Building structure or architectural element; not Brick Equipment.
+MBR,structure - member,IfcMember,tbd,tbd,brick144_no_match,Building structure or architectural element; not Brick Equipment.
+MRD,structure - mooring device,IfcMooringDevice,tbd,tbd,brick144_no_match,Building structure or architectural element; not Brick Equipment.
+OPN,structure - opening,IfcOpeningElement,tbd,tbd,brick144_no_match,Building structure or architectural element; not Brick Equipment.
+PAV,structure - pavement,IfcPavement,tbd,tbd,brick144_no_match,Building structure or architectural element; not Brick Equipment.
+PIL,structure - pile,IfcPile,tbd,tbd,brick144_no_match,Building structure or architectural element; not Brick Equipment.
+RAIL,structure - rail,IfcRail,tbd,tbd,brick144_no_match,Building structure or architectural element; not Brick Equipment.
+RLG,structure - railing,IfcRailing,tbd,tbd,brick144_no_match,Building structure or architectural element; not Brick Equipment.
+RAMP,structure - ramp,IfcRamp,tbd,tbd,brick144_no_match,Building structure or architectural element; not Brick Equipment.
+RAMPFL,structure - ramp flight,IfcRampFlight,tbd,tbd,brick144_no_match,Building structure or architectural element; not Brick Equipment.
+RFB,structure - reinforcing bar,IfcReinforcingBar,tbd,tbd,brick144_no_match,Building structure or architectural element; not Brick Equipment.
+RFM,structure - reinforcing mesh,IfcReinforcingMesh,tbd,tbd,brick144_no_match,Building structure or architectural element; not Brick Equipment.
+SLB,structure - slab,IfcSlab,tbd,tbd,brick144_no_match,Building structure or architectural element; not Brick Equipment.
+STR,structure - stair,IfcStair,tbd,tbd,brick144_no_match,Building structure or architectural element; not Brick Equipment.
+STRFL,structure - stair flight,IfcStairFlight,tbd,tbd,brick144_no_match,Building structure or architectural element; not Brick Equipment.
+TEN,structure - tendon,IfcTendon,tbd,tbd,brick144_no_match,Building structure or architectural element; not Brick Equipment.
+TCN,structure - tendon circuit,IfcTendonConduit,tbd,tbd,brick144_no_match,Building structure or architectural element; not Brick Equipment.
+TRACK,structure - track,IfcTrackElement,tbd,tbd,brick144_no_match,Building structure or architectural element; not Brick Equipment.
+VIBDMP,structure - vibration damper,IfcVibrationDamper,tbd,tbd,brick144_no_match,Building structure or architectural element; not Brick Equipment.
+VIBISO,structure - vibration isolator,IfcVibrationIsolator,tbd,tbd,brick144_no_match,Building structure or architectural element; not Brick Equipment.
+WALL,structure - wall,IfcWall,tbd,tbd,brick144_no_match,Building structure or architectural element; not Brick Equipment.
+ROOF,stucture - roof,IfcRoof,tbd,tbd,brick144_no_match,Building structure or architectural element; not Brick Equipment.
+APSW,switch - absolute pressure,IfcSwitchingDevice,brick:Sensor_Equipment,mapped,brick144_broader,Pressure switch senses pressure.
+DEWSW,switch - dew point,IfcSwitchingDevice,brick:Sensor_Equipment,mapped,brick144_broader,Dew point switch.
+DPSW,switch - differential pressure,IfcSwitchingDevice,brick:Sensor_Equipment,mapped,brick144_broader,Differential pressure switch.
+SPSW,switch - static pressure,IfcSwitchingDevice,brick:Sensor_Equipment,mapped,brick144_broader,Static pressure switch.
+TDSW,switch - thermal dispersion flow proving switch,IfcSwitchingDevice,brick:Sensor_Equipment,mapped,brick144_broader,Flow proving switch.
+AIRCON,system - airconditioning,IfcDistributionSystem,tbd,tbd,brick144_no_match,"Tag denotes a system; brick:System is a Collection, not Equipment."
+CATNY,system - catenary_system,IfcDistributionSystemCATENARY_SYSTEM,tbd,tbd,brick144_no_match,"Tag denotes a system; brick:System is a Collection, not Equipment."
+CHEM,system - chemical,IfcDistributionSystem,tbd,tbd,brick144_no_match,"Tag denotes a system; brick:System is a Collection, not Equipment."
+CHW,system - chilledwater,IfcDistributionSystem,tbd,tbd,brick144_no_match,"Tag denotes a system; brick:System is a Collection, not Equipment."
+COMMS,system - communication,IfcDistributionSystem,tbd,tbd,brick144_no_match,"Tag denotes a system; brick:System is a Collection, not Equipment."
+CPAIR,system - compressedair,IfcDistributionSystem,tbd,tbd,brick144_no_match,"Tag denotes a system; brick:System is a Collection, not Equipment."
+CDW,system - condenserwater,IfcDistributionSystem,tbd,tbd,brick144_no_match,"Tag denotes a system; brick:System is a Collection, not Equipment."
+BMS,system - control,IfcDistributionSystem,tbd,tbd,brick144_no_match,"Tag denotes a control system; brick:System is a Collection, not Equipment."
+CONVEY,system - conveying,IfcDistributionSystem,tbd,tbd,brick144_no_match,"Tag denotes a system; brick:System is a Collection, not Equipment."
+DCW,system - domesticcoldwater,IfcDistributionSystem,tbd,tbd,brick144_no_match,"Tag denotes a system; brick:System is a Collection, not Equipment."
+DHW,system - domestichotwater,IfcDistributionSystem,tbd,tbd,brick144_no_match,"Tag denotes a system; brick:System is a Collection, not Equipment."
+DRNG,system - drainage,IfcDistributionSystem,tbd,tbd,brick144_no_match,"Tag denotes a system; brick:System is a Collection, not Equipment."
+EARTH,system - earthing,IfcDistributionSystem,tbd,tbd,brick144_no_match,"Tag denotes a system; brick:System is a Collection, not Equipment."
+HV,system - electrical (high voltage),IfcDistributionSystem,tbd,tbd,brick144_no_match,"Tag denotes a system; brick:System is a Collection, not Equipment."
+LV,system - electrical (low voltage),IfcDistributionSystem,tbd,tbd,brick144_no_match,"Tag denotes a system; brick:System is a Collection, not Equipment."
+AUDIO,system - electroacoustic,IfcDistributionSystem,tbd,tbd,brick144_no_match,"Tag denotes a system; brick:System is a Collection, not Equipment."
+EA,system - exhaust,IfcDistributionSystem,tbd,tbd,brick144_no_match,"Tag denotes a system; brick:System is a Collection, not Equipment."
+SPR,system - fireprotection,IfcDistributionSystem,tbd,tbd,brick144_no_match,"Tag denotes a system; brick:System is a Collection, not Equipment."
+FUEL,system - fuel,IfcDistributionSystem,tbd,tbd,brick144_no_match,"Tag denotes a system; brick:System is a Collection, not Equipment."
+GAS,system - gas,IfcDistributionSystem,tbd,tbd,brick144_no_match,"Tag denotes a system; brick:System is a Collection, not Equipment."
+HAZ,system - hazardous,IfcDistributionSystem,tbd,tbd,brick144_no_match,"Tag denotes a system; brick:System is a Collection, not Equipment."
+LTHW,system - heating (low temperature hot water),IfcDistributionSystem,tbd,tbd,brick144_no_match,"Tag denotes a system; brick:System is a Collection, not Equipment."
+MTHW,system - heating (medium temperature hot water),IfcDistributionSystem,tbd,tbd,brick144_no_match,"Tag denotes a system; brick:System is a Collection, not Equipment."
+LTG,system - lighting,IfcDistributionSystem,tbd,tbd,brick144_no_match,"Tag denotes a system; brick:System is a Collection, not Equipment."
+LPSY,system - lightningprotection,IfcDistributionSystem,tbd,tbd,brick144_no_match,"Tag denotes a system; brick:System is a Collection, not Equipment."
+MOB,system - mobilenetwork,IfcDistributionSystem,tbd,tbd,brick144_no_match,"Tag denotes a system; brick:System is a Collection, not Equipment."
+MS,system - monitoring system,IfcDistributionSystem,tbd,tbd,brick144_no_match,"Tag denotes a system; brick:System is a Collection, not Equipment."
+WSTSOL,system - municipalsolidwaste,IfcDistributionSystem,tbd,tbd,brick144_no_match,"Tag denotes a system; brick:System is a Collection, not Equipment."
+OIL,system - oil,IfcDistributionSystem,tbd,tbd,brick144_no_match,"Tag denotes a system; brick:System is a Collection, not Equipment."
+OPSUP,system - operational,IfcDistributionSystem,tbd,tbd,brick144_no_match,"Tag denotes a system; brick:System is a Collection, not Equipment."
+PHON,system - operationaltelephonysystem,IfcDistributionSystem,tbd,tbd,brick144_no_match,"Tag denotes a system; brick:System is a Collection, not Equipment."
+OVER,system - overhead_contactline_system,IfcDistributionSystemOVERHEAD_CONTACTLINE_SYSTEM,tbd,tbd,brick144_no_match,"Tag denotes a system; brick:System is a Collection, not Equipment."
+EGEN,system - powergeneration,IfcDistributionSystem,tbd,tbd,brick144_no_match,"Tag denotes a system; brick:System is a Collection, not Equipment."
+RW,system - rainwater,IfcDistributionSystem,tbd,tbd,brick144_no_match,"Tag denotes a system; brick:System is a Collection, not Equipment."
+RF,system - refrigeration,IfcDistributionSystem,tbd,tbd,brick144_no_match,"Tag denotes a system; brick:System is a Collection, not Equipment."
+RETCIR,system - return_circuit,IfcDistributionSystemRETURN_CIRCUIT,tbd,tbd,brick144_no_match,"Tag denotes a system; brick:System is a Collection, not Equipment."
+SEC,system - security,IfcDistributionSystem,tbd,tbd,brick144_no_match,"Tag denotes a system; brick:System is a Collection, not Equipment."
+SWG,system - sewage,IfcDistributionSystem,tbd,tbd,brick144_no_match,"Tag denotes a system; brick:System is a Collection, not Equipment."
+SIG,system - signal,IfcDistributionSystem,tbd,tbd,brick144_no_match,"Tag denotes a system; brick:System is a Collection, not Equipment."
+STORM,system - stormwater,IfcDistributionSystem,tbd,tbd,brick144_no_match,"Tag denotes a system; brick:System is a Collection, not Equipment."
+TELE,system - telephone,IfcDistributionSystem,tbd,tbd,brick144_no_match,"Tag denotes a system; brick:System is a Collection, not Equipment."
+TV,system - tv,IfcDistributionSystem,tbd,tbd,brick144_no_match,"Tag denotes a system; brick:System is a Collection, not Equipment."
+VAC,system - vacuum,IfcDistributionSystem,tbd,tbd,brick144_no_match,"Tag denotes a system; brick:System is a Collection, not Equipment."
+VENTP,system - vent,IfcDistributionSystem,tbd,tbd,brick144_no_match,"Tag denotes a system; brick:System is a Collection, not Equipment."
+VENT,system - ventilation,IfcDistributionSystem,tbd,tbd,brick144_no_match,"Tag denotes a system; brick:System is a Collection, not Equipment."
+WSTWAT,system - wastewater,IfcDistributionSystem,tbd,tbd,brick144_no_match,"Tag denotes a system; brick:System is a Collection, not Equipment."
+WATSUP,system - watersupply,IfcDistributionSystem,tbd,tbd,brick144_no_match,"Tag denotes a system; brick:System is a Collection, not Equipment."
+TK,tank,IfcTank,brick:Tank,mapped,brick144_exact,Same concept as brick:Tank.
+BTK,tank - break tank,IfcTank,brick:Water_Storage_Tank,mapped,brick144_broader,Break tank stores water with an air gap.
+BTKBS,tank - break tank and booster set,IfcTank,tbd,tbd,brick144_no_match,Combined tank and booster pump set; only common ancestor is brick:Equipment.
+BRITK,tank - brine tank,IfcTank,brick:Tank,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+CBUFF,tank - buffer vessel - cooling,IfcTank,brick:Tank,mapped,brick144_broader,Buffer vessel; consistent with BUFF.
+BUFF,tank - buffer vessel - generic,IfcTank,brick:Tank,mapped,brick144_broader,Generic buffer vessel; medium and purpose unspecified.
+HBUFF,tank - buffer vessel - heating,IfcTank,brick:Tank,mapped,brick144_broader,Buffer vessel; consistent with BUFF.
+CAST,tank - compressed air storage tank,IfcTank,brick:Storage_Tank,mapped,brick144_close,Storage_Tank covers fluids or gases.
+CNR,tank - condensate receiver tank,IfcTank,brick:Tank,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+DEA,tank - deareator tank,IfcTank,brick:Tank,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+DET,tank - decontamination tank,IfcTank,brick:Tank,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+EST,tank - emergency sewer tank,IfcTank,brick:Storage_Tank,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+EWT,tank - emergency water tank,IfcTank,brick:Water_Storage_Tank,mapped,brick144_exact,Same concept as brick:Water_Storage_Tank.
+ET,tank - expansion tank,IfcTank,brick:Thermal_Expansion_Tank,mapped,brick144_exact,Expansion tank.
+FHT,tank - fire hydrant tank,IfcTank,brick:Fire_Sprinkler_Water_Storage_Tank,mapped,brick144_close,Stores water for fire suppression.
+FODT,tank - fuel oil day tank,IfcTank,brick:Storage_Tank,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+FOST,tank - fuel oil storage tank,IfcTank,brick:Storage_Tank,mapped,brick144_broader,Fuel oil storage tank; no fuel-specific class.
+GWST,tank - greywater storage tank,IfcTank,brick:Water_Storage_Tank,mapped,brick144_close,Greywater storage.
+HWC,tank - hot water cylinder,IfcTank,brick:Hot_Water_Storage_Tank,mapped,brick144_close,Hot water cylinder.
+MWST,tank - mains water storage tank,IfcTank,brick:Cold_Water_Storage_Tank,mapped,brick144_close,Mains water storage.
+DWST,tank - potable/domestic water storage tank,IfcTank,brick:Water_Storage_Tank,mapped,brick144_exact,Potable water storage tank.
+DWTT,tank - potable/domestic water transfer tank,IfcTank,brick:Water_Storage_Tank,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+RNWST,tank - rainwater storage tank,IfcTank,brick:Rain_Water_Storage_Tank,mapped,brick144_exact,Same concept as brick:Rain_Water_Storage_Tank.
+SPT,tank - sprinkler tank,IfcTank,brick:Fire_Sprinkler_Water_Storage_Tank,mapped,brick144_exact,Same concept as brick:Fire_Sprinkler_Water_Storage_Tank.
+TST,tank - thermal storage tank,IfcTank,brick:Thermal_Energy_Storage_Tank,mapped,brick144_exact,Same concept as brick:Thermal_Energy_Storage_Tank.
+WRT,tank - wet riser tank,IfcTank,brick:Fire_Sprinkler_Water_Storage_Tank,mapped,brick144_close,Wet riser tank stores water for fire suppression.
+TW,thermal wheel,IfcAirToAirHeatRecovery,brick:Heat_Wheel,mapped,brick144_exact,Same concept as brick:Heat_Wheel.
+TMCLK,timeclock,IfcElectricTimeControl,brick:Controller,mapped,brick144_broader,Time clock.
+TXMR,transformer,IfcTransformer,brick:Transformer,mapped,brick144_exact,Transformer.
+TRE,transport element,IfcTransportElement,tbd,tbd,brick144_no_match,Generic or abstract object; Brick class cannot be determined from the tag.
+ESC,transportation - escalator,IfcTransportElement,tbd,tbd,brick144_no_match,Escalator; Brick 1.4.4 has only Elevator.
+ELV,transportation - lift / elevator,IfcTransportElement,brick:Elevator,mapped,brick144_exact,Same concept as brick:Elevator.
+ELC,transportation - lift / elevator controller,IfcUnitaryControlElement,brick:Controller,mapped,brick144_broader,Lift controller.
+ELDM,transportation - lift / elevator door motor,IfcElectricMotor,brick:Motor,mapped,brick144_broader,Lift door motor.
+ELI,transportation - lift / elevator inverter,IfcTransformer,brick:Variable_Frequency_Drive,mapped,brick144_close,Lift inverter drive.
+ELTM,transportation - lift / elevator traction machine,IfcElectricMotor,brick:Motor,mapped,brick144_close,Lift traction machine.
+AW,transportation - moving walkway,IfcTransportElement,tbd,tbd,brick144_no_match,Moving walkway; Brick 1.4.4 has only Elevator.
+TP,trap primer,IfcValve,tbd,tbd,brick144_no_match,Sanitary or drainage terminal; Brick 1.4.4 has no class for it.
+TPE,trap primer - electronic trap primer,IfcValve,tbd,tbd,brick144_no_match,Sanitary or drainage terminal; Brick 1.4.4 has no class for it.
+TBN,tube bundle,IfcTubeBundle,brick:Heat_Exchanger,mapped,brick144_broader,Tube bundle.
+UCE,unitary control element,IfcUnitaryControlElement,tbd,tbd,brick144_no_match,Generic or abstract object; Brick class cannot be determined from the tag.
+UEQ,unitary equipment - pre packaged equipment,IfcUnitaryEquipment,brick:HVAC_Equipment,mapped,brick144_broader,Pre-packaged unitary equipment.
+UPS,ups - uninteruptable power supply unit,IfcElectricFlowStorageDevice,brick:Electrical_Equipment,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+KP,user interface - keypad,IfcSwitchingDevice,tbd,tbd,brick144_no_match,Generic keypad; controlled system unknown.
+UVDU,uv disinfection unit,IfcFilter,tbd,tbd,brick144_no_match,UV disinfection unit; Brick has no water treatment class.
+VLV,valve,IfcValve,brick:Valve,mapped,brick144_exact,Valve.
+AAV,valve - air admittance valve,IfcValve,brick:Valve,mapped,brick144_broader,Air admittance valve; no specific Brick class.
+AV,valve - angle stop valve,IfcValve,brick:Isolation_Valve,mapped,brick144_close,Angle stop valve.
+BFP,valve - backflow preventer valve,IfcValve,brick:Backflow_Preventer_Valve,mapped,brick144_exact,Same concept as brick:Backflow_Preventer_Valve.
+BLV,valve - balancing valve,IfcValve,brick:Valve,mapped,brick144_broader,Balancing valve.
+BV,valve - ball valve,IfcValve,brick:Valve,mapped,brick144_broader,Ball valve.
+BDV,valve - blowdown valve,IfcValve,brick:Valve,mapped,brick144_broader,Blowdown valve.
+BFV,valve - butterfly valve,IfcValve,brick:Valve,mapped,brick144_broader,Butterfly valve.
+BYV,valve - bypass valve,IfcValve,brick:Bypass_Valve,mapped,brick144_exact,Same concept as brick:Bypass_Valve.
+CKV,valve - check valve,IfcValve,brick:Check_Valve,mapped,brick144_exact,Check valve.
+CKVS,valve - check valve sprinkler,IfcValve,brick:Check_Valve,mapped,brick144_exact,Same concept as brick:Check_Valve.
+CHWV,valve - chilled water valve,IfcValve,brick:Chilled_Water_Valve,mapped,brick144_exact,Same concept as brick:Chilled_Water_Valve.
+CDWV,valve - condenser water valve,IfcValve,brick:Condenser_Water_Valve,mapped,brick144_exact,Same concept as brick:Condenser_Water_Valve.
+CV,valve - control valve,IfcValve,brick:Valve,mapped,brick144_broader,Control valve; medium not stated.
+CVM,valve - control valve modulating,IfcValve,brick:Valve,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+CVO,valve - control valve open closed,IfcValve,brick:Valve,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+DPCV,valve - differential pressure control valve,IfcValve,brick:Pressure_Regulator_Valve,mapped,brick144_close,Differential pressure control valve.
+ENV,valve - energy valve,IfcValve,brick:Valve,mapped,brick144_broader,Energy valve.
+FV,valve - float valve,IfcValve,brick:Water_Valve,mapped,brick144_close,Float valve.
+FCV,valve - flow control valve,IfcValve,brick:Valve,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+GV,valve - gate valve,IfcValve,brick:Valve,mapped,brick144_broader,Gate valve.
+HWV,valve - hot water valve,IfcValve,brick:Hot_Water_Valve,mapped,brick144_exact,Same concept as brick:Hot_Water_Valve.
+ISV,valve - isolation valve,IfcValve,brick:Isolation_Valve,mapped,brick144_exact,Same concept as brick:Isolation_Valve.
+LCV,valve - level control valve,IfcValve,brick:Valve,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+MUV,valve - make up water valve,IfcValve,brick:Makeup_Water_Valve,mapped,brick144_exact,Same concept as brick:Makeup_Water_Valve.
+MMV,valve - master thermostatic valve,IfcValve,brick:Thermostatic_Mixing_Valve,mapped,brick144_close,Master thermostatic valve.
+PA,valve - pressure attenuator,IfcValve,tbd,tbd,brick144_no_match,Pressure attenuator; not a valve.
+PCV,valve - pressure control valve,IfcValve,brick:Pressure_Regulator_Valve,mapped,brick144_close,Pressure control valve.
+PICV,valve - pressure independent control valve,IfcValve,brick:Valve,mapped,brick144_broader,Pressure independent control valve.
+PRV,valve - pressure reducing valve,IfcValve,brick:Pressure_Reducing_Valve,mapped,brick144_exact,Pressure reducing valve.
+PRFV,valve - pressure relief valve,IfcValve,brick:Pressure_Relief_Valve,mapped,brick144_exact,Same concept as brick:Pressure_Relief_Valve.
+PWV,valve - process water valve,IfcValve,brick:Water_Valve,mapped,brick144_close,Process water valve.
+RCV,valve - recirculation valve,IfcValve,brick:Valve,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+RTV,valve - return valve,IfcValve,brick:Valve,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+SGV,valve - seismic gas valve,IfcValve,brick:Natural_Gas_Seismic_Shutoff_Valve,mapped,brick144_close,Seismic gas valve.
+SNV,valve - solenoid valve,IfcValve,brick:Valve,mapped,brick144_broader,Solenoid valve.
+SPRV,valve - steam pressure reducing valve,IfcValve,brick:Steam_Pressure_Reducing_Valve,mapped,brick144_exact,Same concept as brick:Steam_Pressure_Reducing_Valve.
+SPV,valve - supply valve,IfcValve,brick:Valve,mapped,brick144_broader,No more specific Brick 1.4.4 class; nearest correct ancestor used.
+TCV,valve - temperature control valve,IfcValve,brick:Valve,mapped,brick144_broader,Temperature control valve.
+TMV,valve - thermostatic mixing valve,IfcValve,brick:Thermostatic_Mixing_Valve,mapped,brick144_exact,Same concept as brick:Thermostatic_Mixing_Valve.
+WHAV,valve - water hammer arrestor,IfcValve,tbd,tbd,brick144_no_match,Water hammer arrestor; not a valve.
+VFD,variable frequency drive,IfcMotorConnection,brick:Variable_Frequency_Drive,mapped,brick144_exact,Same concept as brick:Variable_Frequency_Drive.
+VCL,vehicle,IfcVehicle,tbd,tbd,brick144_no_match,Vehicle; not Brick Equipment.
+CDWFM,washing appliance - commercial flight machine,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+CDWPTM,washing appliance - commercial pass through machine,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+CDWPUW,washing appliance - commercial pot and utensil machine,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+CDWRM,washing appliance - commercial rack machine,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+CDWUM,washing appliance - commercial undercounter machine,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+CDWSCS,washing appliance - conveyor system,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+CDWRT,washing appliance - roller table,IfcFurniture,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+WSTFD,waste management - food dehydrator,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+WSTBIN,waste management - waste bin,IfcFurniture,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+WSTC,waste management - waste compactor,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+WSTWG,waste management - wet waste grinder,IfcElectricAppliance,tbd,tbd,brick144_no_match,Appliance with no Brick 1.4.4 class; only common ancestor would be brick:Equipment.
+WSTT,waste terminal,IfcWasteTerminal,tbd,tbd,brick144_no_match,Waste terminal; Brick has no drainage terminal class.
+AD,waste terminal - area drain,IfcWasteTerminal,tbd,tbd,brick144_no_match,Sanitary or drainage terminal; Brick 1.4.4 has no class for it.
+FG,waste terminal - floor gully,IfcWasteTerminal,tbd,tbd,brick144_no_match,Sanitary or drainage terminal; Brick 1.4.4 has no class for it.
+FWT,waste terminal - floor waste trap,IfcWasteTerminal,tbd,tbd,brick144_no_match,Sanitary or drainage terminal; Brick 1.4.4 has no class for it.
+GUS,waste terminal - gully sump,IfcWasteTerminal,tbd,tbd,brick144_no_match,Sanitary or drainage terminal; Brick 1.4.4 has no class for it.
+RD,waste terminal - roof drain,IfcWasteTerminal,tbd,tbd,brick144_no_match,Sanitary or drainage terminal; Brick 1.4.4 has no class for it.
+WDU,waste terminal - waste disposal unit (macerator),IfcWasteTerminal,tbd,tbd,brick144_no_match,Sanitary or drainage terminal; Brick 1.4.4 has no class for it.
+WT,waste terminal - waste trap,IfcWasteTerminal,tbd,tbd,brick144_no_match,Sanitary or drainage terminal; Brick 1.4.4 has no class for it.
+DEWH,water heater - domestic electric water heater,IfcElectricAppliance,brick:Water_Heater,mapped,brick144_exact,Same concept as brick:Water_Heater.
+DGWH,water heater - domestic gas water heater,IfcBoiler,brick:Water_Heater,mapped,brick144_exact,Same concept as brick:Water_Heater.
+EWH,water heater - electric water heater,IfcElectricAppliance,brick:Water_Heater,mapped,brick144_exact,Same concept as brick:Water_Heater.
+GWH,water heater - gas water heater,IfcBoiler,brick:Water_Heater,mapped,brick144_exact,Gas water heater; no fuel-specific class.
+IWH,water heater - instantaneous water heater,IfcElectricAppliance,brick:Water_Heater,mapped,brick144_exact,Same concept as brick:Water_Heater.
+SWHP,water heater - solar water heating panel,IfcSolarDevice,brick:Solar_Thermal_Collector,mapped,brick144_exact,Same concept as brick:Solar_Thermal_Collector.
+CHDU,water treatment - chemical dosage unit,IfcTank,tbd,tbd,brick144_no_match,Water treatment equipment; Brick 1.4.4 has no class for it (Filter covers separation only).
+CTSU,water treatment - cooling tower water treatment unit,IfcUnitaryEquipment,tbd,tbd,brick144_no_match,Water treatment equipment; Brick 1.4.4 has no class for it (Filter covers separation only).
+DPOT,water treatment - dosing pot,IfcTank,brick:Tank,mapped,brick144_broader,Dosing pot is a vessel holding treatment chemical.
+EMWC,water treatment - electro magnetic water conditioner,IfcFilter,tbd,tbd,brick144_no_match,Electromagnetic water conditioner; Brick has no water treatment class.
+WST,weather station,IfcUnitaryControlElement,brick:Weather_Station,mapped,brick144_exact,Same concept as brick:Weather_Station.
+WD,window,IfcWindow,tbd,tbd,brick144_no_match,Building structure or architectural element; not Brick Equipment.
+ZONE,zone,IfcZone,bot:Zone,mapped,bdns_tag_bot_parent,

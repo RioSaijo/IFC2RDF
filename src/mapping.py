@@ -8,27 +8,67 @@ from typing import Dict, Iterable, Optional
 from models import BrickEquipment, IfcAsset
 
 
-FALLBACK_CLASS = "brick:Equipment"
-
-
 def _lookup_code(value: Optional[str]) -> str:
     text = (value or "").strip().upper()
     match = re.match(r"^([A-Z]{2,6})(?:\d+)?(?:-|$)", text)
     return match.group(1) if match else text
 
 
+_BOT_CLASSES = {
+    "bot:Zone",
+    "bot:Site",
+    "bot:Building",
+    "bot:Storey",
+    "bot:Space",
+    "bot:Element",
+    "bot:Interface",
+}
+
+
+def _valid_target_class(value: str) -> bool:
+    return bool(re.fullmatch(r"brick:[A-Za-z_][A-Za-z0-9_]*", value)) or value in _BOT_CLASSES
+
+
 def load_crosswalk(path: str | Path) -> Dict[str, Dict[str, str]]:
     result: Dict[str, Dict[str, str]] = {}
     with Path(path).open("r", encoding="utf-8-sig", newline="") as handle:
-        for row in csv.DictReader(handle):
-            code = _lookup_code(row.get("bdns_abbriviation") or row.get("bdns_abbreviation"))
+        reader = csv.DictReader(handle)
+        fields = set(reader.fieldnames or [])
+        code_column = (
+            "bdns_abbreviation"
+            if "bdns_abbreviation" in fields
+            else "bdns_abbriviation"
+            if "bdns_abbriviation" in fields
+            else None
+        )
+        if code_column is None or "brick_class_candidate" not in fields:
+            raise ValueError(
+                "Mapping CSV requires bdns_abbreviation (or legacy "
+                "bdns_abbriviation) and brick_class_candidate columns"
+            )
+
+        for row in reader:
+            code = _lookup_code(row.get(code_column))
             brick = (row.get("brick_class_candidate") or "").strip()
-            if code and brick:
-                candidates = [item.strip() for item in brick.split("|") if item.strip()]
+            if not code:
+                continue
+
+            candidates = [item.strip() for item in brick.split("|") if item.strip()]
+            is_unique_target_class = (
+                len(candidates) == 1 and _valid_target_class(candidates[0])
+            )
+            record = {
+                "brick_class": candidates[0] if is_unique_target_class else None,
+                "status": "project-defined" if is_unique_target_class else "tbd",
+            }
+            previous = result.get(code)
+            if previous is not None and previous != record:
                 result[code] = {
-                    "brick_class": candidates[0] if len(candidates) == 1 else FALLBACK_CLASS,
-                    "status": "project-defined" if len(candidates) == 1 else "review_required",
+                    "brick_class": None,
+                    "status": "tbd",
                 }
+            elif previous is None:
+                result[code] = record
     return result
 
 
@@ -36,19 +76,20 @@ def map_assets(assets: Iterable[IfcAsset], crosswalk_path: str | Path) -> list[B
     crosswalk = load_crosswalk(crosswalk_path)
     result: list[BrickEquipment] = []
     for asset in assets:
-        record = crosswalk.get(_lookup_code(asset.bdns_code)) if asset.bdns_code else None
-        if asset.bdns_code is None:
-            brick_class = FALLBACK_CLASS
-            status = "missing_bdns_classification"
-            source = None
-        elif record is None:
-            brick_class = FALLBACK_CLASS
-            status = "review_required"
+        # The crosswalk maps explicit BDNS tags to ontology classes. It is not
+        # an IFC-class or name-based equipment classifier.
+        if not asset.bdns_code:
+            continue
+
+        record = crosswalk.get(_lookup_code(asset.bdns_code))
+        if record is None:
+            brick_class = None
+            status = "tbd"
             source = "IfcClassificationReference"
         else:
             brick_class = record["brick_class"]
             status = record["status"]
-            source = "IfcClassificationReference + project BDNS-to-Brick crosswalk"
+            source = "IfcClassificationReference + project BDNS-to-ontology crosswalk"
 
         label = asset.name or asset.bdns_code or f"equipment_{asset.ifc_guid}"
         result.append(
@@ -65,4 +106,43 @@ def map_assets(assets: Iterable[IfcAsset], crosswalk_path: str | Path) -> list[B
             )
         )
     return result
+
+
+def write_mapping_results(
+    equipment: Iterable[BrickEquipment],
+    output_path: str | Path,
+) -> str:
+    """Write one auditable mapping row for every extracted IFC asset."""
+    destination = Path(output_path)
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    with destination.open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.writer(handle)
+        writer.writerow(
+            [
+                "ifc_global_id",
+                "label",
+                "raw_ifc_class",
+                "bdns_code",
+                "classification_name",
+                "target_ontology_class",
+                "mapping_status",
+                "mapping_source",
+                "source_ifc",
+            ]
+        )
+        for item in equipment:
+            writer.writerow(
+                [
+                    item.ifc_guid,
+                    item.label,
+                    item.raw_ifc_class,
+                    item.bdns_code or "",
+                    item.classification_name or "",
+                    item.brick_class or "",
+                    item.mapping_status,
+                    item.mapping_source or "",
+                    item.source_path or "",
+                ]
+            )
+    return str(destination)
 

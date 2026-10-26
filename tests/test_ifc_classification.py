@@ -85,3 +85,68 @@ def test_partial_classification_is_warning(tmp_path):
     assert result.audit["counts"]["bdns_classified_assets"] == 1
     assert result.audit["counts"]["unresolved_assets"] == 1
     assert result.audit["capabilities"]["CLASSIFICATION"]["status"] == "WARN"
+
+
+def test_connection_direction_is_conservative_with_sourceandsink(tmp_path):
+    model = ifcopenshell.file(schema="IFC4")
+    classification = model.create_entity("IfcClassification", Name="BDNS")
+    reference = model.create_entity(
+        "IfcClassificationReference",
+        Identification="AHU-1",
+        ReferencedSource=classification,
+    )
+    equipment = [
+        model.create_entity(
+            "IfcUnitaryEquipment",
+            GlobalId=ifcopenshell.guid.new(),
+            Name=f"Equipment {index}",
+        )
+        for index in range(4)
+    ]
+    model.create_entity(
+        "IfcRelAssociatesClassification",
+        GlobalId=ifcopenshell.guid.new(),
+        RelatedObjects=equipment,
+        RelatingClassification=reference,
+    )
+    directions = ["SOURCE", "SOURCEANDSINK", "SOURCEANDSINK", "SOURCEANDSINK"]
+    ports = []
+    for item, direction in zip(equipment, directions):
+        port = model.create_entity(
+            "IfcDistributionPort",
+            GlobalId=ifcopenshell.guid.new(),
+            FlowDirection=direction,
+        )
+        ports.append(port)
+        model.create_entity(
+            "IfcRelNests",
+            GlobalId=ifcopenshell.guid.new(),
+            RelatingObject=item,
+            RelatedObjects=[port],
+        )
+    model.create_entity(
+        "IfcRelConnectsPorts",
+        GlobalId=ifcopenshell.guid.new(),
+        RelatingPort=ports[0],
+        RelatedPort=ports[1],
+    )
+    model.create_entity(
+        "IfcRelConnectsPorts",
+        GlobalId=ifcopenshell.guid.new(),
+        RelatingPort=ports[2],
+        RelatedPort=ports[3],
+    )
+    path = tmp_path / "sourceandsink.ifc"
+    model.write(path)
+
+    result = extract_ifc(load_ifc(path))
+
+    assert len([item for item in result.relations if item.predicate == "brick:feeds"]) == 1
+    assert [item.decision_status for item in result.connection_inferences].count("directed") == 1
+    assert [item.decision_status for item in result.connection_inferences].count("ambiguous") == 1
+    ambiguous = next(
+        item for item in result.connection_inferences if item.decision_status == "ambiguous"
+    )
+    assert ambiguous.source_equipment_guid is None
+    assert ambiguous.target_equipment_guid is None
+    assert ambiguous.review_required is True
