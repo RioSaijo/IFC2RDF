@@ -85,6 +85,39 @@ class ConnectionInference:
 
 
 @dataclass(frozen=True)
+class PortConnection:
+    """One IfcRelConnectsPorts between two port owners of any IFC class."""
+
+    connection_id: str
+    source_path: Optional[str]
+    relating_element_guid: str
+    related_element_guid: str
+    relating_flow_direction: str
+    related_flow_direction: str
+
+
+@dataclass(frozen=True)
+class TopologyPath:
+    path_id: str
+    source_equipment_guid: str
+    target_equipment_guid: str
+    source_class: Optional[str]
+    target_class: Optional[str]
+    decision_status: str
+    inference_method: str
+    traversed_element_guids: List[str]
+    traversed_connection_ids: List[str]
+    conflicting_connection_pairs: int
+    confidence: float
+    review_required: bool
+    reason: str = ""
+
+    @property
+    def hop_count(self) -> int:
+        return len(self.traversed_connection_ids)
+
+
+@dataclass(frozen=True)
 class PointLink:
     equipment_guid: str
     point_iri: str
@@ -100,4 +133,5 @@ class ExtractionResult:
     relations: List[Relation]
     connection_inferences: List[ConnectionInference]
     audit: Dict[str, Any]
+    port_connections: List[PortConnection] = field(default_factory=list)
 

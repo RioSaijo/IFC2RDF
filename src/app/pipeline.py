@@ -15,6 +15,7 @@ from mapping import map_assets, write_mapping_results
 from models import IfcAsset, Relation, SpatialElement
 from points import load_and_link_points
 from rdf import build_graph, write_outputs
+from topology import infer_feed_paths, write_topology_paths
 from validation import build_validation_report, write_json
 
 
@@ -89,7 +90,9 @@ def _merge_relations(
                         confidence=min(relation.confidence, 0.75),
                         evidence={**relation.evidence, "arc_space_match": False},
                     )
-            elif relation.predicate == "brick:feeds" and relation.object_guid not in asset_guids:
+            elif relation.predicate == "brick:feeds":
+                # Feeds come from path inference over the whole port graph,
+                # which needs the mapping result; see infer_feed_paths.
                 continue
             seen.add(key)
             relations.append(relation)
@@ -155,6 +158,11 @@ def run_pipeline(
         )
 
     equipment = map_assets(assets, mapping_csv_path)
+    topology_paths, feed_relations, topology_stats = infer_feed_paths(
+        [item for extraction in mep_extractions for item in extraction.port_connections],
+        equipment,
+    )
+    relations.extend(feed_relations)
     points = []
     point_links = []
     unresolved_points = []
@@ -235,11 +243,20 @@ def run_pipeline(
             ),
         },
         "FLOW_TOPOLOGY": {
-            "status": _status(bool(rdf_feeds) and ambiguous_connections == 0, True),
+            "status": _status(
+                bool(rdf_feeds)
+                and ambiguous_connections == 0
+                and not topology_stats["review_required_feeds"]
+                and not topology_stats["role_conflicts"]
+                and not topology_stats["direction_conflicts"],
+                True,
+            ),
             "evidence": (
-                f"{len(feeds)} direction-resolved connections; "
-                f"{len(rdf_feeds)} RDF-eligible feeds; "
-                f"{ambiguous_connections} ambiguous connections"
+                f"{topology_stats['inferred_feeds']} inferred feeds "
+                f"({topology_stats['review_required_feeds']} review-required); "
+                f"{topology_stats['role_conflicts']} role conflicts; "
+                f"{topology_stats['direction_conflicts']} direction conflicts; "
+                f"{ambiguous_connections} undirected connections between BDNS equipment"
             ),
         },
         "POINT_LINKAGE": {
@@ -280,6 +297,7 @@ def run_pipeline(
             "inferred_locations": inferred_locations,
             "directed_feeds": len(feeds),
             "rdf_eligible_directed_feeds": len(rdf_feeds),
+            "topology": topology_stats,
             "bms_points": len(points),
             "point_links": len(point_links),
             "point_spatial_contexts": point_spatial_contexts,
@@ -309,6 +327,10 @@ def run_pipeline(
     paths["connection_inference"] = write_connection_inferences(
         connection_inferences,
         output_dir / "connection_inference.csv",
+    )
+    paths["topology_paths"] = write_topology_paths(
+        topology_paths,
+        output_dir / "topology_paths.csv",
     )
     validation = build_validation_report(graph, equipment, relations, point_links, unresolved_points)
     input_conflicts = {

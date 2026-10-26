@@ -82,6 +82,7 @@ def test_complete_synthetic_ifc_and_bms_pipeline(tmp_path):
         "equipment_mapping.csv",
         "provenance.csv",
         "requirement_report.json",
+        "topology_paths.csv",
         "validation_report.json",
     ):
         assert (output / name).is_file()

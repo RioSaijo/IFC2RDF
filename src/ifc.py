@@ -12,6 +12,7 @@ from models import (
     ExtractionResult,
     IfcAsset,
     IfcBundle,
+    PortConnection,
     Relation,
     SpatialElement,
 )
@@ -241,6 +242,34 @@ def _flow_direction(port) -> str:
     return str(getattr(port, "FlowDirection", None) or "").upper()
 
 
+def _port_connections(model, source_path: Optional[str] = None) -> List[PortConnection]:
+    """Every port connection between two owners with a GlobalId.
+
+    Owners of any class are kept (ducts, fittings, proxies), because path
+    inference needs the elements between equipment as evidence.
+    """
+    owners = _port_owners(model)
+    result: List[PortConnection] = []
+    for rel in _by_type(model, "IfcRelConnectsPorts"):
+        first = getattr(rel, "RelatingPort", None)
+        second = getattr(rel, "RelatedPort", None)
+        first_guid = _guid(owners.get(_entity_id(first)))
+        second_guid = _guid(owners.get(_entity_id(second)))
+        if not first_guid or not second_guid or first_guid == second_guid:
+            continue
+        result.append(
+            PortConnection(
+                connection_id=_guid(rel) or f"ifc-entity-{_entity_id(rel)}",
+                source_path=source_path,
+                relating_element_guid=first_guid,
+                related_element_guid=second_guid,
+                relating_flow_direction=_flow_direction(first) or "UNSPECIFIED",
+                related_flow_direction=_flow_direction(second) or "UNSPECIFIED",
+            )
+        )
+    return result
+
+
 def _feed_relations(
     model,
     asset_guids: Set[str],
@@ -460,6 +489,7 @@ def extract_ifc(bundle: IfcBundle) -> ExtractionResult:
         relations=relations,
         connection_inferences=connection_inferences,
         audit=audit,
+        port_connections=_port_connections(model, bundle.source_path),
     )
 
 

@@ -95,12 +95,33 @@ The converter prioritizes explicit IFC relationships:
 | `IfcRelConnectsPortToElement` / IFC4 port nesting + `IfcRelConnectsPorts` + `FlowDirection` | `brick:feeds` | derived |
 | BMS point CSV matched by BDNS classification value | `brick:hasPoint` | explicit BDNS identifier |
 
-`SOURCE`/`SINK` is used directly. A `SOURCEANDSINK` port is assigned a direction
-only when its connected peer is explicitly `SOURCE` or `SINK`; connections that
-remain ambiguous are recorded but are not converted into directional
-`brick:feeds` assertions. Every port-level decision is written to
-`connection_inference.csv` with its IFC relationship, endpoint ports and
-equipment, method, confidence, and review status. Optional geometry fallback is available only for
+`brick:feeds` is inferred from paths through the whole MEP port graph, not
+only from directly connected equipment:
+
+- Only connections whose ports are explicitly `SOURCE` -> `SINK` give a
+  direction. `SOURCEANDSINK` connections are never forced into a direction, so
+  a path that needs one is not inferred.
+- Elements that are not mapped equipment (ductwork, pipework, fittings, `tbd`
+  tags, unclassified elements) are traversed as path evidence and never become
+  RDF entities. A path stops at the first mapped equipment it reaches, so
+  inline dampers and silencers appear in the chain
+  (`AHU feeds damper feeds VAV`).
+- Parallel connections on the same element pair may assert opposite
+  directions; both readings are kept as candidates.
+- Role check: Brick 1.4.4 defines `Air_Diffuser` as delivering air into a
+  room, so a path starting at an air diffuser is a `role_conflict` and is not
+  written to RDF. If both A -> B and B -> A survive, both are a
+  `direction_conflict` and neither is written.
+- A feed whose path crosses an element pair with opposing directions is kept
+  only when the opposite reading fails the role check; it is written with
+  confidence 0.8 and marked review-required.
+- IFC system membership is not used yet.
+
+Every path, including conflicts, is written to `topology_paths.csv` with the
+traversed element GUIDs and connection IDs, so each `brick:feeds` can be traced
+back to IFC evidence. `connection_inference.csv` still records the direct
+port-level decision for every connection between two BDNS-classified elements.
+Optional geometry fallback is available only for
 equipment lacking explicit containment. It compares each MEP equipment
 centroid against ARC `IfcSpace` AABBs, never overrides explicit relationships,
 and marks every inferred result as review-required with lower confidence.
@@ -119,6 +140,7 @@ Each run produces:
 - `building_brick.ttl` — Brick/BOT RDF in Turtle;
 - `equipment_mapping.csv` — one IFC asset per row with its BDNS code, target ontology class, status, and provenance;
 - `connection_inference.csv` — one BDNS-equipment port connection per row, including directed and unresolved decisions;
+- `topology_paths.csv` — one equipment-to-equipment flow path per row with status (`inferred`, `role_conflict`, `direction_conflict`), traversed elements and connections, confidence, and review status;
 - `requirement_report.json` — capability-level IFC input audit;
 - `provenance.csv` — evidence, method, confidence, and review status for mappings and relationships;
 - `validation_report.json` — unresolved mappings, inferred relationships, and BMS links.
