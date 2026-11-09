@@ -3,9 +3,11 @@
 Only connections whose ports are explicitly SOURCE -> SINK give a direction;
 SOURCEANDSINK connections are never forced. Elements that are not mapped
 equipment (ducts, fittings, tbd tags, unclassified elements) are traversed as
-path evidence and never become RDF entities. A path stops at the first mapped
-equipment it reaches, so A -> damper -> B yields "A feeds damper" and
-"damper feeds B".
+path evidence and never become RDF entities. Mapped equipment whose BDNS tag
+has the `passthrough` topology role (dampers, silencers) is traversed the same
+way: it keeps its own class and location in RDF but is not a feeds node, so
+AHU -> damper -> VAV yields "AHU feeds VAV". A path stops at the first node
+equipment it reaches.
 """
 from __future__ import annotations
 
@@ -14,6 +16,7 @@ from collections import Counter, defaultdict, deque
 from pathlib import Path
 from typing import Dict, Iterable, List, Set, Tuple
 
+from mapping import lookup_code
 from models import BrickEquipment, PortConnection, Relation, TopologyPath
 
 
@@ -33,6 +36,18 @@ CONFLICTED_PATH_CONFIDENCE = 0.8
 
 # node -> [(next node, connection id, pair is also asserted in reverse)]
 _Edges = Dict[str, List[Tuple[str, str, bool]]]
+
+
+def load_passthrough_codes(path: str | Path | None) -> Set[str]:
+    """BDNS abbreviations whose equipment is traversed instead of being a feeds node."""
+    if path is None:
+        return set()
+    with Path(path).open(encoding="utf-8-sig", newline="") as handle:
+        return {
+            lookup_code(row["bdns_abbreviation"])
+            for row in csv.DictReader(handle)
+            if (row.get("topology_role") or "").strip() == "passthrough"
+        }
 
 
 def _directed_edges(connections: Iterable[PortConnection]) -> Tuple[_Edges, int, int]:
@@ -91,8 +106,13 @@ def _paths_from(start: str, edges: _Edges, anchors: Set[str]):
 def infer_feed_paths(
     connections: Iterable[PortConnection],
     equipment: Iterable[BrickEquipment],
+    passthrough_codes: Set[str] = frozenset(),
 ) -> Tuple[List[TopologyPath], List[Relation], Dict[str, int]]:
-    anchors = {item.ifc_guid: item for item in equipment if item.brick_class is not None}
+    mapped = {item.ifc_guid: item for item in equipment if item.brick_class is not None}
+    passthrough = {
+        guid for guid, item in mapped.items() if lookup_code(item.bdns_code) in passthrough_codes
+    }
+    anchors = {guid: item for guid, item in mapped.items() if guid not in passthrough}
     edges, directed_pairs, conflicting_pairs = _directed_edges(connections)
 
     candidates = [
@@ -141,6 +161,7 @@ def infer_feed_paths(
                 confidence=(CONFLICTED_PATH_CONFIDENCE if conflicts else 1.0) if inferred else 0.0,
                 review_required=not inferred or conflicts > 0,
                 reason=reason,
+                traversed_equipment_guids=[guid for guid in elements if guid in passthrough],
             )
         )
 
@@ -156,6 +177,7 @@ def infer_feed_paths(
             evidence={
                 "path_id": item.path_id,
                 "hop_count": item.hop_count,
+                "traversed_equipment_guids": item.traversed_equipment_guids,
                 "traversed_connection_ids": item.traversed_connection_ids,
                 "conflicting_connection_pairs": item.conflicting_connection_pairs,
             },
@@ -165,7 +187,8 @@ def infer_feed_paths(
     ]
     statuses = Counter(item.decision_status for item in paths)
     stats = {
-        "mapped_equipment": len(anchors),
+        "node_equipment": len(anchors),
+        "passthrough_equipment": len(passthrough),
         "directed_element_pairs": directed_pairs,
         "conflicting_element_pairs": conflicting_pairs,
         "inferred_feeds": statuses["inferred"],
@@ -188,6 +211,7 @@ def write_topology_paths(paths: Iterable[TopologyPath], output_path: str | Path)
         "decision_status",
         "inference_method",
         "hop_count",
+        "traversed_equipment_guids",
         "traversed_element_guids",
         "traversed_connection_ids",
         "conflicting_connection_pairs",
@@ -209,6 +233,7 @@ def write_topology_paths(paths: Iterable[TopologyPath], output_path: str | Path)
                     "decision_status": item.decision_status,
                     "inference_method": item.inference_method,
                     "hop_count": item.hop_count,
+                    "traversed_equipment_guids": ";".join(item.traversed_equipment_guids),
                     "traversed_element_guids": ";".join(item.traversed_element_guids),
                     "traversed_connection_ids": ";".join(item.traversed_connection_ids),
                     "conflicting_connection_pairs": item.conflicting_connection_pairs,

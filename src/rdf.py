@@ -9,7 +9,7 @@ from typing import Iterable
 from rdflib import Graph, Literal, Namespace, URIRef
 from rdflib.namespace import RDF, RDFS
 
-from models import BrickEquipment, BrickPoint, PointLink, Relation, SpatialElement
+from models import BrickEquipment, Relation, SpatialElement
 
 
 BRICK = Namespace("https://brickschema.org/schema/Brick#")
@@ -40,28 +40,10 @@ def _term(value: str) -> URIRef:
     return URIRef(value)
 
 
-def _unit_term(value: str | None) -> URIRef | None:
-    if not value:
-        return None
-    units = {
-        "degc": QUDT.DEG_C,
-        "°c": QUDT.DEG_C,
-        "pa": QUDT.PA,
-        "ppm": QUDT.PPM,
-        "%": QUDT.PERCENT,
-        "%rh": QUDT.PERCENT,
-        "m3/s": QUDT["M3-PER-SEC"],
-        "m³/s": QUDT["M3-PER-SEC"],
-    }
-    return units.get(value.strip().lower())
-
-
 def build_graph(
     spatial: Iterable[SpatialElement],
     equipment: Iterable[BrickEquipment],
-    points: Iterable[BrickPoint],
     relations: Iterable[Relation],
-    point_links: Iterable[PointLink],
     base_ns: str,
 ) -> Graph:
     graph = Graph()
@@ -82,6 +64,7 @@ def build_graph(
         graph.add((subject, project.ifcGlobalId, Literal(item.ifc_guid)))
         if item.name:
             graph.add((subject, RDFS.label, Literal(item.name)))
+            graph.add((subject, project.ifcName, Literal(item.name)))
         spatial_properties = {
             "LongName": project.ifcLongName,
             "Description": project.ifcDescription,
@@ -107,19 +90,13 @@ def build_graph(
         graph.add((subject, RDFS.label, Literal(item.label)))
         graph.add((subject, project.ifcGlobalId, Literal(item.ifc_guid)))
         graph.add((subject, project.ifcClass, Literal(item.raw_ifc_class)))
+        if item.ifc_name:
+            graph.add((subject, project.ifcName, Literal(item.ifc_name)))
         graph.add((subject, project.mappingStatus, Literal(item.mapping_status)))
         if item.bdns_code:
             graph.add((subject, project.bdnsClassificationCode, Literal(item.bdns_code)))
         if item.classification_name:
             graph.add((subject, project.classificationSystem, Literal(item.classification_name)))
-
-    for item in points:
-        subject = URIRef(item.iri)
-        graph.add((subject, RDF.type, _term(item.brick_class)))
-        graph.add((subject, RDFS.label, Literal(item.name)))
-        unit = _unit_term(item.unit)
-        if unit is not None:
-            graph.add((subject, BRICK.hasUnit, unit))
 
     for item in relations:
         if item.subject_guid not in equipment_by_guid:
@@ -132,10 +109,6 @@ def build_graph(
         subject = equipment_iri(base_ns, item.subject_guid)
         target = equipment_iri(base_ns, item.object_guid) if item.object_guid in equipment_by_guid else spatial_iri(base_ns, item.object_guid)
         graph.add((subject, _term(item.predicate), target))
-
-    for item in point_links:
-        if item.equipment_guid in equipment_by_guid:
-            graph.add((equipment_iri(base_ns, item.equipment_guid), BRICK.hasPoint, URIRef(item.point_iri)))
     return graph
 
 
@@ -143,7 +116,6 @@ def write_outputs(
     graph: Graph,
     equipment: Iterable[BrickEquipment],
     relations: Iterable[Relation],
-    point_links: Iterable[PointLink],
     output_dir: str | Path,
 ) -> dict:
     output = Path(output_dir)
@@ -169,6 +141,4 @@ def write_outputs(
             ])
         for item in relations:
             writer.writerow(["relation", item.subject_guid, item.predicate, item.object_guid, item.source, item.method, item.confidence, item.review_required, json.dumps(item.evidence, ensure_ascii=False)])
-        for item in point_links:
-            writer.writerow(["point_link", item.equipment_guid, "brick:hasPoint", item.point_iri, item.source, item.method, 1.0 if not item.review_required else 0.5, item.review_required, ""])
     return {"ttl": str(ttl_path), "provenance": str(provenance_path)}

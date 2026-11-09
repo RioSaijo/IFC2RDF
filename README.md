@@ -67,8 +67,13 @@ The classification reference value is the BDNS code used by the project
 crosswalk. `GlobalId` remains the stable RDF identity. `Name` is retained only
 as a human-readable label; it is not treated as proof of a BDNS assignment.
 
-Only IFC equipment with an explicit BDNS classification association enters the
-mapping, relationship reasoning, and RDF stages. Other IFC distribution
+Only IFC equipment with an explicit BDNS classification association whose
+value is an asset instance ID enters the mapping, relationship reasoning, and
+RDF stages. An instance ID is the BDNS abbreviation, a hyphen, and a number
+(for example `AHU-00001`); the abbreviation is looked up in the crosswalk.
+Elements whose BDNS tag holds only an abbreviation (for example `AHU` shared by
+every AHU) are left out and listed in `bdns_tag_issues.csv`, together with any
+instance ID used by more than one element. Other IFC distribution
 elements remain visible in the input audit but are not passed to the mapping
 CSV and are not RDF conversion candidates. The mapping CSV is used only as a
 BDNS-tag-to-Brick/BOT-class lookup; it does not classify equipment from IFC
@@ -92,8 +97,9 @@ The converter prioritizes explicit IFC relationships:
 | --- | --- | --- |
 | `IfcRelAggregates` | spatial `brick:hasPart` | explicit |
 | `IfcRelContainedInSpatialStructure` | `brick:hasLocation` | explicit |
+| MEP equipment geometry inside an ARC `IfcSpace` plan footprint on the same storey | `brick:hasLocation` | `geometric_plan_containment_same_storey` |
 | `IfcRelConnectsPortToElement` / IFC4 port nesting + `IfcRelConnectsPorts` + `FlowDirection` | `brick:feeds` | derived |
-| BMS point CSV matched by BDNS classification value | `brick:hasPoint` | explicit BDNS identifier |
+| BMS point list `equipment_ref` / `space_ref` (stage 3) | `brick:hasPoint` | BDNS instance ID / IFC space Name |
 
 `brick:feeds` is inferred from paths through the whole MEP port graph, not
 only from directly connected equipment:
@@ -103,9 +109,13 @@ only from directly connected equipment:
   a path that needs one is not inferred.
 - Elements that are not mapped equipment (ductwork, pipework, fittings, `tbd`
   tags, unclassified elements) are traversed as path evidence and never become
-  RDF entities. A path stops at the first mapped equipment it reaches, so
-  inline dampers and silencers appear in the chain
-  (`AHU feeds damper feeds VAV`).
+  RDF entities.
+- BDNS tags listed as `passthrough` in `data/resources/topology_roles.csv`
+  (duct dampers and silencers) are traversed too. That equipment keeps its own
+  class and location in RDF but is not a `brick:feeds` node, so
+  `AHU -> fire damper -> VAV` becomes `AHU feeds VAV`, and the damper is listed
+  in the path's `traversed_equipment_guids`. A path stops at the first node
+  equipment it reaches.
 - Parallel connections on the same element pair may assert opposite
   directions; both readings are kept as candidates.
 - Role check: Brick 1.4.4 defines `Air_Diffuser` as delivering air into a
@@ -121,17 +131,35 @@ Every path, including conflicts, is written to `topology_paths.csv` with the
 traversed element GUIDs and connection IDs, so each `brick:feeds` can be traced
 back to IFC evidence. `connection_inference.csv` still records the direct
 port-level decision for every connection between two BDNS-classified elements.
-Optional geometry fallback is available only for
-equipment lacking explicit containment. It compares each MEP equipment
-centroid against ARC `IfcSpace` AABBs, never overrides explicit relationships,
-and marks every inferred result as review-required with lower confidence.
 
-BMS points receive spatial context through the two-hop Brick path
-`Point <- brick:hasPoint - Equipment -> brick:hasLocation -> Space`. The
-converter does not assert `brick:hasLocation` directly on a Point. Geometry
-coordinates are normalized to metres before cross-model comparison. If MEP and
-ARC models declare conflicting projected coordinate reference systems,
-geometry inference is stopped and the conflict is reported.
+MEP models often contain equipment only in storeys. `src/spaces.py` places
+equipment in ARC spaces with one deterministic rule (on by default; disable
+with `--skip-space-inference`):
+
+1. Coordinate frames must agree: every storey present in both models (same
+   GlobalId) must have the same placement origin, otherwise nothing is
+   inferred.
+2. The reference point is the centre of the equipment's own geometry, in
+   metres.
+3. Its height must lie between the floor level of the storey the equipment is
+   explicitly contained in and the next storey's floor level; otherwise the
+   explicit storey contradicts the geometry (`storey_mismatch`) and nothing is
+   inferred.
+4. Candidates are only the spaces aggregated under that same storey.
+5. The point must lie inside the space's plan footprint: the space geometry's
+   triangles projected onto the plan, not its bounding box.
+6. Exactly one space -> `equipment brick:hasLocation space`. None or several
+   -> no relation.
+
+Height inside the space is not required, because ceiling-mounted and
+ceiling-void equipment sits above the space volume; it is recorded as
+evidence. Every decision and its reason is written to `space_locations.csv`,
+and equipment explicitly contained in a space keeps that relation.
+
+BMS points receive spatial context either through the two-hop Brick path
+`Point <- brick:hasPoint - Equipment -> brick:hasLocation -> Space`, or directly
+as `Space brick:hasPoint Point` when the point list names a space. The
+converter does not assert `brick:hasLocation` directly on a Point.
 
 ## Outputs
 
@@ -140,7 +168,8 @@ Each run produces:
 - `building_brick.ttl` — Brick/BOT RDF in Turtle;
 - `equipment_mapping.csv` — one IFC asset per row with its BDNS code, target ontology class, status, and provenance;
 - `connection_inference.csv` — one BDNS-equipment port connection per row, including directed and unresolved decisions;
-- `topology_paths.csv` — one equipment-to-equipment flow path per row with status (`inferred`, `role_conflict`, `direction_conflict`), traversed elements and connections, confidence, and review status;
+- `topology_paths.csv` — one equipment-to-equipment flow path per row with status (`inferred`, `role_conflict`, `direction_conflict`), traversed pass-through equipment, elements and connections, confidence, and review status;
+- `space_locations.csv` — one equipment per row with its space decision (`located`, `outside`, `ambiguous`, `storey_mismatch`, `no_geometry`, `no_storey`, `explicit_space`), reference point, height relation, and reason;
 - `requirement_report.json` — capability-level IFC input audit;
 - `provenance.csv` — evidence, method, confidence, and review status for mappings and relationships;
 - `validation_report.json` — unresolved mappings, inferred relationships, and BMS links.
@@ -173,30 +202,124 @@ python src/run.py \
   --base-ns https://example.org/my-building#
 ```
 
-To add BMS points:
+BMS points are added by stages 2 and 3 below.
+
+### Staged workflow (IFC, BMS points, match, GraphDB)
+
+The user provides three inputs: the MEP IFC with BDNS-classified equipment,
+an IFC with the spatial structure (for example the architectural model), and
+the BMS point list. The BDNS-to-Brick crosswalk is bundled in
+`data/resources/`. Everything runs locally.
+
+The easiest way is the local web UI, which runs each stage on a button and
+shows its summary, output files, and graph view:
 
 ```bash
-python src/run.py \
-  --mep-ifc path/to/mep.ifc \
-  --arc-ifc path/to/arc.ifc \
-  --points-csv path/to/points.csv \
-  --out data/output
+python src/ui.py
 ```
 
-The point CSV columns are `point_id`, `name`, `unit`, and
-`bdns_abbreviation`. The latter should equal the classification reference value
-used for the target IFC equipment. Legacy matching against IFC `Name` is kept
-as a compatibility fallback and is marked review-required.
+It listens on `http://127.0.0.1:8765` only and takes local file paths; nothing
+is uploaded.
 
-Geometry fallback must be requested explicitly:
+Its GraphDB panel works on the loaded repository without the GraphDB
+Workbench: it shows whether GraphDB is running and can start it from the
+GraphDB home folder, searches equipment, spaces, and points by IFC Name or
+point ID, draws a node's neighbors (double-click a node to expand it) or its
+whole `brick:feeds` path upstream and downstream, and lists all feeds,
+unlinked points, and unclassified points. The queries live in
+`src/explorer.py`. The page loads `vis-network` from unpkg, so the graph needs
+an internet connection.
+
+Run each stage alone, or all of them with `src/run_all.py`. Each stage writes
+to its own folder so it can be reviewed before the next one:
+
+| Stage | Script | Output |
+| --- | --- | --- |
+| 1 IFC -> RDF | `src/run.py` | `building_brick.ttl`, mapping, topology and validation files |
+| 2 point list -> RDF | `src/run_points.py` | `points_brick.ttl`, `point_classification.csv`, `point_list_issues.csv`, `points_report.json` |
+| 3 match and validate | `src/run_match.py` | `linked_brick.ttl`, `match_results.csv`, `match_report.json` |
+| 4 GraphDB and view | `src/run_graphdb.py` | GraphDB repository, `graph_view.html`, `graphdb_report.json` |
 
 ```bash
-python src/run.py \
-  --mep-ifc path/to/mep.ifc \
-  --arc-ifc path/to/arc.ifc \
-  --out data/output \
-  --geometry-fallback
+cd src
+python run_all.py \
+  --mep-ifc path/to/mep.ifc --arc-ifc path/to/arc.ifc \
+  --points-csv path/to/point_list.csv \
+  --out ../data/output/stages \
+  --graphdb-home path/to/graphdb-11.3.0
 ```
+
+The point list is a BACnet-style CSV with the columns `point_id`,
+`object_name`, `description`, `object_type` (AI, AO, AV, BI, BO, BV, MI, MO,
+MV), `device_instance`, `object_instance`, `units`, `equipment_ref`, and
+`space_ref`. It is a simplified BACnet point schedule, not a full EDE file. A
+BMS point list carries no Brick class; stage 2 assigns one.
+
+- `equipment_ref` is the BDNS asset instance ID (for example `AHU-00001`). It
+  is matched only to the equipment whose BDNS classification value is that
+  ID; the IFC `Name` is not used. `match_results.csv` records how each point
+  was linked or why it was not.
+- `match_report.json` reports two results: `conforms` is true when no link is
+  ambiguous or review-required, and `complete` is true when every point is
+  linked. Unresolved references (for example a room missing from the IFC) make
+  the result incomplete without making the links themselves invalid.
+- `space_ref` is matched to the IFC `Name` of an ARC `IfcSpace` (for example
+  `01-02`). Real BMS exports often hold free-text room names, which would need
+  a name-to-room-number table first.
+- Exactly one of `equipment_ref` and `space_ref` is required. Matches become
+  `<equipment or space> brick:hasPoint <point>`.
+
+Stage 2 converts Sensor and Setpoint points only. Each point's Brick class is
+assigned by `src/point_classes.py` without project-specific rules, by matching
+words against the Brick class names in `data/resources/brick_classes.json`
+(for example `Supply_Air_Temperature_Sensor` = Supply + Air + Temperature +
+Sensor). That list holds every non-deprecated Brick 1.4.4 Sensor and Setpoint
+class. It is generated from the official release file with
+`python tools/build_point_class_list.py Brick.ttl data/resources/brick_classes.json`
+(Brick.ttl from https://github.com/BrickSchema/Brick/releases/download/v1.4.4/Brick.ttl).
+Deprecated classes such as `Supply_Water_Temperature_Sensor` are never
+assigned; such a point gets the broader class its name supports
+(`Water_Temperature_Sensor`), because the official replacement (`Leaving_*` or
+`Entering_*`) depends on the equipment and is not stated in the name.
+
+- Words come from the point name and description, normalised with a general
+  HVAC vocabulary (`temp` -> Temperature, `rh` -> Humidity, `room` -> Zone,
+  `SAT` -> Supply Air Temperature, ...).
+- The BACnet object type gives the kind: AI is a Sensor; AV is a Setpoint
+  only when a setpoint word is present; BI is a Sensor only for binary-sensor
+  words such as occupancy or motion. Outputs (AO, BO, MO), status and other
+  value objects are out of scope: they are listed in
+  `point_classification.csv` and left out of the RDF. The ambiguous `sp` is
+  static pressure on an input and a setpoint on a value object.
+- The unit gives or checks the measured quantity (`degC` -> Temperature,
+  `ppm` -> a gas named in the point); a unit that contradicts the name stops
+  the assignment.
+- The equipment's BDNS abbreviation, looked up in the bundled crosswalk, gives
+  the medium (Air for air handling units, VAV boxes, fan coil units, ...;
+  Water for pumps, chillers, ...); a space point adds Zone and Air.
+- The chosen class is the most specific class whose words are all among the
+  point's words. Words the point does not have are never added, so a VAV
+  "Zone Air Flow" point becomes `Air_Flow_Sensor`, not
+  `Supply_Air_Flow_Sensor`. No match or a tie leaves the point a plain
+  `brick:Point` marked `unclassified` for review.
+
+The procedure is deterministic, runs locally, and uses no language model or
+external service. Unknown spellings are not guessed; add them to the
+vocabulary in `src/point_classes.py`.
+
+Stage 4 starts GraphDB from `--graphdb-home` if it is not running, creates the
+`--repository` (default `IFC2RDF_case_study`) if missing, replaces its
+statements with `linked_brick.ttl`, and writes `graph_view.html`: equipment on
+`brick:feeds` paths with their points and locations, and spaces with their
+points. The page loads `vis-network` from unpkg. `--local-view` builds the
+same page from the RDF file with rdflib, without GraphDB. Other GraphDB
+repositories are not touched. GraphDB refuses writes when its disk is nearly
+full.
+
+`tools/convert_legacy_point_list.py` converts the legacy research point list
+(`point_id`, `name`, `unit`, `bdns_abbreviation`, `space_id`) to this format;
+its BACnet object types and readable names come from the legacy name pattern,
+and its device and object instances are synthetic numbering.
 
 ## Fully synthetic example
 
@@ -207,7 +330,8 @@ models containing:
 - `AHU-1` and `FCU-1` classification references;
 - three classified equipment objects in two ARC spaces;
 - SOURCE/SINK distribution ports and one explicit port connection; and
-- three synthetic BMS points linked by the classification reference values.
+- three synthetic BMS points (stage 2 format) linked in stage 3 by the
+  classification reference values.
 
 Run it from the repository root:
 
@@ -216,9 +340,10 @@ python examples/run_synthetic_example.py
 ```
 
 Inputs and outputs are written below `examples/generated/`, which is excluded
-from Git. The run is expected to produce three equipment entities, three
-`brick:hasLocation` relationships, one `brick:feeds` relationship, three
-`brick:hasPoint` relationships, and no review-required records.
+from Git, in `1_ifc/`, `2_points/`, and `3_match/`. The run is expected to
+produce three equipment entities, three `brick:hasLocation` relationships, one
+`brick:feeds` relationship, three `brick:hasPoint` relationships, and no
+review-required records.
 
 ## Mapping policy
 
@@ -269,7 +394,9 @@ intended machine-readable access path; see the
   `IfcRelConnectsPortToElement` is implemented but needs a public synthetic
   regression fixture.
 - The project crosswalk is partial and experimental.
-- Geometry fallback is approximate and must be reviewed.
+- Space inference needs equipment geometry, ARC space geometry, and shared
+  storey GlobalIds; equipment whose explicit storey contradicts its geometry is
+  not placed.
 - Full Brick SHACL validation is future work; the current validation report is
   a project-level completeness check.
 - Real-time BMS transport is out of scope. BMS integration is demonstrated via

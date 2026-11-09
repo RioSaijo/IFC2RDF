@@ -12,7 +12,6 @@ sys.path.insert(0, str(SRC))
 
 from mapping import load_crosswalk, map_assets
 from models import IfcAsset, Relation
-from points import load_and_link_points
 from rdf import BOT, BRICK, build_graph, equipment_iri
 
 
@@ -40,7 +39,7 @@ def test_project_crosswalk_maps_supply_grille_to_air_diffuser():
 
     assert equipment[0].brick_class == "brick:Air_Diffuser"
     assert equipment[0].mapping_status == "project-defined"
-    graph = build_graph([], equipment, [], [], [], "https://example.org/#")
+    graph = build_graph([], equipment, [], "https://example.org/#")
     assert (
         equipment_iri("https://example.org/#", "sg-guid"),
         RDF.type,
@@ -115,60 +114,6 @@ def test_explicit_classification_drives_mapping(tmp_path):
     assert mapped[0].mapping_source.startswith("IfcClassificationReference")
 
 
-def test_bms_link_prefers_bdns_classification(tmp_path):
-    crosswalk = tmp_path / "mapping.csv"
-    crosswalk.write_text(
-        "bdns_abbriviation,bdns_tag,raw_ifc_class,brick_class_candidate\n"
-        "AHU,air handling unit,IfcUnitaryEquipment,brick:Air_Handling_Unit\n",
-        encoding="utf-8",
-    )
-    equipment = map_assets(
-        [IfcAsset("guid-1", "Not the identifier", "IfcUnitaryEquipment", "AHU-1", "BDNS", 42)],
-        crosswalk,
-    )
-    points_csv = tmp_path / "points.csv"
-    points_csv.write_text(
-        "point_id,name,unit,bdns_abbreviation\n"
-        "1,ahu_supply_temp,degC,AHU-1\n",
-        encoding="utf-8",
-    )
-    points, links, unresolved = load_and_link_points(points_csv, equipment, "https://example.org/#")
-    assert len(points) == 1
-    assert links[0].equipment_guid == "guid-1"
-    assert links[0].method == "explicit_bdns_identifier"
-    assert not links[0].review_required
-    assert unresolved == []
-
-
-def test_duplicate_bdns_identifier_does_not_guess(tmp_path):
-    crosswalk = tmp_path / "mapping.csv"
-    crosswalk.write_text(
-        "bdns_abbriviation,bdns_tag,raw_ifc_class,brick_class_candidate\n"
-        "AHU,air handling unit,IfcUnitaryEquipment,brick:Air_Handling_Unit\n",
-        encoding="utf-8",
-    )
-    equipment = map_assets(
-        [
-            IfcAsset("guid-1", "First", "IfcUnitaryEquipment", "AHU-1", "BDNS", 1),
-            IfcAsset("guid-2", "Second", "IfcUnitaryEquipment", "AHU-1", "BDNS", 2),
-        ],
-        crosswalk,
-    )
-    points_csv = tmp_path / "points.csv"
-    points_csv.write_text(
-        "point_id,name,unit,bdns_abbreviation\n"
-        "1,ahu_supply_temp,degC,AHU-1\n",
-        encoding="utf-8",
-    )
-    _points, links, unresolved = load_and_link_points(
-        points_csv,
-        equipment,
-        "https://example.org/#",
-    )
-    assert links == []
-    assert unresolved == ["1"]
-
-
 def test_crosswalk_rejects_non_brick_candidate(tmp_path):
     crosswalk = tmp_path / "mapping.csv"
     crosswalk.write_text(
@@ -201,7 +146,7 @@ def test_crosswalk_accepts_official_bot_spatial_class(tmp_path):
     )
     assert [item.brick_class for item in mapped] == ["bot:Space", "bot:Zone"]
     assert all(item.mapping_status == "project-defined" for item in mapped)
-    graph = build_graph([], mapped, [], [], [], "https://example.org/#")
+    graph = build_graph([], mapped, [], "https://example.org/#")
     assert (
         equipment_iri("https://example.org/#", "space-guid"),
         RDF.type,
@@ -258,7 +203,6 @@ def test_tbd_equipment_and_dependent_links_are_omitted_from_rdf(tmp_path):
     graph = build_graph(
         spatial=[],
         equipment=equipment,
-        points=[],
         relations=[
             Relation(
                 subject_guid="guid-2",
@@ -268,7 +212,6 @@ def test_tbd_equipment_and_dependent_links_are_omitted_from_rdf(tmp_path):
                 method="explicit",
             )
         ],
-        point_links=[],
         base_ns="https://example.org/#",
     )
     assert equipment[0].mapping_status == "tbd"

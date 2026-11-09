@@ -43,15 +43,7 @@ class BrickEquipment:
     mapping_source: Optional[str]
     classification_name: Optional[str]
     source_path: Optional[str] = None
-
-
-@dataclass(frozen=True)
-class BrickPoint:
-    iri: str
-    name: str
-    brick_class: str
-    equipment_ref: Optional[str]
-    unit: Optional[str]
+    ifc_name: Optional[str] = None
 
 
 @dataclass(frozen=True)
@@ -111,19 +103,12 @@ class TopologyPath:
     confidence: float
     review_required: bool
     reason: str = ""
+    # Mapped pass-through equipment (e.g. dampers) on the path, in flow order.
+    traversed_equipment_guids: List[str] = field(default_factory=list)
 
     @property
     def hop_count(self) -> int:
         return len(self.traversed_connection_ids)
-
-
-@dataclass(frozen=True)
-class PointLink:
-    equipment_guid: str
-    point_iri: str
-    source: str
-    method: str
-    review_required: bool = False
 
 
 @dataclass

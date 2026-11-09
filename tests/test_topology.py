@@ -3,13 +3,14 @@
 Layout (arrows are explicit SOURCE -> SINK port connections, "--" is
 SOURCEANDSINK on both ports):
 
-    AHU-1 -> DUW -> tee0 -> DUW -> VAV-1 -> DUW -> tee1 -> DUW -> SG-1
+    AHU-1 -> DUW -> tee0 -> FD-1 -> DUW -> VAV-1 -> DUW -> tee1 -> DUW -> SG-1
                      |                              |  \\
                      +-> DUW -> VAV-2 -> DUW (end)  |   +-- DUW -- SG-2
                                                     +<- DUW <- SG-3
 
     DUW -> SG-1 also has a parallel connection in the opposite direction.
     SEF-1 -> SEF-2 and SEF-2 -> SEF-1 are both asserted by parallel connections.
+    FD-1 is a fire damper, a pass-through topology role.
 """
 import csv
 from pathlib import Path
@@ -92,15 +93,17 @@ class _Builder:
 
 def _build(tmp_path):
     b = _Builder()
-    duct = lambda: b.element("IfcFlowSegment", "duct", "DUW")
-    ahu = b.element("IfcEnergyConversionDevice", "AHU-1", "AHU")
-    vav1 = b.element("IfcFlowController", "VAV-1", "VAV")
-    vav2 = b.element("IfcFlowController", "VAV-2", "VAV")
-    sg1 = b.element("IfcFlowTerminal", "SG-1", "SG")
-    sg2 = b.element("IfcFlowTerminal", "SG-2", "SG")
-    sg3 = b.element("IfcFlowTerminal", "SG-3", "SG")
-    sef1 = b.element("IfcFlowMovingDevice", "SEF-1", "SEF")
-    sef2 = b.element("IfcFlowMovingDevice", "SEF-2", "SEF")
+    ducts = iter(range(1, 1000))
+    duct = lambda: (lambda n: b.element("IfcFlowSegment", f"DUW-{n}", f"DUW-{n}"))(next(ducts))
+    ahu = b.element("IfcEnergyConversionDevice", "AHU-1", "AHU-1")
+    vav1 = b.element("IfcFlowController", "VAV-1", "VAV-1")
+    vav2 = b.element("IfcFlowController", "VAV-2", "VAV-2")
+    sg1 = b.element("IfcFlowTerminal", "SG-1", "SG-1")
+    sg2 = b.element("IfcFlowTerminal", "SG-2", "SG-2")
+    sg3 = b.element("IfcFlowTerminal", "SG-3", "SG-3")
+    sef1 = b.element("IfcFlowMovingDevice", "SEF-1", "SEF-1")
+    sef2 = b.element("IfcFlowMovingDevice", "SEF-2", "SEF-2")
+    fd = b.element("IfcFlowController", "FD-1", "FD-1")
     tee0 = b.element("IfcFlowFitting", "tee0")
     tee1 = b.element("IfcFlowFitting", "tee1")
 
@@ -109,7 +112,8 @@ def _build(tmp_path):
 
     b.flow(ahu, d_ahu)
     b.flow(d_ahu, tee0)
-    b.flow(tee0, d_vav1_in)
+    b.flow(tee0, fd)
+    b.flow(fd, d_vav1_in)
     b.flow(d_vav1_in, vav1)
     b.flow(tee0, d_vav2_in)
     b.flow(d_vav2_in, vav2)
@@ -134,7 +138,7 @@ def _build(tmp_path):
         name: element.GlobalId
         for name, element in {
             "ahu": ahu, "vav1": vav1, "vav2": vav2, "sg1": sg1, "sg2": sg2, "sg3": sg3,
-            "sef1": sef1, "sef2": sef2, "d_ahu": d_ahu, "tee0": tee0, "d_sg1": d_sg1,
+            "sef1": sef1, "sef2": sef2, "d_ahu": d_ahu, "tee0": tee0, "d_sg1": d_sg1, "fd": fd,
         }.items()
     }
     return mep_path, arc_path, guids
@@ -149,6 +153,7 @@ def _run(tmp_path):
         output_dir=output,
         mapping_csv_path=PROJECT_ROOT / "data" / "resources" / "BDNS mapping partial.csv",
         base_ns=BASE_NS,
+        topology_roles_path=PROJECT_ROOT / "data" / "resources" / "topology_roles.csv",
     )
     graph = Graph().parse(output / "building_brick.ttl", format="turtle")
     with (output / "topology_paths.csv").open(encoding="utf-8", newline="") as handle:
@@ -184,11 +189,21 @@ def test_intermediate_ducts_and_fittings_are_path_evidence_not_rdf(tmp_path):
     row = _path(paths, guids, "ahu", "vav1")
     traversed = row["traversed_element_guids"].split(";")
     assert guids["d_ahu"] in traversed and guids["tee0"] in traversed
-    assert row["hop_count"] == "4"
+    assert row["hop_count"] == "5"
     assert row["decision_status"] == "inferred"
     assert row["review_required"] == "false"
     for name in ("d_ahu", "tee0"):
         assert not list(graph.triples((equipment_iri(BASE_NS, guids[name]), RDF.type, None)))
+
+
+def test_passthrough_damper_is_traversed_but_kept_as_equipment(tmp_path):
+    _, graph, paths, guids = _run(tmp_path)
+
+    row = _path(paths, guids, "ahu", "vav1")
+    assert row["traversed_equipment_guids"] == guids["fd"]
+    assert guids["fd"] in row["traversed_element_guids"].split(";")
+    assert not any(guids["fd"] in (r["source_equipment_guid"], r["target_equipment_guid"]) for r in paths)
+    assert (equipment_iri(BASE_NS, guids["fd"]), RDF.type, BRICK.Damper) in graph
 
 
 def test_undirected_branch_is_not_forced(tmp_path):

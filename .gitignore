@@ -13,6 +13,7 @@ dist/
 .ruff_cache/
 .ipynb_checkpoints/
 data/output/
+data/local_test/
 data/**/*.ifc
 data/**/*.ttl
 data/intermediate/

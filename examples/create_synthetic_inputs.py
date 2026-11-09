@@ -1,11 +1,18 @@
 from __future__ import annotations
 
 import csv
+import sys
 from pathlib import Path
 from typing import Any, Dict
 
 import ifcopenshell
 import ifcopenshell.guid
+
+SRC = Path(__file__).resolve().parents[1] / "src"
+if str(SRC) not in sys.path:
+    sys.path.insert(0, str(SRC))
+
+from bms_points import POINT_LIST_COLUMNS  # noqa: E402
 
 
 def _guid() -> str:
@@ -137,35 +144,33 @@ def create_synthetic_inputs(output_dir: str | Path) -> Dict[str, Any]:
     mep_b_path = output / "synthetic_mep_b.ifc"
     mep_b.write(mep_b_path)
 
+    # BACnet-style point list (see src/bms_points.py); equipment_ref is the BDNS
+    # instance ID held by the classification reference above.
     points_path = output / "synthetic_points.csv"
     with points_path.open("w", encoding="utf-8", newline="") as handle:
-        writer = csv.DictWriter(
-            handle,
-            fieldnames=["point_id", "name", "unit", "bdns_abbreviation"],
-        )
+        writer = csv.DictWriter(handle, fieldnames=POINT_LIST_COLUMNS)
         writer.writeheader()
-        writer.writerows(
+        for index, (point_id, object_name, units, equipment_ref) in enumerate(
             [
+                ("AHU-1_SAT", "AHU-1 Supply Air Temperature", "degC", "AHU-1"),
+                ("FCU-1_ZAT", "FCU-1 Zone Air Temperature", "degC", "FCU-1"),
+                ("CP-1_WT", "CP-1 Water Temperature", "degC", "CP-1"),
+            ],
+            start=1,
+        ):
+            writer.writerow(
                 {
-                    "point_id": "P-1",
-                    "name": "supply_air_temperature",
-                    "unit": "degC",
-                    "bdns_abbreviation": "AHU-1",
-                },
-                {
-                    "point_id": "P-2",
-                    "name": "fan_status",
-                    "unit": "",
-                    "bdns_abbreviation": "FCU-1",
-                },
-                {
-                    "point_id": "P-3",
-                    "name": "pump_status",
-                    "unit": "",
-                    "bdns_abbreviation": "CP-1",
-                },
-            ]
-        )
+                    "point_id": point_id,
+                    "object_name": object_name,
+                    "description": "Synthetic point",
+                    "object_type": "AI",
+                    "device_instance": 100 + index,
+                    "object_instance": 1,
+                    "units": units,
+                    "equipment_ref": equipment_ref,
+                    "space_ref": "",
+                }
+            )
 
     return {
         "mep_ifc": [str(mep_a_path), str(mep_b_path)],

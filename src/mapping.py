@@ -8,7 +8,15 @@ from typing import Dict, Iterable, Optional
 from models import BrickEquipment, IfcAsset
 
 
-def _lookup_code(value: Optional[str]) -> str:
+BDNS_INSTANCE_ID = re.compile(r"[A-Z]+-\d+")
+
+
+def is_bdns_instance_id(value: Optional[str]) -> bool:
+    """True for a BDNS asset instance tag such as AHU-00001 (abbreviation, hyphen, number)."""
+    return bool(value) and BDNS_INSTANCE_ID.fullmatch(value.strip()) is not None
+
+
+def lookup_code(value: Optional[str]) -> str:
     text = (value or "").strip().upper()
     match = re.match(r"^([A-Z]{2,6})(?:\d+)?(?:-|$)", text)
     return match.group(1) if match else text
@@ -48,7 +56,7 @@ def load_crosswalk(path: str | Path) -> Dict[str, Dict[str, str]]:
             )
 
         for row in reader:
-            code = _lookup_code(row.get(code_column))
+            code = lookup_code(row.get(code_column))
             brick = (row.get("brick_class_candidate") or "").strip()
             if not code:
                 continue
@@ -81,7 +89,7 @@ def map_assets(assets: Iterable[IfcAsset], crosswalk_path: str | Path) -> list[B
         if not asset.bdns_code:
             continue
 
-        record = crosswalk.get(_lookup_code(asset.bdns_code))
+        record = crosswalk.get(lookup_code(asset.bdns_code))
         if record is None:
             brick_class = None
             status = "tbd"
@@ -103,6 +111,7 @@ def map_assets(assets: Iterable[IfcAsset], crosswalk_path: str | Path) -> list[B
                 mapping_source=source,
                 classification_name=asset.classification_name,
                 source_path=asset.source_path,
+                ifc_name=asset.name,
             )
         )
     return result

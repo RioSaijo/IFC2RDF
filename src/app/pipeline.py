@@ -7,15 +7,17 @@ from typing import Any, Dict, Iterable, Sequence
 from ifc import (
     extract_ifc,
     extract_spatial_elements,
-    infer_cross_model_geometry_locations,
     load_ifc,
     write_connection_inferences,
 )
-from mapping import map_assets, write_mapping_results
+import csv
+from collections import Counter
+
+from mapping import is_bdns_instance_id, map_assets, write_mapping_results
 from models import IfcAsset, Relation, SpatialElement
-from points import load_and_link_points
 from rdf import build_graph, write_outputs
-from topology import infer_feed_paths, write_topology_paths
+from spaces import infer_space_locations, write_space_locations
+from topology import infer_feed_paths, load_passthrough_codes, write_topology_paths
 from validation import build_validation_report, write_json
 
 
@@ -105,14 +107,30 @@ def _status(complete: bool, available: bool = True) -> str:
     return "WARN" if available else "FAIL"
 
 
+def _write_bdns_tag_issues(non_instance_tags, duplicate_instance_ids, assets, path: Path) -> str:
+    """Elements left out or in conflict because of their BDNS tag."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    duplicates = set(duplicate_instance_ids)
+    rows = [
+        (item, "BDNS tag is not an asset instance ID (abbreviation-number); element left out")
+        for item in non_instance_tags
+    ] + [(item, "BDNS instance ID is used by more than one element") for item in assets if item.bdns_code in duplicates]
+    with path.open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.writer(handle)
+        writer.writerow(["ifc_guid", "ifc_name", "raw_ifc_class", "bdns_tag", "issue", "source_path"])
+        for item, issue in rows:
+            writer.writerow([item.ifc_guid, item.name or "", item.raw_ifc_class, item.bdns_code, issue, item.source_path or ""])
+    return str(path)
+
+
 def run_pipeline(
     mep_ifc_paths: str | Path | Sequence[str | Path],
     arc_ifc_paths: str | Path | Sequence[str | Path],
     output_dir: str | Path,
     mapping_csv_path: str | Path,
-    points_csv: str | Path | None = None,
     base_ns: str = DEFAULT_BASE_NS,
-    geometry_fallback: bool = False,
+    infer_spaces: bool = False,
+    topology_roles_path: str | Path | None = None,
 ) -> Dict[str, Any]:
     if not base_ns.startswith(("http://", "https://")) or not base_ns.endswith(("#", "/")):
         raise ValueError("base_ns must be an HTTP(S) namespace ending in '#' or '/'")
@@ -125,7 +143,13 @@ def run_pipeline(
     arc_spatial_groups = [extract_spatial_elements(bundle) for bundle in arc_bundles]
 
     all_distribution_assets, duplicate_asset_guids = _merge_assets(mep_extractions)
-    assets = [item for item in all_distribution_assets if item.bdns_code]
+    # Only elements whose BDNS tag is an asset instance ID (e.g. AHU-00001) are converted.
+    # Elements tagged with an abbreviation only (e.g. AHU) are reported and left out.
+    bdns_tagged = [item for item in all_distribution_assets if item.bdns_code]
+    assets = [item for item in bdns_tagged if is_bdns_instance_id(item.bdns_code)]
+    non_instance_tags = [item for item in bdns_tagged if not is_bdns_instance_id(item.bdns_code)]
+    instance_id_counts = Counter(item.bdns_code for item in assets)
+    duplicate_instance_ids = sorted(code for code, count in instance_id_counts.items() if count > 1)
     spatial, duplicate_arc_guids, arc_guids = _merge_spatial(mep_extractions, arc_spatial_groups)
     asset_guids = {item.ifc_guid for item in assets}
     connection_inferences = [
@@ -143,38 +167,27 @@ def run_pipeline(
         arc_guids=arc_guids,
     )
 
-    geometry_diagnostics: Dict[str, Any] = {}
-    if geometry_fallback:
-        inferred, geometry_diagnostics = infer_cross_model_geometry_locations(
-            list(zip(mep_bundles, mep_extractions)),
-            arc_bundles,
-            relations,
+    space_decisions = []
+    space_diagnostics: Dict[str, Any] = {"enabled": infer_spaces}
+    if infer_spaces:
+        space_relations, space_decisions, diagnostics = infer_space_locations(
+            mep_bundles, arc_bundles, assets, relations
         )
-        existing = {(item.subject_guid, item.predicate, item.object_guid) for item in relations}
-        relations.extend(
-            item
-            for item in inferred
-            if (item.subject_guid, item.predicate, item.object_guid) not in existing
-        )
+        space_diagnostics.update(diagnostics)
+        relations.extend(space_relations)
 
     equipment = map_assets(assets, mapping_csv_path)
     topology_paths, feed_relations, topology_stats = infer_feed_paths(
         [item for extraction in mep_extractions for item in extraction.port_connections],
         equipment,
+        load_passthrough_codes(topology_roles_path),
     )
     relations.extend(feed_relations)
-    points = []
-    point_links = []
-    unresolved_points = []
-    if points_csv is not None:
-        points, point_links, unresolved_points = load_and_link_points(points_csv, equipment, base_ns)
 
     graph = build_graph(
         spatial=spatial,
         equipment=equipment,
-        points=points,
         relations=relations,
-        point_links=point_links,
         base_ns=base_ns,
     )
 
@@ -182,9 +195,12 @@ def run_pipeline(
     located_assets = {
         item.subject_guid for item in relations if item.predicate == "brick:hasLocation"
     }
-    point_spatial_contexts = sum(
-        item.equipment_guid in located_assets for item in point_links
-    )
+    space_guids = {item.ifc_guid for item in spatial if item.raw_ifc_class == "IfcSpace"}
+    located_in_space = {
+        item.subject_guid
+        for item in relations
+        if item.predicate == "brick:hasLocation" and item.object_guid in space_guids
+    }
     explicit_locations = sum(
         item.predicate == "brick:hasLocation" and item.method == "explicit"
         for item in relations
@@ -217,10 +233,15 @@ def run_pipeline(
     )
     capabilities = {
         "IDENTITY": {
-            "status": _status(bool(assets) and not duplicate_asset_guids, bool(assets)),
+            "status": _status(
+                bool(assets) and not duplicate_asset_guids and not duplicate_instance_ids and not non_instance_tags,
+                bool(assets),
+            ),
             "evidence": (
-                f"{len(assets)} BDNS-classified equipment selected from "
+                f"{len(assets)} equipment with a BDNS instance ID selected from "
                 f"{len(all_distribution_assets)} distribution elements; "
+                f"{len(non_instance_tags)} BDNS tags without an instance ID left out; "
+                f"{len(duplicate_instance_ids)} duplicate BDNS instance IDs; "
                 f"{len(duplicate_asset_guids)} duplicate GlobalIds"
             ),
         },
@@ -239,7 +260,8 @@ def run_pipeline(
             "status": _status(bool(assets) and len(located_assets) == len(assets), bool(assets)),
             "evidence": (
                 f"{len(located_assets)}/{len(assets)} equipment located; "
-                f"{explicit_locations} explicit and {inferred_locations} inferred"
+                f"{explicit_locations} explicit and {inferred_locations} inferred; "
+                f"{len(located_in_space)} in a space"
             ),
         },
         "FLOW_TOPOLOGY": {
@@ -259,28 +281,11 @@ def run_pipeline(
                 f"{ambiguous_connections} undirected connections between BDNS equipment"
             ),
         },
-        "POINT_LINKAGE": {
-            "status": (
-                "NOT_PROVIDED"
-                if points_csv is None
-                else _status(
-                    bool(points)
-                    and len(point_links) == len(points)
-                    and point_spatial_contexts == len(points),
-                    bool(points),
-                )
-            ),
-            "evidence": (
-                f"{len(point_links)}/{len(points)} BMS points linked; "
-                f"{point_spatial_contexts}/{len(points)} have spatial context via equipment"
-            ),
-        },
     }
     audit = {
         "inputs": {
             "mep_ifc": [str(path.resolve()) for path in mep_paths],
             "arc_ifc": [str(path.resolve()) for path in arc_paths],
-            "points_csv": str(Path(points_csv).resolve()) if points_csv is not None else None,
         },
         "schemas": {
             "mep": [bundle.schema for bundle in mep_bundles],
@@ -292,34 +297,33 @@ def run_pipeline(
             "ifc_distribution_elements": len(all_distribution_assets),
             "equipment": len(assets),
             "bdns_classified_equipment": classified_count,
+            "bdns_tags_without_instance_id": len(non_instance_tags),
             "arc_spatial_elements": len(arc_guids),
             "explicit_locations": explicit_locations,
             "inferred_locations": inferred_locations,
+            "located_in_space": len(located_in_space),
             "directed_feeds": len(feeds),
             "rdf_eligible_directed_feeds": len(rdf_feeds),
             "topology": topology_stats,
-            "bms_points": len(points),
-            "point_links": len(point_links),
-            "point_spatial_contexts": point_spatial_contexts,
         },
         "conflicts": {
             "duplicate_equipment_global_ids": duplicate_asset_guids,
+            "duplicate_bdns_instance_ids": duplicate_instance_ids,
             "duplicate_arc_spatial_global_ids": duplicate_arc_guids,
             "ambiguous_bdns_assignment_count": sum(
                 extraction.audit["bdns"].get("ambiguous_asset_count", 0)
                 for extraction in mep_extractions
             ),
         },
-        "geometry_fallback": {
-            "enabled": geometry_fallback,
-            **geometry_diagnostics,
-        },
+        "space_inference": space_diagnostics,
         "per_mep_model": [extraction.audit for extraction in mep_extractions],
         "capabilities": capabilities,
     }
 
     output_dir = Path(output_dir)
-    paths = write_outputs(graph, equipment, relations, point_links, output_dir)
+    paths = write_outputs(graph, equipment, relations, output_dir)
+    if infer_spaces:
+        paths["space_locations"] = write_space_locations(space_decisions, output_dir / "space_locations.csv")
     paths["equipment_mapping"] = write_mapping_results(
         equipment,
         output_dir / "equipment_mapping.csv",
@@ -328,18 +332,23 @@ def run_pipeline(
         connection_inferences,
         output_dir / "connection_inference.csv",
     )
+    paths["bdns_tag_issues"] = _write_bdns_tag_issues(
+        non_instance_tags, duplicate_instance_ids, assets, output_dir / "bdns_tag_issues.csv"
+    )
     paths["topology_paths"] = write_topology_paths(
         topology_paths,
         output_dir / "topology_paths.csv",
     )
-    validation = build_validation_report(graph, equipment, relations, point_links, unresolved_points)
+    validation = build_validation_report(graph, equipment, relations)
     input_conflicts = {
         "duplicate_equipment_global_ids": duplicate_asset_guids,
+        "duplicate_bdns_instance_ids": duplicate_instance_ids,
         "duplicate_arc_spatial_global_ids": duplicate_arc_guids,
         "ambiguous_bdns_assignment_count": ambiguous_bdns_count,
     }
     validation["input_conflicts"] = input_conflicts
-    if duplicate_asset_guids or duplicate_arc_guids or input_conflicts["ambiguous_bdns_assignment_count"]:
+    if (duplicate_asset_guids or duplicate_instance_ids or duplicate_arc_guids
+            or input_conflicts["ambiguous_bdns_assignment_count"]):
         validation["conforms"] = False
     paths["requirement_report"] = write_json(audit, output_dir / "requirement_report.json")
     paths["validation_report"] = write_json(validation, output_dir / "validation_report.json")
@@ -348,10 +357,9 @@ def run_pipeline(
         "triple_count": validation["triple_count"],
         "review_required_mapping_count": len(validation["review_required_mappings"]),
         "review_required_relation_count": len(validation["review_required_relations"]),
-        "review_required_point_link_count": len(validation["review_required_point_links"]),
-        "unresolved_point_count": len(validation["unresolved_points"]),
         "input_conflict_count": (
             len(duplicate_asset_guids)
+            + len(duplicate_instance_ids)
             + len(duplicate_arc_guids)
             + input_conflicts["ambiguous_bdns_assignment_count"]
         ),
@@ -361,8 +369,7 @@ def run_pipeline(
         "arc_ifc_count": len(arc_bundles),
         "equipment_count": len(equipment),
         "bdns_classified_equipment_count": classified_count,
-        "point_count": len(points),
-        "relation_count": len(relations) + len(point_links),
+        "relation_count": len(relations),
         "outputs": paths,
         "capabilities": capabilities,
         "validation": validation_summary,
