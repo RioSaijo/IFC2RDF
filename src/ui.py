@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import subprocess
 import threading
 import traceback
 import webbrowser
@@ -38,6 +39,63 @@ LOCK = threading.Lock()
 
 def _lines(value: str) -> list[str]:
     return [line.strip().strip('"') for line in (value or "").splitlines() if line.strip()]
+
+
+BROWSE_KINDS = {
+    # kind: (dialog, title, file types)
+    "ifc": ("files", "Select IFC file(s)", [("IFC files", "*.ifc"), ("All files", "*.*")]),
+    "csv": ("file", "Select the BMS point list", [("CSV files", "*.csv"), ("All files", "*.*")]),
+    "folder": ("folder", "Select a folder", []),
+}
+
+# Runs in a child process: Tk must own the main thread, which the HTTP server does not give it.
+_DIALOG_SCRIPT = r"""
+import json, sys, tkinter
+from tkinter import filedialog
+dialog, title, types, initial = json.loads(sys.argv[1])
+root = tkinter.Tk(); root.withdraw(); root.attributes("-topmost", True)
+options = {"parent": root, "title": title, "initialdir": initial or None}
+if dialog == "folder":
+    chosen = filedialog.askdirectory(mustexist=False, **options)
+    paths = [chosen] if chosen else []
+elif dialog == "files":
+    paths = list(filedialog.askopenfilenames(filetypes=types, **options))
+else:
+    chosen = filedialog.askopenfilename(filetypes=types, **options)
+    paths = [chosen] if chosen else []
+root.destroy()
+print(json.dumps([str(p) for p in paths]))
+"""
+
+BROWSE_LOCK = threading.Lock()
+
+
+def browse(kind: str, current: str = "") -> list[str]:
+    """Open the native Windows file/folder dialog on this PC and return the chosen paths."""
+    if kind not in BROWSE_KINDS:
+        raise ValueError(f"unknown browse kind {kind!r}")
+    dialog, title, types = BROWSE_KINDS[kind]
+    initial = ""
+    for line in _lines(current):
+        candidate = Path(line)
+        folder = candidate if candidate.is_dir() else candidate.parent
+        if folder.is_dir():
+            initial = str(folder)
+            break
+    if not initial:
+        initial = str(PROJECT_ROOT)
+    if not BROWSE_LOCK.acquire(blocking=False):
+        raise RuntimeError("a file dialog is already open")
+    try:
+        done = subprocess.run(
+            [sys.executable, "-c", _DIALOG_SCRIPT, json.dumps([dialog, title, types, initial])],
+            capture_output=True, text=True, timeout=1800,
+        )
+    finally:
+        BROWSE_LOCK.release()
+    if done.returncode != 0:
+        raise RuntimeError(done.stderr.strip() or "file dialog failed")
+    return [str(Path(p)) for p in json.loads(done.stdout.strip().splitlines()[-1])]
 
 
 def _log(message: str) -> None:
@@ -140,6 +198,7 @@ label{display:block;font-size:13px;margin-top:10px;font-weight:600}
 textarea,input[type=text]{width:100%;box-sizing:border-box;font-family:monospace;font-size:12px;padding:6px}
 .row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 button{margin:12px 8px 0 0;padding:8px 14px;border:1px solid #2f4b7c;background:#fff;border-radius:4px;cursor:pointer}
+button.browse{margin:0 0 0 8px;padding:2px 10px;font-size:12px;font-weight:400}
 button.primary{background:#2f4b7c;color:#fff}button:disabled{opacity:.5}
 pre{background:#fff;border:1px solid #ddd;padding:8px;font-size:12px;max-height:320px;overflow:auto;white-space:pre-wrap}
 .stage{margin-top:14px;border-top:1px solid #ddd;padding-top:8px}.ok{color:#2a7d2a}.err{color:#b00020}
@@ -149,12 +208,18 @@ small{color:#666}
 <header><b>IFC2RDF</b> — local runner (BDNS-tagged MEP IFC + spatial IFC + BMS point list → Brick RDF)</header>
 <main>
 <div class="row">
- <div><label>MEP IFC (one path per line; BDNS-classified equipment)</label><textarea id="mep" rows="2"></textarea>
- <label>Spatial / ARC IFC (one path per line)</label><textarea id="arc" rows="2"></textarea>
- <label>BMS point list CSV</label><input type="text" id="points"></div>
- <div><label>Output folder</label><input type="text" id="out">
+ <div><label>MEP IFC (one path per line; BDNS-classified equipment)
+  <button class="browse" onclick="pick('mep','ifc',true)">Browse…</button><button class="browse" onclick="setField('mep','')">Clear</button></label>
+ <textarea id="mep" rows="2"></textarea>
+ <label>Spatial / ARC IFC (one path per line)
+  <button class="browse" onclick="pick('arc','ifc',true)">Browse…</button><button class="browse" onclick="setField('arc','')">Clear</button></label>
+ <textarea id="arc" rows="2"></textarea>
+ <label>BMS point list CSV <button class="browse" onclick="pick('points','csv')">Browse…</button></label>
+ <input type="text" id="points"></div>
+ <div><label>Output folder <button class="browse" onclick="pick('out','folder')">Browse…</button></label><input type="text" id="out">
  <label>Base namespace</label><input type="text" id="base_ns" value="__BASE_NS__">
- <label>GraphDB home (to start it if needed)</label><input type="text" id="graphdb_home">
+ <label>GraphDB home (to start it if needed) <button class="browse" onclick="pick('graphdb_home','folder')">Browse…</button></label>
+ <input type="text" id="graphdb_home">
  <label>GraphDB URL / repository</label><input type="text" id="graphdb_url" value="http://localhost:7200">
  <input type="text" id="repository" value="IFC2RDF_case_study">
  <label><input type="checkbox" id="infer_spaces" checked> Stage 1: place equipment in ARC spaces from geometry</label>
@@ -202,6 +267,14 @@ for(const id of ids){try{const v=localStorage.getItem("ifc2rdf_"+id);if(v)docume
 function params(){const p={};for(const id of ids){p[id]=document.getElementById(id).value;try{localStorage.setItem("ifc2rdf_"+id,p[id])}catch(e){}}
  p.local_view=document.getElementById("local_view").checked;
  p.infer_spaces=document.getElementById("infer_spaces").checked;return p}
+function setField(id,value){const el=document.getElementById(id);el.value=value;try{localStorage.setItem("ifc2rdf_"+id,value)}catch(e){}}
+async function pick(id,kind,multiple){const el=document.getElementById(id);
+ const r=await fetch("/api/browse",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({kind,current:el.value})});
+ const d=await r.json();if(!r.ok){alert(d.error||"file dialog failed");return}
+ if(!d.paths.length)return;
+ if(multiple){const have=el.value.split("\\n").map(s=>s.trim()).filter(Boolean);
+  for(const p of d.paths)if(!have.includes(p))have.push(p);setField(id,have.join("\\n"))}
+ else setField(id,d.paths[0])}
 async function run(stages){const r=await fetch("/api/run",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({stages,params:params()})});
  if(!r.ok)alert(await r.text());poll()}
 const names={"1":"1 IFC → RDF","2":"2 Points → RDF","3":"3 Match & validate","4":"4 GraphDB / view"};
@@ -309,6 +382,15 @@ class Handler(BaseHTTPRequestHandler):
     def do_POST(self) -> None:
         path = urlparse(self.path).path
         payload = json.loads(self.rfile.read(int(self.headers.get("Content-Length", 0))) or b"{}")
+        if path == "/api/browse":
+            try:
+                body, code = {"paths": browse(payload.get("kind", ""), payload.get("current") or "")}, 200
+            except ValueError as exc:
+                body, code = {"error": str(exc)}, 400
+            except Exception as exc:  # shown to the user by the page
+                body, code = {"error": f"{type(exc).__name__}: {exc}"}, 500
+            self._send(code, json.dumps(body, ensure_ascii=False).encode("utf-8"), "application/json")
+            return
         if path == "/api/gdb/start":
             home = (payload.get("home") or "").strip().strip('"')
             if not home or not Path(home).is_dir():

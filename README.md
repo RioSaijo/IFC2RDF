@@ -219,7 +219,10 @@ python src/ui.py
 ```
 
 It listens on `http://127.0.0.1:8765` only and takes local file paths; nothing
-is uploaded.
+is uploaded. Each input has a **Browse…** button that opens the Windows file
+or folder dialog on the same PC and fills in the full path. The GraphDB home
+is the GraphDB distribution folder (for example `graphdb-11.3.0`, the folder
+that contains `bin/`); it is only needed when the UI has to start GraphDB.
 
 Its GraphDB panel works on the loaded repository without the GraphDB
 Workbench: it shows whether GraphDB is running and can start it from the
@@ -240,14 +243,21 @@ to its own folder so it can be reviewed before the next one:
 | 3 match and validate | `src/run_match.py` | `linked_brick.ttl`, `match_results.csv`, `match_report.json` |
 | 4 GraphDB and view | `src/run_graphdb.py` | GraphDB repository, `graph_view.html`, `graphdb_report.json` |
 
+From the repository root:
+
 ```bash
-cd src
-python run_all.py \
+python src/run_all.py \
   --mep-ifc path/to/mep.ifc --arc-ifc path/to/arc.ifc \
   --points-csv path/to/point_list.csv \
-  --out ../data/output/stages \
+  --out data/output/stages \
   --graphdb-home path/to/graphdb-11.3.0
 ```
+
+The terminal and the UI run the same code with the same options:
+`--skip-space-inference` turns off the geometry-based equipment-to-space
+step, `--local-view` writes `graph_view.html` without GraphDB, and
+`--skip-graphdb` stops after stage 3. Each stage script accepts `--help`. In
+PowerShell, continue lines with a backtick instead of a backslash.
 
 The point list is a BACnet-style CSV with the columns `point_id`,
 `object_name`, `description`, `object_type` (AI, AO, AV, BI, BO, BV, MI, MO,
@@ -393,11 +403,33 @@ intended machine-readable access path; see the
 - The public automated example tests IFC4. IFC2x3 port ownership via
   `IfcRelConnectsPortToElement` is implemented but needs a public synthetic
   regression fixture.
-- The project crosswalk is partial and experimental.
+- The project crosswalk is partial and experimental. Ductwork, pipework,
+  cable trays, systems, and other tags without a Brick 1.4.4 Equipment class
+  stay `tbd` and are left out of the RDF.
+- Only elements whose BDNS tag is an asset instance ID (for example
+  `AHU-00001`) are converted. A model that carries only type-level tags (for
+  example `AHU`) has to be given instance IDs before it is used; that step is
+  not part of this tool.
+- `brick:feeds` is derived only from explicit port connections with SOURCE and
+  SINK flow directions. A model without port connections yields few or no
+  feeds.
 - Space inference needs equipment geometry, ARC space geometry, and shared
   storey GlobalIds; equipment whose explicit storey contradicts its geometry is
-  not placed.
+  not placed. It takes minutes on large models (about 8 minutes for some
+  6,500 equipment elements).
+- Stage 2 converts Sensor and Setpoint points only. Classes come from English
+  point words, the BACnet object type, and the unit; when words are missing a
+  broader class is used rather than a guessed one. The point list is a
+  simplified BACnet schedule, not a full EDE file.
+- `space_ref` must equal the `Name` of an ARC `IfcSpace`; free-text room names
+  need a name-to-room table first.
 - Full Brick SHACL validation is future work; the current validation report is
   a project-level completeness check.
+- The graph view loads `vis-network` from unpkg and needs an internet
+  connection; large graphs are crowded.
+- Stage 4 was tested with GraphDB 11.3. It replaces all statements in the
+  chosen repository, and GraphDB refuses writes when its disk is nearly full.
+- The UI is for one user on the same PC (127.0.0.1). Its Browse buttons use
+  the Windows file dialog through Python's tkinter.
 - Real-time BMS transport is out of scope. BMS integration is demonstrated via
   point metadata and `brick:hasPoint` links.
