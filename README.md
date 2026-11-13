@@ -19,20 +19,23 @@ No project IFC model, project BMS export, converted RDF, GUID, coordinate, or
 project-specific validation result is included in this repository. The public
 example is generated synthetically at runtime.
 
+The converter is a command-line tool. Its result is a Brick RDF file in Turtle
+(`linked_brick.ttl`) together with CSV and JSON review files. Loading the RDF
+into a triple store and visualising it are outside this repository; the Turtle
+file can be loaded into any RDF store.
+
 ## Processing flow and modules
 
-The processing steps remain separated so that each stage can be inspected and
-tested independently:
+The work runs in three stages. Each stage writes its own folder, so it can be
+reviewed before the next one runs:
 
-| Stage | Module | Responsibility |
-| --- | --- | --- |
-| 1 | `src/ifc.py` | Load multiple MEP/ARC IFC files; extract BDNS equipment, ARC spaces, containment, ports, and connections |
-| 2 | `src/mapping.py` | Apply the project BDNS-to-Brick/BOT crosswalk and retain unresolved assets |
-| 3 | `src/points.py` | Load BMS point metadata and link points using explicit BDNS identifiers |
-| 4 | `src/rdf.py` | Build Brick/BOT RDF and write relationship provenance |
-| 5 | `src/validation.py` | Report unresolved mappings, relationships, and BMS point links |
-| 6 | `src/app/pipeline.py` | Execute the stages in order without embedding project data |
-| 7 | `src/run.py` | Provide the command-line interface |
+| Stage | Command | Main modules | Responsibility |
+| --- | --- | --- | --- |
+| 1 IFC -> RDF | `src/run.py` | `src/ifc.py`, `src/mapping.py`, `src/topology.py`, `src/spaces.py`, `src/rdf.py`, `src/validation.py`, `src/app/pipeline.py` | Read MEP and ARC IFC files; select BDNS-classified equipment; map it to Brick/BOT; derive `hasPart`, `hasLocation`, and `feeds` with provenance |
+| 2 point list -> RDF | `src/run_points.py` | `src/bms_points.py`, `src/point_classes.py` | Read the BMS point list and assign Brick Sensor or Setpoint classes |
+| 3 match and validate | `src/run_match.py` | `src/match.py` | Link points to equipment and spaces (`hasPoint`) and report what could not be linked |
+
+`src/run_all.py` runs the three stages in order.
 
 ## IFC input contract
 
@@ -70,7 +73,7 @@ as a human-readable label; it is not treated as proof of a BDNS assignment.
 Only IFC equipment with an explicit BDNS classification association whose
 value is an asset instance ID enters the mapping, relationship reasoning, and
 RDF stages. An instance ID is the BDNS abbreviation, a hyphen, and a number
-(for example `AHU-00001`); the abbreviation is looked up in the crosswalk.
+(for example `AHU-1`); the abbreviation is looked up in the crosswalk.
 Elements whose BDNS tag holds only an abbreviation (for example `AHU` shared by
 every AHU) are left out and listed in `bdns_tag_issues.csv`, together with any
 instance ID used by more than one element. Other IFC distribution
@@ -78,6 +81,16 @@ elements remain visible in the input audit but are not passed to the mapping
 CSV and are not RDF conversion candidates. The mapping CSV is used only as a
 BDNS-tag-to-Brick/BOT-class lookup; it does not classify equipment from IFC
 entity type or `Name`.
+
+**Note on leading zeros.** The
+[BDNS naming syntax](https://github.com/theodi/BDNS/blob/master/BDNS_Specification_naming_syntax.md)
+does not allow leading zeros in the instance number (`AHU-1`, not
+`AHU-00001`). The case study behind this tool used zero-padded numbers such as
+`AHU-00001` because of how its data were processed, and the tests and some
+examples here follow that data. This is not BDNS-conformant naming. The
+converter accepts both forms and compares the value as written, so
+`AHU-00001` and `AHU-1` are different IDs: the IFC model and the point list
+must use the same form.
 
 This distinction is intentional. BDNS defines identifiers such as `asset.guid`
 and `asset.name`, but it does not by itself require every IFC authoring tool to
@@ -192,72 +205,87 @@ On Windows, use `.venv\Scripts\pip` for the second command.
 
 ## Usage
 
-From the repository root:
+Everything runs locally from a terminal. Run the commands from the repository
+root, with the virtual environment's Python (`.venv/bin/python`, or
+`.venv\Scripts\python` on Windows). Each script prints a JSON summary and
+accepts `--help`.
 
-```bash
-python src/run.py \
-  --mep-ifc path/to/mep-a.ifc path/to/mep-b.ifc \
-  --arc-ifc path/to/arc-a.ifc path/to/arc-b.ifc \
-  --out data/output \
-  --base-ns https://example.org/my-building#
-```
+### Inputs
 
-BMS points are added by stages 2 and 3 below.
-
-### Staged workflow (IFC, BMS points, match, GraphDB)
-
-The user provides three inputs: the MEP IFC with BDNS-classified equipment,
-an IFC with the spatial structure (for example the architectural model), and
-the BMS point list. The BDNS-to-Brick crosswalk is bundled in
-`data/resources/`. Everything runs locally.
-
-The easiest way is the local web UI, which runs each stage on a button and
-shows its summary, output files, and graph view:
-
-```bash
-python src/ui.py
-```
-
-It listens on `http://127.0.0.1:8765` only and takes local file paths; nothing
-is uploaded. Each input has a **Browse…** button that opens the Windows file
-or folder dialog on the same PC and fills in the full path. The GraphDB home
-is the GraphDB distribution folder (for example `graphdb-11.3.0`, the folder
-that contains `bin/`); it is only needed when the UI has to start GraphDB.
-
-Its GraphDB panel works on the loaded repository without the GraphDB
-Workbench: it shows whether GraphDB is running and can start it from the
-GraphDB home folder, searches equipment, spaces, and points by IFC Name or
-point ID, draws a node's neighbors (double-click a node to expand it) or its
-whole `brick:feeds` path upstream and downstream, and lists all feeds,
-unlinked points, and unclassified points. The queries live in
-`src/explorer.py`. The page loads `vis-network` from unpkg, so the graph needs
-an internet connection.
-
-Run each stage alone, or all of them with `src/run_all.py`. Each stage writes
-to its own folder so it can be reviewed before the next one:
-
-| Stage | Script | Output |
+| Input | Option | Content |
 | --- | --- | --- |
-| 1 IFC -> RDF | `src/run.py` | `building_brick.ttl`, mapping, topology and validation files |
-| 2 point list -> RDF | `src/run_points.py` | `points_brick.ttl`, `point_classification.csv`, `point_list_issues.csv`, `points_report.json` |
-| 3 match and validate | `src/run_match.py` | `linked_brick.ttl`, `match_results.csv`, `match_report.json` |
-| 4 GraphDB and view | `src/run_graphdb.py` | GraphDB repository, `graph_view.html`, `graphdb_report.json` |
+| MEP IFC | `--mep-ifc` | One or more MEP IFC files with BDNS-classified equipment (see the IFC input contract) |
+| Spatial IFC | `--arc-ifc` | One or more IFC files with the Site/Building/Storey/Space structure, for example the architectural model |
+| BMS point list | `--points-csv` | A BACnet-style point list CSV (columns below) |
+| Output folder | `--out` | Folder for the results; each stage writes its own sub-folder |
 
-From the repository root:
+The BDNS-to-Brick crosswalk, the flow roles, and the Brick point class list
+are bundled in `data/resources/` and are used by default.
+
+### Run all stages
 
 ```bash
 python src/run_all.py \
-  --mep-ifc path/to/mep.ifc --arc-ifc path/to/arc.ifc \
+  --mep-ifc path/to/mep.ifc \
+  --arc-ifc path/to/arc.ifc \
   --points-csv path/to/point_list.csv \
-  --out data/output/stages \
-  --graphdb-home path/to/graphdb-11.3.0
+  --out data/output/my-building \
+  --base-ns https://example.org/my-building#
 ```
 
-The terminal and the UI run the same code with the same options:
-`--skip-space-inference` turns off the geometry-based equipment-to-space
-step, `--local-view` writes `graph_view.html` without GraphDB, and
-`--skip-graphdb` stops after stage 3. Each stage script accepts `--help`. In
-PowerShell, continue lines with a backtick instead of a backslash.
+In Windows PowerShell, write the command on one line or end each line with a
+backtick (`` ` ``) instead of a backslash, and quote paths that contain
+spaces. Several IFC files are given one after another:
+`--mep-ifc a.ifc b.ifc`.
+
+Options:
+
+- `--skip-space-inference` turns off the geometry-based placement of
+  equipment in ARC spaces. Stage 1 is then much faster, but equipment gets only
+  the locations stated explicitly in the IFC.
+- `--base-ns` sets the namespace of the generated entities.
+- `--mapping-csv`, `--topology-roles-csv`, and `--point-classes` replace the
+  bundled resource files.
+
+The results are written to:
+
+```text
+data/output/my-building/
+  1_ifc/        building_brick.ttl and the stage 1 review files
+  2_points/     points_brick.ttl, point_classification.csv, point_list_issues.csv, points_report.json
+  3_match/      linked_brick.ttl, match_results.csv, match_report.json
+  run_summary.json
+```
+
+`3_match/linked_brick.ttl` is the final graph: equipment, spaces, points, and
+their relations.
+
+### Run one stage at a time
+
+The stages can also be run and reviewed one by one:
+
+```bash
+python src/run.py --mep-ifc path/to/mep.ifc --arc-ifc path/to/arc.ifc --out data/output/my-building/1_ifc
+python src/run_points.py --points-csv path/to/point_list.csv --out data/output/my-building/2_points
+python src/run_match.py --ifc-ttl data/output/my-building/1_ifc/building_brick.ttl --points-ttl data/output/my-building/2_points/points_brick.ttl --out data/output/my-building/3_match
+```
+
+Use the same `--base-ns` in every stage when it is not the default.
+
+### What to check after a run
+
+| File | What it tells you |
+| --- | --- |
+| `1_ifc/equipment_mapping.csv` | The Brick class of each BDNS-tagged element, or `tbd` when the crosswalk has none |
+| `1_ifc/bdns_tag_issues.csv` | Elements left out because their BDNS tag is not an instance ID, and duplicated IDs |
+| `1_ifc/topology_paths.csv` | Every `brick:feeds` path and conflict, with the IFC evidence |
+| `1_ifc/space_locations.csv` | The space decision for each equipment and the reason |
+| `1_ifc/validation_report.json` | Unresolved mappings and relationships |
+| `2_points/point_classification.csv` | The class given to each point, or why it is out of scope or unclassified |
+| `3_match/match_results.csv` | How each point was linked, or why it was not |
+| `3_match/match_report.json` | `conforms` and `complete` (below) |
+
+### BMS point list
 
 The point list is a BACnet-style CSV with the columns `point_id`,
 `object_name`, `description`, `object_type` (AI, AO, AV, BI, BO, BV, MI, MO,
@@ -265,10 +293,10 @@ MV), `device_instance`, `object_instance`, `units`, `equipment_ref`, and
 `space_ref`. It is a simplified BACnet point schedule, not a full EDE file. A
 BMS point list carries no Brick class; stage 2 assigns one.
 
-- `equipment_ref` is the BDNS asset instance ID (for example `AHU-00001`). It
-  is matched only to the equipment whose BDNS classification value is that
-  ID; the IFC `Name` is not used. `match_results.csv` records how each point
-  was linked or why it was not.
+- `equipment_ref` is the BDNS asset instance ID (for example `AHU-1`). It is
+  matched only to the equipment whose BDNS classification value is that ID;
+  the IFC `Name` is not used. `match_results.csv` records how each point was
+  linked or why it was not.
 - `match_report.json` reports two results: `conforms` is true when no link is
   ambiguous or review-required, and `complete` is true when every point is
   linked. Unresolved references (for example a room missing from the IFC) make
@@ -278,6 +306,8 @@ BMS point list carries no Brick class; stage 2 assigns one.
   a name-to-room-number table first.
 - Exactly one of `equipment_ref` and `space_ref` is required. Matches become
   `<equipment or space> brick:hasPoint <point>`.
+
+### Point classes
 
 Stage 2 converts Sensor and Setpoint points only. Each point's Brick class is
 assigned by `src/point_classes.py` without project-specific rules, by matching
@@ -316,15 +346,6 @@ assigned; such a point gets the broader class its name supports
 The procedure is deterministic, runs locally, and uses no language model or
 external service. Unknown spellings are not guessed; add them to the
 vocabulary in `src/point_classes.py`.
-
-Stage 4 starts GraphDB from `--graphdb-home` if it is not running, creates the
-`--repository` (default `IFC2RDF_case_study`) if missing, replaces its
-statements with `linked_brick.ttl`, and writes `graph_view.html`: equipment on
-`brick:feeds` paths with their points and locations, and spaces with their
-points. The page loads `vis-network` from unpkg. `--local-view` builds the
-same page from the RDF file with rdflib, without GraphDB. Other GraphDB
-repositories are not touched. GraphDB refuses writes when its disk is nearly
-full.
 
 `tools/convert_legacy_point_list.py` converts the legacy research point list
 (`point_id`, `name`, `unit`, `bdns_abbreviation`, `space_id`) to this format;
@@ -388,28 +409,45 @@ Missing, ambiguous, or unsupported mappings use `tbd`; those assets are listed
 for review and omitted from RDF. The repository does not present this
 crosswalk as an official mapping issued by BDNS, Brick, BOT, or buildingSMART.
 
-This CSV is an interim case-study artifact, not a standards deliverable. When a
-versioned BDNS-to-Brick/BOT mapping is published and maintained through the
-[buildingSMART Data Dictionary (bSDD)](https://www.buildingsmart.org/users/services/buildingsmart-data-dictionary/)
-by the responsible standards organisation, the converter should use that
-mapping in preference to this CSV. Adoption must verify the bSDD dictionary
-owner, version, status, and class URIs; publication in bSDD alone does not make
-third-party content an official BDNS or Brick mapping. The bSDD API is the
-intended machine-readable access path; see the
-[official API guidance](https://technical.buildingsmart.org/services/bsdd/using-the-bsdd-api/).
+This CSV is an interim case-study artifact, not a standards deliverable.
+
+**Where mappings belong.** Mappings from BDNS abbreviations to other schemas
+are properly the responsibility of BDNS itself, and the BDNS sources are the
+reference for them:
+
+- The [BDNS abbreviations register](https://github.com/theodi/BDNS/blob/master/BDNS_Abbreviations_Register.csv)
+  already maps each abbreviation to IFC classes (`ifc4_3`, `ifc2x3`) and to
+  Google Digital Buildings entity types (`dbo_entity_type`). It has no Brick
+  column, which is why this case study needed its own crosswalk.
+- BDNS is published in the buildingSMART Data Dictionary (bSDD) at
+  <https://identifier.buildingsmart.org/uri/bdns>.
+- The asset naming rules are in the
+  [BDNS naming syntax specification](https://github.com/theodi/BDNS/blob/master/BDNS_Specification_naming_syntax.md).
+
+This repository's crosswalk does not replace those sources. A BDNS-to-Brick
+mapping should be maintained by BDNS (for example as a register column or a
+bSDD relation), and once one exists the converter should use it instead of
+this CSV. Adoption must check the source's owner, version, status, and class
+URIs; content published in bSDD by a third party is not an official BDNS or
+Brick mapping. The bSDD API is the intended machine-readable access path; see
+the [official API guidance](https://technical.buildingsmart.org/services/bsdd/using-the-bsdd-api/).
 
 ## Current limitations
 
 - The public automated example tests IFC4. IFC2x3 port ownership via
   `IfcRelConnectsPortToElement` is implemented but needs a public synthetic
   regression fixture.
-- The project crosswalk is partial and experimental. Ductwork, pipework,
-  cable trays, systems, and other tags without a Brick 1.4.4 Equipment class
-  stay `tbd` and are left out of the RDF.
-- Only elements whose BDNS tag is an asset instance ID (for example
-  `AHU-00001`) are converted. A model that carries only type-level tags (for
-  example `AHU`) has to be given instance IDs before it is used; that step is
-  not part of this tool.
+- The project crosswalk is partial and experimental, and it is not a BDNS
+  publication (see Mapping policy). Ductwork, pipework, cable trays, systems,
+  and other tags without a Brick 1.4.4 Equipment class stay `tbd` and are left
+  out of the RDF.
+- Only elements whose BDNS tag is an asset instance ID (for example `AHU-1`)
+  are converted. A model that carries only type-level tags (for example `AHU`)
+  has to be given instance IDs before it is used; that step is not part of
+  this tool.
+- The case-study data used zero-padded instance numbers (`AHU-00001`), which
+  BDNS does not allow. The converter accepts them but does not convert
+  between `AHU-00001` and `AHU-1`.
 - `brick:feeds` is derived only from explicit port connections with SOURCE and
   SINK flow directions. A model without port connections yields few or no
   feeds.
@@ -425,11 +463,7 @@ intended machine-readable access path; see the
   need a name-to-room table first.
 - Full Brick SHACL validation is future work; the current validation report is
   a project-level completeness check.
-- The graph view loads `vis-network` from unpkg and needs an internet
-  connection; large graphs are crowded.
-- Stage 4 was tested with GraphDB 11.3. It replaces all statements in the
-  chosen repository, and GraphDB refuses writes when its disk is nearly full.
-- The UI is for one user on the same PC (127.0.0.1). Its Browse buttons use
-  the Windows file dialog through Python's tkinter.
+- The tool runs from the terminal only. Loading the RDF into a triple store,
+  querying it, and visualising it are not part of this repository.
 - Real-time BMS transport is out of scope. BMS integration is demonstrated via
   point metadata and `brick:hasPoint` links.

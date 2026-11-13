@@ -1,6 +1,5 @@
-"""Stages 2-4 on synthetic inputs: point list -> RDF, match against IFC RDF, local graph view."""
+"""Stages 2-3 on synthetic inputs: point list -> RDF, then match against the IFC RDF."""
 import csv
-import json
 from pathlib import Path
 import sys
 
@@ -15,7 +14,6 @@ sys.path.insert(0, str(PROJECT_ROOT / "examples"))
 from app.pipeline import run_pipeline
 from bms_points import POINT_LIST_COLUMNS, run_points_stage
 from create_synthetic_inputs import _create_arc
-from graphdb import run_local_view
 from match import run_match_stage
 from rdf import BRICK
 from test_topology import _Builder
@@ -147,12 +145,3 @@ def test_duplicate_bdns_instance_id_is_a_conflict(tmp_path):
     assert result["capabilities"]["IDENTITY"]["status"] != "PASS"
     assert result["validation"]["conforms"] is False
 
-
-def test_local_graph_view_contains_feeds_and_points(tmp_path):
-    _, _, _, out = _run(tmp_path)
-    report = run_local_view(out / "3_match" / "linked_brick.ttl", out / "4_view")
-    html = (out / "4_view" / "graph_view.html").read_text(encoding="utf-8")
-    data = json.loads(html.split("const data = ", 1)[1].split(";\n", 1)[0])
-
-    assert report["view"]["edges"] >= 3
-    assert {"feeds", "hasPoint"} <= {edge["p"] for edge in data["edges"]}
