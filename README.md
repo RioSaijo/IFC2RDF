@@ -24,20 +24,113 @@ The converter is a command-line tool. Its result is a Brick RDF file in Turtle
 into a triple store and visualising it are outside this repository; the Turtle
 file can be loaded into any RDF store.
 
-## Processing flow and modules
+## Installation
 
-The work runs in three stages. Each stage writes its own folder, so it can be
-reviewed before the next one runs:
+Python 3.10 or later is recommended.
 
-| Stage | Command | Main modules | Responsibility |
-| --- | --- | --- | --- |
-| 1 IFC -> RDF | `src/run.py` | `src/ifc.py`, `src/mapping.py`, `src/topology.py`, `src/spaces.py`, `src/rdf.py`, `src/validation.py`, `src/app/pipeline.py` | Read MEP and ARC IFC files; select BDNS-classified equipment; map it to Brick/BOT; derive `hasPart`, `hasLocation`, and `feeds` with provenance |
-| 2 point list -> RDF | `src/run_points.py` | `src/bms_points.py`, `src/point_classes.py` | Read the BMS point list and assign Brick Sensor or Setpoint classes |
-| 3 match and validate | `src/run_match.py` | `src/match.py` | Link points to equipment and spaces (`hasPoint`) and report what could not be linked |
+```bash
+python -m venv .venv
+.venv/bin/pip install -r requirements.txt
+```
 
-`src/run_all.py` runs the three stages in order.
+On Windows, use `.venv\Scripts\pip` for the second command.
 
-## IFC input contract
+## Quick start: synthetic example
+
+The example creates two temporary MEP IFC4 models and two temporary ARC IFC4
+models containing:
+
+- an explicit `IfcClassification(Name="BDNS")`;
+- `AHU-1` and `FCU-1` classification references;
+- three classified equipment objects in two ARC spaces;
+- SOURCE/SINK distribution ports and one explicit port connection; and
+- three synthetic BMS points (stage 2 format) linked in stage 3 by the
+  classification reference values.
+
+Run it from the repository root:
+
+```bash
+python examples/run_synthetic_example.py
+```
+
+Inputs and outputs are written below `examples/generated/`, which is excluded
+from Git, in `1_ifc/`, `2_points/`, and `3_match/`. The run is expected to
+produce three equipment entities, three `brick:hasLocation` relationships, one
+`brick:feeds` relationship, three `brick:hasPoint` relationships, and no
+review-required records.
+
+## Usage
+
+Everything runs locally from a terminal. Run the commands from the repository
+root, with the virtual environment's Python (`.venv/bin/python`, or
+`.venv\Scripts\python` on Windows). Each script prints a JSON summary and
+accepts `--help`.
+
+### Run all stages
+
+```bash
+python src/run_all.py \
+  --mep-ifc path/to/mep.ifc \
+  --arc-ifc path/to/arc.ifc \
+  --points-csv path/to/point_list.csv \
+  --out data/output/my-building \
+  --base-ns https://example.org/my-building#
+```
+
+In Windows PowerShell, write the command on one line or end each line with a
+backtick (`` ` ``) instead of a backslash, and quote paths that contain
+spaces. Several IFC files are given one after another:
+`--mep-ifc a.ifc b.ifc`.
+
+Options:
+
+- `--skip-space-inference` turns off the geometry-based placement of
+  equipment in ARC spaces. Stage 1 is then much faster, but equipment gets only
+  the locations stated explicitly in the IFC.
+- `--base-ns` sets the namespace of the generated entities.
+- `--mapping-csv`, `--topology-roles-csv`, and `--point-classes` replace the
+  bundled resource files.
+
+The results are written to:
+
+```text
+data/output/my-building/
+  1_ifc/        building_brick.ttl and the stage 1 review files
+  2_points/     points_brick.ttl, point_classification.csv, point_list_issues.csv, points_report.json
+  3_match/      linked_brick.ttl, match_results.csv, match_report.json
+  run_summary.json
+```
+
+`3_match/linked_brick.ttl` is the final graph: equipment, spaces, points, and
+their relations.
+
+### Run one stage at a time
+
+The stages can also be run and reviewed one by one:
+
+```bash
+python src/run.py --mep-ifc path/to/mep.ifc --arc-ifc path/to/arc.ifc --out data/output/my-building/1_ifc
+python src/run_points.py --points-csv path/to/point_list.csv --out data/output/my-building/2_points
+python src/run_match.py --ifc-ttl data/output/my-building/1_ifc/building_brick.ttl --points-ttl data/output/my-building/2_points/points_brick.ttl --out data/output/my-building/3_match
+```
+
+Use the same `--base-ns` in every stage when it is not the default.
+
+## Inputs
+
+### Command-line inputs
+
+| Input | Option | Content |
+| --- | --- | --- |
+| MEP IFC | `--mep-ifc` | One or more MEP IFC files with BDNS-classified equipment (see MEP and spatial IFC below) |
+| Spatial IFC | `--arc-ifc` | One or more IFC files with the Site/Building/Storey/Space structure, for example the architectural model |
+| BMS point list | `--points-csv` | A BACnet-style point list CSV (columns below) |
+| Output folder | `--out` | Folder for the results; each stage writes its own sub-folder |
+
+The BDNS-to-Brick crosswalk, the flow roles, and the Brick point class list
+are bundled in `data/resources/` and are used by default.
+
+### MEP and spatial IFC
 
 The two IFC roles are intentionally separate:
 
@@ -102,7 +195,77 @@ review. They and their dependent relationships are omitted from RDF rather
 than being forced into a generic class. Assets without BDNS are outside the
 mapping and RDF candidate set.
 
-## Relationship policy
+### BMS point list
+
+The point list is a BACnet-style CSV with the columns `point_id`,
+`object_name`, `description`, `object_type` (AI, AO, AV, BI, BO, BV, MI, MO,
+MV), `device_instance`, `object_instance`, `units`, `equipment_ref`, and
+`space_ref`. It is a simplified BACnet point schedule, not a full EDE file. A
+BMS point list carries no Brick class; stage 2 assigns one.
+
+- `equipment_ref` is the BDNS asset instance ID (for example `AHU-1`). It is
+  matched only to the equipment whose BDNS classification value is that ID;
+  the IFC `Name` is not used. `match_results.csv` records how each point was
+  linked or why it was not.
+- `match_report.json` reports two results: `conforms` is true when no link is
+  ambiguous or review-required, and `complete` is true when every point is
+  linked. Unresolved references (for example a room missing from the IFC) make
+  the result incomplete without making the links themselves invalid.
+- `space_ref` is matched to the IFC `Name` of an ARC `IfcSpace` (for example
+  `01-02`). Real BMS exports often hold free-text room names, which would need
+  a name-to-room-number table first.
+- Exactly one of `equipment_ref` and `space_ref` is required. Matches become
+  `<equipment or space> brick:hasPoint <point>`.
+
+## Outputs
+
+### What to check after a run
+
+| File | What it tells you |
+| --- | --- |
+| `1_ifc/equipment_mapping.csv` | The Brick class of each BDNS-tagged element, or `tbd` when the crosswalk has none |
+| `1_ifc/bdns_tag_issues.csv` | Elements left out because their BDNS tag is not an instance ID, and duplicated IDs |
+| `1_ifc/topology_paths.csv` | Every `brick:feeds` path and conflict, with the IFC evidence |
+| `1_ifc/space_locations.csv` | The space decision for each equipment and the reason |
+| `1_ifc/validation_report.json` | Unresolved mappings and relationships |
+| `2_points/point_classification.csv` | The class given to each point, or why it is out of scope or unclassified |
+| `3_match/match_results.csv` | How each point was linked, or why it was not |
+| `3_match/match_report.json` | `conforms` and `complete` (explained under BMS point list) |
+
+### Stage 1 files
+
+Each run produces:
+
+- `building_brick.ttl` — Brick/BOT RDF in Turtle;
+- `equipment_mapping.csv` — one IFC asset per row with its BDNS code, target ontology class, status, and provenance;
+- `connection_inference.csv` — one BDNS-equipment port connection per row, including directed and unresolved decisions;
+- `topology_paths.csv` — one equipment-to-equipment flow path per row with status (`inferred`, `role_conflict`, `direction_conflict`), traversed pass-through equipment, elements and connections, confidence, and review status;
+- `space_locations.csv` — one equipment per row with its space decision (`located`, `outside`, `ambiguous`, `storey_mismatch`, `no_geometry`, `no_storey`, `explicit_space`), reference point, height relation, and reason;
+- `requirement_report.json` — capability-level IFC input audit;
+- `provenance.csv` — evidence, method, confidence, and review status for mappings and relationships;
+- `validation_report.json` — unresolved mappings, inferred relationships, and BMS links.
+
+The capability audit separates `IDENTITY`, `CLASSIFICATION`,
+`SPATIAL_HIERARCHY`, `LOCATION`, and `FLOW_TOPOLOGY`. A missing optional
+capability does not prevent the converter from producing the RDF that the IFC
+evidence supports.
+
+## How the conversion works
+
+### Stages and modules
+
+The work runs in three stages. Each stage writes its own folder, so it can be
+reviewed before the next one runs:
+
+| Stage | Command | Main modules | Responsibility |
+| --- | --- | --- | --- |
+| 1 IFC -> RDF | `src/run.py` | `src/ifc.py`, `src/mapping.py`, `src/topology.py`, `src/spaces.py`, `src/rdf.py`, `src/validation.py`, `src/app/pipeline.py` | Read MEP and ARC IFC files; select BDNS-classified equipment; map it to Brick/BOT; derive `hasPart`, `hasLocation`, and `feeds` with provenance |
+| 2 point list -> RDF | `src/run_points.py` | `src/bms_points.py`, `src/point_classes.py` | Read the BMS point list and assign Brick Sensor or Setpoint classes |
+| 3 match and validate | `src/run_match.py` | `src/match.py` | Link points to equipment and spaces (`hasPoint`) and report what could not be linked |
+
+`src/run_all.py` runs the three stages in order.
+
+### Relationships
 
 The converter prioritizes explicit IFC relationships:
 
@@ -174,139 +337,6 @@ BMS points receive spatial context either through the two-hop Brick path
 as `Space brick:hasPoint Point` when the point list names a space. The
 converter does not assert `brick:hasLocation` directly on a Point.
 
-## Outputs
-
-Each run produces:
-
-- `building_brick.ttl` — Brick/BOT RDF in Turtle;
-- `equipment_mapping.csv` — one IFC asset per row with its BDNS code, target ontology class, status, and provenance;
-- `connection_inference.csv` — one BDNS-equipment port connection per row, including directed and unresolved decisions;
-- `topology_paths.csv` — one equipment-to-equipment flow path per row with status (`inferred`, `role_conflict`, `direction_conflict`), traversed pass-through equipment, elements and connections, confidence, and review status;
-- `space_locations.csv` — one equipment per row with its space decision (`located`, `outside`, `ambiguous`, `storey_mismatch`, `no_geometry`, `no_storey`, `explicit_space`), reference point, height relation, and reason;
-- `requirement_report.json` — capability-level IFC input audit;
-- `provenance.csv` — evidence, method, confidence, and review status for mappings and relationships;
-- `validation_report.json` — unresolved mappings, inferred relationships, and BMS links.
-
-The capability audit separates `IDENTITY`, `CLASSIFICATION`,
-`SPATIAL_HIERARCHY`, `LOCATION`, and `FLOW_TOPOLOGY`. A missing optional
-capability does not prevent the converter from producing the RDF that the IFC
-evidence supports.
-
-## Installation
-
-Python 3.10 or later is recommended.
-
-```bash
-python -m venv .venv
-.venv/bin/pip install -r requirements.txt
-```
-
-On Windows, use `.venv\Scripts\pip` for the second command.
-
-## Usage
-
-Everything runs locally from a terminal. Run the commands from the repository
-root, with the virtual environment's Python (`.venv/bin/python`, or
-`.venv\Scripts\python` on Windows). Each script prints a JSON summary and
-accepts `--help`.
-
-### Inputs
-
-| Input | Option | Content |
-| --- | --- | --- |
-| MEP IFC | `--mep-ifc` | One or more MEP IFC files with BDNS-classified equipment (see the IFC input contract) |
-| Spatial IFC | `--arc-ifc` | One or more IFC files with the Site/Building/Storey/Space structure, for example the architectural model |
-| BMS point list | `--points-csv` | A BACnet-style point list CSV (columns below) |
-| Output folder | `--out` | Folder for the results; each stage writes its own sub-folder |
-
-The BDNS-to-Brick crosswalk, the flow roles, and the Brick point class list
-are bundled in `data/resources/` and are used by default.
-
-### Run all stages
-
-```bash
-python src/run_all.py \
-  --mep-ifc path/to/mep.ifc \
-  --arc-ifc path/to/arc.ifc \
-  --points-csv path/to/point_list.csv \
-  --out data/output/my-building \
-  --base-ns https://example.org/my-building#
-```
-
-In Windows PowerShell, write the command on one line or end each line with a
-backtick (`` ` ``) instead of a backslash, and quote paths that contain
-spaces. Several IFC files are given one after another:
-`--mep-ifc a.ifc b.ifc`.
-
-Options:
-
-- `--skip-space-inference` turns off the geometry-based placement of
-  equipment in ARC spaces. Stage 1 is then much faster, but equipment gets only
-  the locations stated explicitly in the IFC.
-- `--base-ns` sets the namespace of the generated entities.
-- `--mapping-csv`, `--topology-roles-csv`, and `--point-classes` replace the
-  bundled resource files.
-
-The results are written to:
-
-```text
-data/output/my-building/
-  1_ifc/        building_brick.ttl and the stage 1 review files
-  2_points/     points_brick.ttl, point_classification.csv, point_list_issues.csv, points_report.json
-  3_match/      linked_brick.ttl, match_results.csv, match_report.json
-  run_summary.json
-```
-
-`3_match/linked_brick.ttl` is the final graph: equipment, spaces, points, and
-their relations.
-
-### Run one stage at a time
-
-The stages can also be run and reviewed one by one:
-
-```bash
-python src/run.py --mep-ifc path/to/mep.ifc --arc-ifc path/to/arc.ifc --out data/output/my-building/1_ifc
-python src/run_points.py --points-csv path/to/point_list.csv --out data/output/my-building/2_points
-python src/run_match.py --ifc-ttl data/output/my-building/1_ifc/building_brick.ttl --points-ttl data/output/my-building/2_points/points_brick.ttl --out data/output/my-building/3_match
-```
-
-Use the same `--base-ns` in every stage when it is not the default.
-
-### What to check after a run
-
-| File | What it tells you |
-| --- | --- |
-| `1_ifc/equipment_mapping.csv` | The Brick class of each BDNS-tagged element, or `tbd` when the crosswalk has none |
-| `1_ifc/bdns_tag_issues.csv` | Elements left out because their BDNS tag is not an instance ID, and duplicated IDs |
-| `1_ifc/topology_paths.csv` | Every `brick:feeds` path and conflict, with the IFC evidence |
-| `1_ifc/space_locations.csv` | The space decision for each equipment and the reason |
-| `1_ifc/validation_report.json` | Unresolved mappings and relationships |
-| `2_points/point_classification.csv` | The class given to each point, or why it is out of scope or unclassified |
-| `3_match/match_results.csv` | How each point was linked, or why it was not |
-| `3_match/match_report.json` | `conforms` and `complete` (below) |
-
-### BMS point list
-
-The point list is a BACnet-style CSV with the columns `point_id`,
-`object_name`, `description`, `object_type` (AI, AO, AV, BI, BO, BV, MI, MO,
-MV), `device_instance`, `object_instance`, `units`, `equipment_ref`, and
-`space_ref`. It is a simplified BACnet point schedule, not a full EDE file. A
-BMS point list carries no Brick class; stage 2 assigns one.
-
-- `equipment_ref` is the BDNS asset instance ID (for example `AHU-1`). It is
-  matched only to the equipment whose BDNS classification value is that ID;
-  the IFC `Name` is not used. `match_results.csv` records how each point was
-  linked or why it was not.
-- `match_report.json` reports two results: `conforms` is true when no link is
-  ambiguous or review-required, and `complete` is true when every point is
-  linked. Unresolved references (for example a room missing from the IFC) make
-  the result incomplete without making the links themselves invalid.
-- `space_ref` is matched to the IFC `Name` of an ARC `IfcSpace` (for example
-  `01-02`). Real BMS exports often hold free-text room names, which would need
-  a name-to-room-number table first.
-- Exactly one of `equipment_ref` and `space_ref` is required. Matches become
-  `<equipment or space> brick:hasPoint <point>`.
-
 ### Point classes
 
 Stage 2 converts Sensor and Setpoint points only. Each point's Brick class is
@@ -352,31 +382,7 @@ vocabulary in `src/point_classes.py`.
 its BACnet object types and readable names come from the legacy name pattern,
 and its device and object instances are synthetic numbering.
 
-## Fully synthetic example
-
-The example creates two temporary MEP IFC4 models and two temporary ARC IFC4
-models containing:
-
-- an explicit `IfcClassification(Name="BDNS")`;
-- `AHU-1` and `FCU-1` classification references;
-- three classified equipment objects in two ARC spaces;
-- SOURCE/SINK distribution ports and one explicit port connection; and
-- three synthetic BMS points (stage 2 format) linked in stage 3 by the
-  classification reference values.
-
-Run it from the repository root:
-
-```bash
-python examples/run_synthetic_example.py
-```
-
-Inputs and outputs are written below `examples/generated/`, which is excluded
-from Git, in `1_ifc/`, `2_points/`, and `3_match/`. The run is expected to
-produce three equipment entities, three `brick:hasLocation` relationships, one
-`brick:feeds` relationship, three `brick:hasPoint` relationships, and no
-review-required records.
-
-## Mapping policy
+### Mapping policy
 
 `data/resources/BDNS mapping partial.csv` is a project-defined research
 crosswalk. A unique verified row produces a project-defined Brick or BOT class.
