@@ -1,0 +1,550 @@
+{
+  "Sensor": {
+    "Humidity": {
+      "Absolute": {},
+      "Air": {
+        "Discharge": {},
+        "Exhaust": {},
+        "Mixed": {},
+        "Outside": {},
+        "Return": {},
+        "Supply": {},
+        "Zone": {}
+      },
+      "Relative": {}
+    },
+    "Power": {
+      "Active": {},
+      "Electric": {},
+      "Thermal": {
+        "Heating": {}
+      },
+      "Reactive": {}
+    },
+    "Adjust": {
+      "Temperature": {},
+      "Cool": {
+        "Warm": {}
+      }
+    },
+    "Pressure": {
+      "Differential": {
+        "Air": {
+          "Discharge": {},
+          "Exhaust": {},
+          "Filter": {},
+          "Return": {},
+          "Supply": {}
+        },
+        "Water": {
+          "Chilled": {},
+          "Hot": {
+            "Domestic": {},
+            "Temperature": {
+              "Medium": {}
+            }
+          },
+          "Filter": {}
+        },
+        "Filter": {}
+      },
+      "Air": {},
+      "Static": {
+        "Air": {
+          "Exhaust": {
+            "Average": {},
+            "Lowest": {}
+          },
+          "Building": {},
+          "Discharge": {},
+          "Supply": {}
+        },
+        "Plenum": {
+          "Air": {
+            "Underfloor": {}
+          }
+        }
+      },
+      "Velocity": {
+        "Air": {
+          "Discharge": {},
+          "Exhaust": {},
+          "Supply": {}
+        }
+      },
+      "Gauge": {
+        "Water": {
+          "Chilled": {},
+          "Hot": {}
+        }
+      },
+      "Water": {
+        "Entering": {},
+        "Leaving": {}
+      }
+    },
+    "Enthalpy": {
+      "Air": {
+        "Outside": {},
+        "Return": {}
+      }
+    },
+    "Flow": {
+      "Air": {
+        "Discharge": {
+          "Average": {}
+        },
+        "Supply": {
+          "Average": {}
+        },
+        "Bypass": {},
+        "Exhaust": {},
+        "Hood": {
+          "Fume": {}
+        },
+        "Mixed": {},
+        "Outside": {},
+        "Return": {}
+      },
+      "Water": {
+        "Bypass": {},
+        "Chilled": {
+          "Entering": {},
+          "Leaving": {}
+        },
+        "Condenser": {
+          "Discharge": {},
+          "Entering": {},
+          "Leaving": {},
+          "Return": {},
+          "Supply": {}
+        },
+        "Discharge": {},
+        "Hot": {
+          "Entering": {},
+          "Leaving": {}
+        },
+        "Entering": {},
+        "Leaving": {},
+        "Return": {},
+        "Supply": {}
+      },
+      "Discharge": {
+        "Water": {
+          "Chilled": {},
+          "Hot": {}
+        }
+      },
+      "Return": {
+        "Water": {
+          "Chilled": {},
+          "Hot": {}
+        }
+      },
+      "Supply": {
+        "Water": {
+          "Chilled": {},
+          "Hot": {}
+        }
+      },
+      "Stack": {
+        "Air": {
+          "Exhaust": {}
+        }
+      },
+      "Gas": {
+        "Natural": {}
+      }
+    },
+    "Grains": {
+      "Air": {
+        "Outside": {},
+        "Return": {}
+      }
+    },
+    "Quality": {
+      "Air": {}
+    },
+    "Temperature": {
+      "Air": {
+        "Zone": {
+          "Average": {},
+          "Coldest": {},
+          "Warmest": {}
+        },
+        "Discharge": {
+          "Preheat": {}
+        },
+        "Exhaust": {},
+        "Intake": {},
+        "Mixed": {},
+        "Outside": {},
+        "Supply": {
+          "Preheat": {}
+        },
+        "Return": {},
+        "Room": {},
+        "Underfloor": {}
+      },
+      "Bulb": {
+        "Wet": {
+          "Air": {
+            "Outside": {}
+          }
+        }
+      },
+      "Differential": {
+        "Water": {
+          "Chilled": {},
+          "Hot": {}
+        }
+      },
+      "Discharge": {
+        "Water": {
+          "Chilled": {},
+          "Hot": {
+            "Domestic": {},
+            "Temperature": {
+              "High": {},
+              "Medium": {}
+            }
+          }
+        }
+      },
+      "Return": {
+        "Water": {
+          "Chilled": {},
+          "Hot": {
+            "Temperature": {
+              "High": {},
+              "Medium": {}
+            }
+          }
+        }
+      },
+      "Supply": {
+        "Water": {
+          "Chilled": {},
+          "Hot": {
+            "Domestic": {},
+            "Temperature": {
+              "High": {},
+              "Medium": {}
+            }
+          }
+        }
+      },
+      "Water": {
+        "Chilled": {
+          "Entering": {},
+          "Leaving": {}
+        },
+        "Basin": {
+          "Collection": {}
+        },
+        "Condenser": {
+          "Discharge": {},
+          "Entering": {},
+          "Leaving": {},
+          "Return": {},
+          "Supply": {}
+        },
+        "Return": {
+          "Discharge": {
+            "Differential": {}
+          },
+          "Supply": {
+            "Differential": {}
+          }
+        },
+        "Leaving": {
+          "Entering": {
+            "Differential": {}
+          },
+          "Exchanger": {
+            "Heat": {}
+          },
+          "Tank": {
+            "Ice": {}
+          }
+        },
+        "Discharge": {
+          "Exchanger": {
+            "Heat": {}
+          }
+        },
+        "Hot": {
+          "Domestic": {
+            "Entering": {},
+            "Leaving": {}
+          },
+          "Temperature": {
+            "High": {
+              "Entering": {},
+              "Leaving": {}
+            },
+            "Medium": {
+              "Entering": {},
+              "Leaving": {}
+            }
+          },
+          "Entering": {},
+          "Leaving": {}
+        },
+        "Entering": {},
+        "Supply": {
+          "Exchanger": {
+            "Heat": {}
+          }
+        }
+      },
+      "Core": {},
+      "Embedded": {},
+      "Sink": {
+        "Heat": {}
+      },
+      "Surface": {
+        "Face": {
+          "Inside": {},
+          "Outside": {}
+        }
+      },
+      "Color": {
+        "Correlated": {
+          "Lighting": {}
+        }
+      },
+      "Gas": {
+        "Natural": {}
+      },
+      "Panel": {
+        "Radiant": {}
+      },
+      "Soil": {}
+    },
+    "Ammonia": {},
+    "Angle": {
+      "Azimuth": {
+        "Solar": {}
+      },
+      "Zenith": {
+        "Solar": {}
+      }
+    },
+    "Demand": {
+      "Cooling": {
+        "Average": {}
+      },
+      "Heating": {
+        "Average": {}
+      },
+      "Peak": {}
+    },
+    "Voltage": {
+      "Battery": {},
+      "Bus": {
+        "DC": {}
+      },
+      "Output": {}
+    },
+    "Differential": {
+      "CO2": {},
+      "CO": {},
+      "Enable": {
+        "Temperature": {
+          "Air": {
+            "Outside": {
+              "Low": {}
+            }
+          }
+        }
+      }
+    },
+    "Level": {
+      "CO2": {
+        "Zone": {}
+      },
+      "CO": {},
+      "Water": {
+        "Basin": {
+          "Collection": {}
+        },
+        "Deionised": {}
+      },
+      "Formaldehyde": {},
+      "Methane": {},
+      "NO2": {},
+      "Ozone": {},
+      "PM10": {},
+      "PM1": {},
+      "PM2.5": {},
+      "Rain": {},
+      "Refrigerant": {},
+      "TVOC": {}
+    },
+    "CO2": {
+      "Air": {
+        "Outside": {},
+        "Return": {}
+      }
+    },
+    "CO": {
+      "Air": {
+        "Outside": {},
+        "Return": {}
+      }
+    },
+    "Capacity": {},
+    "Conductivity": {
+      "Water": {
+        "Deionised": {}
+      }
+    },
+    "Contact": {},
+    "Imbalance": {
+      "Current": {},
+      "Voltage": {}
+    },
+    "Output": {
+      "Current": {
+        "PV": {},
+        "Photovoltaic": {}
+      }
+    },
+    "Current": {
+      "Load": {},
+      "Motor": {}
+    },
+    "Position": {
+      "Damper": {},
+      "Sash": {},
+      "Valve": {}
+    },
+    "Dewpoint": {
+      "Air": {
+        "Discharge": {},
+        "Exhaust": {},
+        "Outside": {},
+        "Return": {},
+        "Supply": {},
+        "Zone": {}
+      }
+    },
+    "Speed": {
+      "Differential": {},
+      "Motor": {},
+      "Wind": {}
+    },
+    "Direction": {
+      "Wind": {}
+    },
+    "Duration": {
+      "Rain": {}
+    },
+    "Energy": {
+      "Electric": {},
+      "Reactive": {}
+    },
+    "Usage": {
+      "Energy": {
+        "Electrical": {},
+        "Thermal": {}
+      },
+      "Water": {
+        "Hot": {}
+      },
+      "Gas": {
+        "Natural": {}
+      },
+      "Steam": {}
+    },
+    "Generation": {
+      "Energy": {}
+    },
+    "Fire": {},
+    "Frequency": {
+      "Output": {}
+    },
+    "Frost": {},
+    "Gas": {},
+    "Hail": {},
+    "Heat": {},
+    "Illuminance": {
+      "Outside": {}
+    },
+    "Luminance": {},
+    "Motion": {},
+    "Torque": {
+      "Motor": {}
+    },
+    "Count": {
+      "Occupancy": {}
+    },
+    "Occupancy": {},
+    "Timer": {
+      "On": {}
+    },
+    "PIR": {},
+    "PM10": {},
+    "PM1": {},
+    "PM2.5": {},
+    "Matter": {
+      "Particulate": {}
+    },
+    "Piezoelectric": {},
+    "Factor": {
+      "Power": {}
+    },
+    "Concentration": {
+      "Radon": {}
+    },
+    "Time": {
+      "Run": {}
+    },
+    "Irradiance": {
+      "Solar": {}
+    },
+    "Radiance": {
+      "Solar": {}
+    },
+    "TVOC": {},
+    "Amount": {
+      "Waste": {}
+    }
+  },
+  "Setpoint": {
+    "Temperature": {
+      "Water": {
+        "Condenser": {
+          "Discharge": {},
+          "Supply": {}
+        },
+        "Hot": {
+          "Discharge": {},
+          "Supply": {}
+        }
+      },
+      "Discharge": {
+        "Water": {
+          "Hot": {
+            "Domestic": {}
+          }
+        }
+      },
+      "Supply": {
+        "Water": {
+          "Hot": {
+            "Domestic": {}
+          }
+        }
+      }
+    },
+    "Flow": {
+      "Supply": {
+        "Water": {
+          "Hot": {}
+        }
+      }
+    }
+  }
+}

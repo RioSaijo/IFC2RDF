@@ -1,0 +1,17 @@
+bdns_abbreviation,topology_role,rationale
+DMP,passthrough,Duct-mounted damper; recorded as path evidence between primary equipment.
+BYCD,passthrough,Duct-mounted damper; recorded as path evidence between primary equipment.
+EXD,passthrough,Duct-mounted damper; recorded as path evidence between primary equipment.
+FD,passthrough,Duct-mounted fire damper; recorded as path evidence between primary equipment.
+ICD,passthrough,Duct-mounted damper; recorded as path evidence between primary equipment.
+IISD,passthrough,Duct-mounted damper; recorded as path evidence between primary equipment.
+MD,passthrough,Duct-mounted damper; recorded as path evidence between primary equipment.
+MFSD,passthrough,Duct-mounted fire/smoke damper; recorded as path evidence between primary equipment.
+MSCD,passthrough,Duct-mounted smoke control damper; recorded as path evidence between primary equipment.
+MSD,passthrough,Duct-mounted smoke damper; recorded as path evidence between primary equipment.
+PRLD,passthrough,Duct-mounted pressure relief damper; recorded as path evidence between primary equipment.
+RECD,passthrough,Duct-mounted damper; recorded as path evidence between primary equipment.
+RTCD,passthrough,Duct-mounted damper; recorded as path evidence between primary equipment.
+RTISD,passthrough,Duct-mounted damper; recorded as path evidence between primary equipment.
+VCD,passthrough,Duct-mounted volume control damper; recorded as path evidence between primary equipment.
+SLCR,passthrough,Duct silencer; recorded as path evidence between primary equipment.
